@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/fnkjyinw/public_html/alok-crm/
+    - export DEPLOYPATH=/home/fnkjyinw/public_html/alok-crm
     - /bin/cp -R images $DEPLOYPATH
