@@ -1,0 +1,1 @@
+<footer><p>&copy; 2025 Courier CRM</p></footer></body></html>
