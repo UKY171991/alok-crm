@@ -4,7 +4,7 @@ session_start();
 // Redirect to login.php if not logged in
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
-    exit;
+     exit;
 }
 include 'inc/db.php'; 
 include 'inc/header.php';

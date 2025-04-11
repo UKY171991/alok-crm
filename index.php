@@ -6,7 +6,7 @@ if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
-
+include 'inc/db.php'; 
 include 'inc/header.php';
 include 'inc/sidebar.php';
 ?>

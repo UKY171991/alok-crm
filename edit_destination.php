@@ -6,16 +6,13 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+include 'inc/db.php'; 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     $name = isset($_POST['name']) ? trim($_POST['name']) : '';
 
     if ($id > 0 && !empty($name)) {
-        // Database connection
-        $conn = new mysqli('localhost', 'root', '', 'alok_crm');
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+      
 
         $stmt = $conn->prepare("UPDATE destinations SET name = ? WHERE id = ?");
         $stmt->bind_param("si", $name, $id);

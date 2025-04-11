@@ -7,6 +7,8 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 
+include 'inc/db.php'; 
+
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Dummy check

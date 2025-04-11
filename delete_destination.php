@@ -6,14 +6,11 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+include 'inc/db.php'; 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
 
-    // Database connection
-    $conn = new mysqli('localhost', 'root', '', 'alok_crm');
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     $stmt = $conn->prepare("DELETE FROM destinations WHERE id = ?");
     $stmt->bind_param("i", $id);

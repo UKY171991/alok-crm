@@ -7,6 +7,7 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
+include 'inc/db.php'; 
 include 'inc/header.php';
 include 'inc/sidebar.php';
 ?>
@@ -107,12 +108,7 @@ include 'inc/sidebar.php';
                     </thead>
                     <tbody>
                         <?php
-                        // Database connection
-                        $conn = new mysqli('localhost', 'root', '', 'alok_crm');
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
-                        }
-
+                       
                         // Fetch customers
                         $sql = "SELECT * FROM customers";
                         $result = $conn->query($sql);

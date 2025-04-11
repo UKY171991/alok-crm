@@ -7,10 +7,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Database connection
-$conn = new mysqli('localhost', 'root', '', 'alok_crm');
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'inc/db.php'; 
 
 $sql = "SELECT * FROM destinations";
 $result = $conn->query($sql);
