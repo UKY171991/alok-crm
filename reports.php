@@ -1,117 +1,99 @@
 <?php
 session_start();
-
-// Redirect to login.php if not logged in
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
-
-include 'inc/db.php'; 
+include 'inc/db.php';
 include 'inc/header.php';
 include 'inc/sidebar.php';
 ?>
-<main class='content-wrapper'>
-    <div class='container-fluid p-3'>
-        <h2>Reports</h2>
-        <p>Search and download reports here.</p>
 
-        <!-- Search Reports Form -->
+<main class="content-wrapper">
+    <div class="container-fluid p-3">
+        <h2>Invoice Reports</h2>
+        <p>Search past invoices by multiple filters.</p>
+
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="card-title">Search Reports</h3>
+                <h3 class="card-title">Filter Invoices</h3>
             </div>
             <div class="card-body">
-                <form action="reports.php" method="GET">
+                <form id="invoiceReportForm">
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="start_date">Start Date</label>
-                                <input type="date" name="start_date" id="start_date" class="form-control">
-                            </div>
+                        <div class="col-md-3">
+                            <label>Start Date</label>
+                            <input type="date" name="start_date" class="form-control">
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="end_date">End Date</label>
-                                <input type="date" name="end_date" id="end_date" class="form-control">
-                            </div>
+                        <div class="col-md-3">
+                            <label>End Date</label>
+                            <input type="date" name="end_date" class="form-control">
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="report_type">Report Type</label>
-                                <select name="report_type" id="report_type" class="form-control">
-                                    <option value="invoices">Invoices</option>
-                                    <option value="customers">Customers</option>
-                                    <option value="destinations">Destinations</option>
-                                </select>
-                            </div>
+                        <div class="col-md-3">
+                            <label>Customer ID</label>
+                            <input type="text" name="customer_id" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label>Destination</label>
+                            <input type="text" name="destination" class="form-control">
+                        </div>
+                        <div class="col-md-3 mt-2">
+                            <label>Invoice ID</label>
+                            <input type="text" name="invoice_id" class="form-control">
+                        </div>
+                        <div class="col-md-3 mt-4">
+                            <button type="submit" class="btn btn-primary mt-2">Search</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Search</button>
                 </form>
             </div>
         </div>
 
-        <!-- Reports List -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Report Results</h3>
+                <h3 class="card-title">Invoice Report Results</h3>
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th>Details</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Example: Fetch filtered reports based on GET parameters
-
-                        $where = [];
-                        if (!empty($_GET['start_date'])) {
-                            $where[] = "created_at >= '" . $conn->real_escape_string($_GET['start_date']) . "'";
-                        }
-                        if (!empty($_GET['end_date'])) {
-                            $where[] = "created_at <= '" . $conn->real_escape_string($_GET['end_date']) . "'";
-                        }
-                        if (!empty($_GET['report_type'])) {
-                            $where[] = "type = '" . $conn->real_escape_string($_GET['report_type']) . "'";
-                        }
-
-                        $sql = "SELECT * FROM reports";
-                        if (!empty($where)) {
-                            $sql .= " WHERE " . implode(' AND ', $where);
-                        }
-
-                        $result = $conn->query($sql);
-
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>
-                                    <td>{$row['id']}</td>
-                                    <td>{$row['type']}</td>
-                                    <td>{$row['created_at']}</td>
-                                    <td>{$row['details']}</td>
-                                    <td>
-                                        <a href='download_report.php?id={$row['id']}' class='btn btn-sm btn-success'>Download</a>
-                                    </td>
-                                </tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='5' class='text-center'>No reports found</td></tr>";
-                        }
-
-                        $conn->close();
-                        ?>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Invoice No</th>
+                                <th>Customer ID</th>
+                                <th>Destination</th>
+                                <th>Invoice Date</th>
+                                <th>Total Amount</th>
+                                <th>GST</th>
+                                <th>Grand Total</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr><td colspan="9" class="text-center">Please search to view results.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </main>
+
 <?php include 'inc/footer.php'; ?>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function () {
+    $('#invoiceReportForm').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'fetch_invoice_reports.php',
+            type: 'GET',
+            data: $(this).serialize(),
+            success: function (data) {
+                $('#reportTableBody').html(data);
+            }
+        });
+    });
+});
+</script>

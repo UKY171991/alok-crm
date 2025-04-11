@@ -15,11 +15,13 @@ while ($row = $result->fetch_assoc()) {
         <td>
             <button class='btn btn-warning btn-sm edit-btn'
                 data-id='{$row['id']}'
-                data-destination='{$row['destination']}'
-                data-type='{$row['type']}'
-                data-weight='{$row['weight_category']}'
-                data-rate='{$row['rate']}'>Edit</button>
+                data-destination=\"{$row['destination']}\"
+                data-type=\"{$row['type']}\"
+                data-weight=\"{$row['weight_category']}\"
+                data-rate=\"{$row['rate']}\"
+            >Edit</button>
             <button class='btn btn-danger btn-sm delete-btn' data-id='{$row['id']}'>Delete</button>
         </td>
     </tr>";
 }
+$conn->close();
