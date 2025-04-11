@@ -43,6 +43,9 @@ include 'inc/sidebar.php';
                         </div>
                         <div class="col-md-3 mt-4">
                             <button type="submit" class="btn btn-primary mt-2">Search</button>
+                            <button type="button" id="downloadReport" class="btn btn-success mt-2">
+                                <i class="fas fa-download"></i> Download CSV
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -61,16 +64,17 @@ include 'inc/sidebar.php';
                                 <th>ID</th>
                                 <th>Invoice No</th>
                                 <th>Customer ID</th>
-                                <th>Destination</th>
+                                <th>Customer Name</th>
                                 <th>Invoice Date</th>
                                 <th>Total Amount</th>
                                 <th>GST</th>
                                 <th>Grand Total</th>
+                                <th>Status</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
                         <tbody id="reportTableBody">
-                            <tr><td colspan="9" class="text-center">Please search to view results.</td></tr>
+                            <tr><td colspan="10" class="text-center">Please search to view results.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -82,8 +86,10 @@ include 'inc/sidebar.php';
 <?php include 'inc/footer.php'; ?>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
 <script>
 $(function () {
+    // Handle search form submission
     $('#invoiceReportForm').on('submit', function (e) {
         e.preventDefault();
         $.ajax({
@@ -94,6 +100,14 @@ $(function () {
                 $('#reportTableBody').html(data);
             }
         });
+    });
+
+    // Handle download button click
+    $('#downloadReport').on('click', function() {
+        // Get the current form data
+        var formData = $('#invoiceReportForm').serialize();
+        // Open download URL in new window
+        window.open('download_report.php?' + formData, '_blank');
     });
 });
 </script>
