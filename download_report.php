@@ -27,18 +27,27 @@ try {
         throw new Exception("Failed to create output stream");
     }
 
-    // Write CSV headers
+    // Write CSV headers with all fields
     fputcsv($output, [
-        'ID',
-        'Invoice No',
+        'Invoice ID',
+        'Invoice Number',
+        'Invoice Date',
         'Customer ID',
         'Customer Name',
-        'Invoice Date',
+        'Customer Email',
+        'Customer Phone',
+        'Customer Address',
+        'Customer GST No',
+        'Customer HSN Code',
+        'Customer PAN No',
+        'Customer CIN No',
+        'Customer Aadhaar No',
         'Total Amount',
         'GST Amount',
         'Grand Total',
         'Status',
-        'Created At'
+        'Created At',
+        'Updated At'
     ]);
 
     // Build query based on filters
@@ -64,18 +73,27 @@ try {
     // Debug: Log the constructed SQL query
     error_log("Query parameters: " . print_r($_GET, true));
 
-    // Build the SQL query with customer information
+    // Build the SQL query with all customer information
     $sql = "SELECT 
                 i.id,
                 i.invoice_no,
+                i.invoice_date,
                 i.customer_id,
                 c.name as customer_name,
-                i.invoice_date,
+                c.email as customer_email,
+                c.phone as customer_phone,
+                c.address as customer_address,
+                c.gst_no as customer_gst,
+                c.hsn_code as customer_hsn,
+                c.pan_no as customer_pan,
+                c.cin_no as customer_cin,
+                c.aadhaar_no as customer_aadhaar,
                 i.total_amount,
                 i.gst_amount,
                 i.grand_total,
                 i.status,
-                i.created_at
+                i.created_at,
+                i.updated_at
             FROM invoices i 
             LEFT JOIN customers c ON i.customer_id = c.id";
 
@@ -101,14 +119,23 @@ try {
             $data = [
                 $row['id'],
                 $row['invoice_no'],
+                $row['invoice_date'],
                 $row['customer_id'],
                 $row['customer_name'] ?? 'N/A',
-                $row['invoice_date'],
+                $row['customer_email'] ?? 'N/A',
+                $row['customer_phone'] ?? 'N/A',
+                $row['customer_address'] ?? 'N/A',
+                $row['customer_gst'] ?? 'N/A',
+                $row['customer_hsn'] ?? 'N/A',
+                $row['customer_pan'] ?? 'N/A',
+                $row['customer_cin'] ?? 'N/A',
+                $row['customer_aadhaar'] ?? 'N/A',
                 $row['total_amount'],
                 $row['gst_amount'],
                 $row['grand_total'],
                 $row['status'] ?? 'pending',
-                $row['created_at']
+                $row['created_at'],
+                $row['updated_at']
             ];
             fputcsv($output, $data);
         }
