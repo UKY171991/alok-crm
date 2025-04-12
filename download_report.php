@@ -31,12 +31,14 @@ try {
     fputcsv($output, [
         'ID',
         'Invoice No',
-        'Customer',
+        'Customer ID',
+        'Customer Name',
         'Invoice Date',
         'Total Amount',
         'GST Amount',
         'Grand Total',
-        'Status'
+        'Status',
+        'Created At'
     ]);
 
     // Build query based on filters
@@ -65,20 +67,22 @@ try {
     // Build the SQL query with customer information
     $sql = "SELECT 
                 i.id,
-                i.invoice_number as invoice_no,
+                i.invoice_no,
+                i.customer_id,
                 c.name as customer_name,
-                DATE_FORMAT(i.date, '%Y-%m-%d') as invoice_date,
+                i.invoice_date,
                 i.total_amount,
                 i.gst_amount,
-                (i.total_amount + COALESCE(i.gst_amount, 0)) as grand_total,
-                i.status
+                i.grand_total,
+                i.status,
+                i.created_at
             FROM invoices i 
             LEFT JOIN customers c ON i.customer_id = c.id";
 
     if (!empty($where)) {
         $sql .= " WHERE " . implode(" AND ", $where);
     }
-    $sql .= " ORDER BY i.date DESC";
+    $sql .= " ORDER BY i.invoice_date DESC";
 
     // Debug: Log the final SQL query
     error_log("Executing SQL query: " . $sql);
@@ -95,14 +99,16 @@ try {
             error_log("Processing row: " . print_r($row, true));
             
             $data = [
-                $row['id'] ?? 'N/A',
-                $row['invoice_no'] ?? 'N/A',
-                $row['customer_name'] ?? 'Unknown Customer',
-                $row['invoice_date'] ?? 'N/A',
-                number_format($row['total_amount'] ?? 0, 2),
-                number_format($row['gst_amount'] ?? 0, 2),
-                number_format($row['grand_total'] ?? 0, 2),
-                $row['status'] ?? 'Unknown'
+                $row['id'],
+                $row['invoice_no'],
+                $row['customer_id'],
+                $row['customer_name'] ?? 'N/A',
+                $row['invoice_date'],
+                $row['total_amount'],
+                $row['gst_amount'],
+                $row['grand_total'],
+                $row['status'] ?? 'pending',
+                $row['created_at']
             ];
             fputcsv($output, $data);
         }
