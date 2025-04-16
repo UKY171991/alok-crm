@@ -39,13 +39,16 @@ if (!$result) {
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $status = $row['status'] ?? 'pending'; // Default to pending if status is null
+        $status = isset($row['status']) ? $row['status'] : 'pending'; // Default to pending if status is null
+        $destination = isset($row['destination']) ? $row['destination'] : 'N/A'; // Default to N/A if destination is null
+        $customer_name = isset($row['customer_name']) ? htmlspecialchars($row['customer_name']) : 'N/A'; // Default to N/A if customer name is null
         echo "<tr>
             <td>{$row['id']}</td>
             <td>{$row['invoice_no']}</td>
             <td>{$row['customer_id']}</td>
-            <td>" . htmlspecialchars($row['customer_name'] ?? 'N/A') . "</td>
+            <td>{$customer_name}</td>
             <td>{$row['invoice_date']}</td>
+            <td>{$destination}</td>
             <td>₹{$row['total_amount']}</td>
             <td>₹{$row['gst_amount']}</td>
             <td>₹{$row['grand_total']}</td>

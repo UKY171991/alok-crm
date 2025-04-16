@@ -7,6 +7,8 @@ if (!isset($_SESSION['user'])) {
 include 'inc/db.php';
 include 'inc/header.php';
 include 'inc/sidebar.php';
+
+$invoice_no = generateInvoiceNo($conn);
 ?>
 
 <main class="content-wrapper">
@@ -27,12 +29,34 @@ include 'inc/sidebar.php';
                             <input type="text" name="invoice_no" id="invoice_no" class="form-control" required>
                         </div>
                         <div class="col-md-6">
-                            <label>Customer ID</label>
-                            <input type="number" name="customer_id" id="customer_id" class="form-control" required>
+                            <label>Customer</label>
+                            <select name="customer_id" id="customer_id" class="form-control" required>
+                                <option value="">Select Customer</option>
+                                <?php
+                                $query = "SELECT id, name FROM customers ORDER BY name ASC";
+                                $result = $conn->query($query);
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label>Invoice Date</label>
                             <input type="date" name="invoice_date" id="invoice_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Destination</label>
+                            <select name="destination" id="destination" class="form-control" required>
+                                <option value="">Select Destination</option>
+                                <?php
+                                $query = "SELECT name FROM destinations ORDER BY name ASC";
+                                $result = $conn->query($query);
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label>Total Amount</label>
@@ -64,7 +88,7 @@ include 'inc/sidebar.php';
                         <thead class="table-dark">
                             <tr>
                                 <th>ID</th><th>Invoice No</th><th>Customer ID</th><th>Invoice Date</th>
-                                <th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
+                                <th>Destination</th><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody"></tbody>
@@ -113,6 +137,7 @@ $(function () {
         $("#invoice_no").val($(this).data("invoice_no"));
         $("#customer_id").val($(this).data("customer_id"));
         $("#invoice_date").val($(this).data("invoice_date"));
+        $("#destination").val($(this).data("destination"));
         $("#total_amount").val($(this).data("total_amount"));
         $("#gst_amount").val($(this).data("gst_amount"));
         $("#grand_total").val($(this).data("grand_total"));
@@ -127,6 +152,10 @@ $(function () {
                 loadInvoices(); // refresh table
             });
         }
+    });
+
+    $(document).ready(function () {
+        $("#invoice_no").val("<?php echo $invoice_no; ?>");
     });
 
 });

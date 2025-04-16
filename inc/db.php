@@ -30,4 +30,16 @@ $conn->set_charset("utf8mb4");
 
 // Set timezone
 date_default_timezone_set('Asia/Kolkata');
+
+function generateInvoiceNo($conn) {
+    $query = "SELECT MAX(id) AS max_id FROM invoices";
+    $result = $conn->query($query);
+    $maxId = 1;
+
+    if ($result && $row = $result->fetch_assoc()) {
+        $maxId = intval($row['max_id']) + 1;
+    }
+
+    return "INV-" . str_pad($maxId, 6, "0", STR_PAD_LEFT);
+}
 ?>

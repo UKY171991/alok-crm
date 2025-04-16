@@ -42,6 +42,7 @@ try {
         'Customer PAN No',
         'Customer CIN No',
         'Customer Aadhaar No',
+        'Destination',
         'Total Amount',
         'GST Amount',
         'Grand Total',
@@ -69,6 +70,10 @@ try {
         $invoice_id = intval($_GET['invoice_id']);
         $where[] = "i.id = $invoice_id";
     }
+    if (!empty($_GET['destination'])) {
+        $destination = $conn->real_escape_string($_GET['destination']);
+        $where[] = "i.destination = '$destination'";
+    }
 
     // Debug: Log the constructed SQL query
     error_log("Query parameters: " . print_r($_GET, true));
@@ -88,6 +93,7 @@ try {
                 c.pan_no as customer_pan,
                 c.cin_no as customer_cin,
                 c.aadhaar_no as customer_aadhaar,
+                i.destination,
                 i.total_amount,
                 i.gst_amount,
                 i.grand_total,
@@ -130,6 +136,7 @@ try {
                 $row['customer_pan'] ?? 'N/A',
                 $row['customer_cin'] ?? 'N/A',
                 $row['customer_aadhaar'] ?? 'N/A',
+                $row['destination'] ?? 'N/A',
                 $row['total_amount'],
                 $row['gst_amount'],
                 $row['grand_total'],

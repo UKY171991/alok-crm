@@ -70,11 +70,12 @@ include 'inc/sidebar.php';
                                 <th>GST</th>
                                 <th>Grand Total</th>
                                 <th>Status</th>
+                                <th>Destination</th>
                                 <th>Created At</th>
                             </tr>
                         </thead>
                         <tbody id="reportTableBody">
-                            <tr><td colspan="10" class="text-center">Please search to view results.</td></tr>
+                            <tr><td colspan="11" class="text-center">Please search to view results.</td></tr>
                         </tbody>
                     </table>
                 </div>

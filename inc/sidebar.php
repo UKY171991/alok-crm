@@ -41,13 +41,6 @@
                         <p>Customers</p>
                     </a>
                 </li>
-                <!-- Rates -->
-                <li class="nav-item">
-                    <a href="rates.php" class="nav-link">
-                        <i class="nav-icon fas fa-rupee-sign"></i>
-                        <p>Rates</p>
-                    </a>
-                </li>
                 <!-- Invoices -->
                 <li class="nav-item">
                     <a href="invoices.php" class="nav-link">

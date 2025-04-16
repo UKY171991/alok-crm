@@ -11,6 +11,7 @@ if ($result->num_rows > 0) {
             <td>{$row['invoice_no']}</td>
             <td>{$row['customer_id']}</td>
             <td>{$row['invoice_date']}</td>
+            <td>{$row['destination']}</td>
             <td>{$row['total_amount']}</td>
             <td>{$row['gst_amount']}</td>
             <td>{$row['grand_total']}</td>
@@ -21,6 +22,7 @@ if ($result->num_rows > 0) {
                     data-invoice_no='{$row['invoice_no']}'
                     data-customer_id='{$row['customer_id']}'
                     data-invoice_date='{$row['invoice_date']}'
+                    data-destination='{$row['destination']}'
                     data-total_amount='{$row['total_amount']}'
                     data-gst_amount='{$row['gst_amount']}'
                     data-grand_total='{$row['grand_total']}'

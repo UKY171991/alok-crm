@@ -32,6 +32,10 @@ CREATE TABLE IF NOT EXISTS customers (
     pan_no VARCHAR(20),
     cin_no VARCHAR(20),
     aadhaar_no VARCHAR(20),
+    destination TEXT NULL,
+    parcel_type TEXT NULL,
+    weight TEXT NULL,
+    price TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -85,6 +89,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     invoice_no VARCHAR(50) NOT NULL UNIQUE,
     customer_id INT NOT NULL,
     invoice_date DATE NOT NULL,
+    destination VARCHAR(100),
     total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     gst_amount DECIMAL(10,2) DEFAULT 0.00,
     grand_total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
@@ -116,4 +121,4 @@ CREATE TABLE IF NOT EXISTS invoice_items (
 INSERT INTO invoice_items (invoice_id, description, quantity, rate, amount) VALUES
 (1, 'Courier delivery to Mumbai - Normal 0-500g', 1, 80.00, 80.00),
 (2, 'Courier delivery to Delhi - Premium 0-500g', 2, 100.00, 200.00),
-(3, 'Courier delivery to Bangalore - Normal 0-500g', 3, 45.00, 135.00); 
+(3, 'Courier delivery to Bangalore - Normal 0-500g', 3, 45.00, 135.00);
