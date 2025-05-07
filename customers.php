@@ -256,7 +256,7 @@ $(function () {
     });
 
     function loadDestinations() {
-        $.getJSON("fetch_destinations.php", function (data) {
+        $.getJSON("fetch_destinations.php?mode=json", function (data) {
             if (data.error) {
                 alert(data.error);
                 return;
@@ -268,7 +268,7 @@ $(function () {
     }
 
     function loadDestinationsForAllRows() {
-        $.getJSON("fetch_destinations.php", function (data) {
+        $.getJSON("fetch_destinations.php?mode=json", function (data) {
             if (data.error) {
                 alert(data.error);
                 return;
