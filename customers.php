@@ -57,7 +57,12 @@ include 'inc/sidebar.php';
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" name="weight[]" class="form-control" placeholder="Enter weight (e.g., 500 gm)" required>
+                                            <select name="weight[]" class="form-control weight-select" required>
+                                                <option value="">Select Weight</option>
+                                                <option value="Upto 100 gm">Upto 100 gm</option>
+                                                <option value="Upto 500 gm">Upto 500 gm</option>
+                                                <option value="Addl 500 gm">Addl 500 gm</option>
+                                            </select>
                                         </td>
                                         <td>
                                             <input type="text" name="price[]" class="form-control" placeholder="Enter price (e.g., 100)" required>
@@ -227,7 +232,12 @@ $(function () {
                             </select>
                         </td>
                         <td>
-                            <input type="text" name="weight[]" class="form-control" value="${weights[index]}" required>
+                            <select name="weight[]" class="form-control weight-select" required>
+                                <option value="">Select Weight</option>
+                                <option value="Upto 100 gm" ${weights[index] === 'Upto 100 gm' ? 'selected' : ''}>Upto 100 gm</option>
+                                <option value="Upto 500 gm" ${weights[index] === 'Upto 500 gm' ? 'selected' : ''}>Upto 500 gm</option>
+                                <option value="Addl 500 gm" ${weights[index] === 'Addl 500 gm' ? 'selected' : ''}>Addl 500 gm</option>
+                            </select>
                         </td>
                         <td>
                             <input type="text" name="price[]" class="form-control" value="${prices[index]}" required>
@@ -282,7 +292,51 @@ $(function () {
                 $(this).val(currentValue); // Retain the current value
             });
         });
+
+        setAllWeightOptions();
     }
+
+    function getWeightOptions(parcelType) {
+        if (parcelType === 'Document & Light Parcel') {
+            return [
+                { value: 'Upto 100 gm', text: 'Upto 100 gm' },
+                { value: 'Upto 500 gm', text: 'Upto 500 gm' },
+                { value: 'Addl 500 gm', text: 'Addl 500 gm' }
+            ];
+        } else if (parcelType === 'Premium') {
+            return [
+                { value: 'Upto 500 gm', text: 'Upto 500 gm' },
+                { value: 'Addl 500 gm', text: 'Addl 500 gm' }
+            ];
+        } else if (parcelType === 'Bulk Load Parcel') {
+            return [
+                { value: 'Up to 10 kg (Surface)', text: 'Up to 10 kg (Surface)' },
+                { value: '10 kg - 50 kg (Surface)', text: '10 kg - 50 kg (Surface)' },
+                { value: 'Above 50 kg (Surface)', text: 'Above 50 kg (Surface)' },
+                { value: 'Up to 10 kg (Air)', text: 'Up to 10 kg (Air)' },
+                { value: '10 kg - Above (Air)', text: '10 kg - Above (Air)' }
+            ];
+        } else {
+            return [{ value: '', text: 'Select Weight' }];
+        }
+    }
+
+    function updateWeightSelect($row) {
+        var parcelType = $row.find("select[name='parcel_type[]']").val();
+        var $weightSelect = $row.find("select[name='weight[]']");
+        var currentValue = $weightSelect.val();
+        var options = getWeightOptions(parcelType);
+        $weightSelect.empty();
+        options.forEach(function(opt) {
+            $weightSelect.append(`<option value="${opt.value}">${opt.text}</option>`);
+        });
+        $weightSelect.val(currentValue);
+    }
+
+    $(document).on('change', "select[name='parcel_type[]']", function () {
+        var $row = $(this).closest('tr');
+        updateWeightSelect($row);
+    });
 
     $(document).on("click", "#addRow", function () {
         const newRow = `
@@ -301,7 +355,12 @@ $(function () {
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="weight[]" class="form-control" placeholder="Enter weight (e.g., 500 gm)" required>
+                    <select name="weight[]" class="form-control weight-select" required>
+                        <option value="">Select Weight</option>
+                        <option value="Upto 100 gm">Upto 100 gm</option>
+                        <option value="Upto 500 gm">Upto 500 gm</option>
+                        <option value="Addl 500 gm">Addl 500 gm</option>
+                    </select>
                 </td>
                 <td>
                     <input type="text" name="price[]" class="form-control" placeholder="Enter price (e.g., 100)" required>
@@ -312,6 +371,10 @@ $(function () {
             </tr>
         `;
         $("#multiOptionsTable tbody").append(newRow);
+        setTimeout(function() {
+            var $lastRow = $("#multiOptionsTable tbody tr").last();
+            updateWeightSelect($lastRow);
+        }, 10);
         loadDestinationsForAllRows();
     });
 
@@ -328,6 +391,12 @@ $(function () {
             alert("Failed to fetch customer details. Please try again.");
         });
     });
+
+    function setAllWeightOptions() {
+        $("#multiOptionsTable tbody tr").each(function () {
+            updateWeightSelect($(this));
+        });
+    }
 
     loadDestinations();
 });
