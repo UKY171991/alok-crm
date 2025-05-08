@@ -158,14 +158,12 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                 </div>
             </div>
             <!-- View Order Modal -->
-            <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
+            <div class="modal fade" id="viewOrderModal" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="viewOrderModalLabel">Order Details</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="viewOrderBody">
                             <!-- Order details will be loaded here by AJAX -->
@@ -179,7 +177,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 <?php include 'inc/footer.php'; ?>
 <!-- Bootstrap JS for modal support -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function() {
     $('#orderForm').on('submit', function(e) {
@@ -237,7 +235,8 @@ $(document).ready(function() {
             dataType: 'html',
             success: function(response) {
                 $('#viewOrderBody').html(response);
-                $('#viewOrderModal').modal('show');
+                var modal = new bootstrap.Modal(document.getElementById('viewOrderModal'));
+                modal.show();
             },
             error: function() {
                 alert('Failed to load order details.');
