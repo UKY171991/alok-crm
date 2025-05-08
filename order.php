@@ -6,31 +6,6 @@ include 'inc/db.php';
 
 // Fetch all orders for listing
 $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
-
-// Handle manual form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
-    $fields = [
-        'date','docket','location','destination','mode','no_of_pcs','pincode','content','dox_non_dox','material_value','fr_weight','valumatric','manual_weight','invoice_wt','round_off_weight','clinet_billing_value','credit_cust_amt','regular_cust_amt','customer_type','sender_detail','payment_status','sender_contact_no','address','adhaar_no','customer_attend_by','today_date','pending','td_delivery_status','td_delivery_date','t_receiver_name','receiver_contact_no','receiver_name_as_per_sendor','ref','complain_no_update','shipment_cost_by_other_mode','remarks','pod_status','pending_days'
-    ];
-    $values = [];
-    foreach ($fields as $f) {
-        $values[$f] = isset($_POST[$f]) ? $_POST[$f] : null;
-    }
-    $stmt = $conn->prepare("INSERT INTO orders (".implode(",", $fields).") VALUES (".str_repeat('?,', count($fields)-1)."?)");
-    $stmt->bind_param(
-        str_repeat('s', count($fields)),
-        ...array_values($values)
-    );
-    if ($stmt->execute()) {
-        $msg = "Order added successfully.";
-    } else {
-        $msg = "Error: " . $stmt->error;
-    }
-    $stmt->close();
-    // Refresh to avoid resubmission
-    echo '<script>window.location.href="order.php";</script>';
-    exit;
-}
 ?>
 <div class="content-wrapper">
     <section class="content-header">
@@ -44,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
     </section>
     <section class="content">
         <div class="container-fluid">
-            <?php if (!empty($msg)) { echo '<div class="alert alert-info">'.$msg.'</div>'; } ?>
             <div class="mb-3">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addOrderModal">Add Data</button>
                 <button class="btn btn-success" data-toggle="modal" data-target="#excelModal">Add by Excel</button>
@@ -104,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form method="post">
+                        <form id="orderForm">
                         <div class="modal-body">
                             <div class="row">
                                 <!-- All fields except 'l' -->
@@ -150,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" name="manual_submit" class="btn btn-primary">Add Order</button>
+                            <button type="submit" class="btn btn-primary">Add Order</button>
                         </div>
                         </form>
                     </div>
@@ -186,3 +160,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
 <!-- Bootstrap JS for modal support -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#orderForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: 'ajax/add_order.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if(response.success) {
+                    $('#addOrderModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(response.message || 'Error adding order.');
+                }
+            },
+            error: function() {
+                alert('AJAX error.');
+            }
+        });
+    });
+});
+</script>
