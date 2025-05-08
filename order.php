@@ -59,7 +59,11 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                                 <td><?php echo htmlspecialchars($row['content']); ?></td>
                                 <td><?php echo htmlspecialchars($row['sender_detail']); ?></td>
                                 <td><?php echo htmlspecialchars($row['t_receiver_name']); ?></td>
-                                <td><!-- Action buttons can go here --></td>
+                                <td>
+                                    <button class="btn btn-info btn-sm view-order" data-id="<?php echo $row['id']; ?>">View</button>
+                                    <button class="btn btn-warning btn-sm edit-order" data-id="<?php echo $row['id']; ?>">Edit</button>
+                                    <button class="btn btn-danger btn-sm delete-order" data-id="<?php echo $row['id']; ?>">Delete</button>
+                                </td>
                             </tr>
                         <?php endwhile; else: ?>
                             <tr><td colspan="12">No orders found.</td></tr>
@@ -206,6 +210,36 @@ $(document).ready(function() {
                 alert('AJAX error.');
             }
         });
+    });
+
+    $(document).on('click', '.view-order', function() {
+        var id = $(this).data('id');
+        // TODO: AJAX call to fetch and show order details in a modal
+    });
+    $(document).on('click', '.edit-order', function() {
+        var id = $(this).data('id');
+        // TODO: AJAX call to fetch order data and show in edit modal
+    });
+    $(document).on('click', '.delete-order', function() {
+        var id = $(this).data('id');
+        if(confirm('Are you sure you want to delete this order?')) {
+            $.ajax({
+                url: 'ajax/delete_order.php',
+                type: 'POST',
+                data: {id: id},
+                dataType: 'json',
+                success: function(response) {
+                    if(response.success) {
+                        location.reload();
+                    } else {
+                        alert(response.message || 'Error deleting order.');
+                    }
+                },
+                error: function() {
+                    alert('AJAX error.');
+                }
+            });
+        }
     });
 });
 </script>
