@@ -157,6 +157,22 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                     </div>
                 </div>
             </div>
+            <!-- View Order Modal -->
+            <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewOrderModalLabel">Order Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="viewOrderBody">
+                            <!-- Order details will be loaded here by AJAX -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </div>
@@ -214,8 +230,21 @@ $(document).ready(function() {
 
     $(document).on('click', '.view-order', function() {
         var id = $(this).data('id');
-        // TODO: AJAX call to fetch and show order details in a modal
+        $.ajax({
+            url: 'ajax/view_order.php',
+            type: 'POST',
+            data: {id: id},
+            dataType: 'html',
+            success: function(response) {
+                $('#viewOrderBody').html(response);
+                $('#viewOrderModal').modal('show');
+            },
+            error: function() {
+                alert('Failed to load order details.');
+            }
+        });
     });
+
     $(document).on('click', '.edit-order', function() {
         var id = $(this).data('id');
         // TODO: AJAX call to fetch order data and show in edit modal
