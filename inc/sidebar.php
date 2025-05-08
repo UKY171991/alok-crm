@@ -48,6 +48,13 @@
                         <p>Invoices</p>
                     </a>
                 </li>
+                <!-- Order -->
+                <li class="nav-item">
+                    <a href="order.php" class="nav-link">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>Order</p>
+                    </a>
+                </li>
                 <!-- Reports -->
                 <li class="nav-item">
                     <a href="reports.php" class="nav-link">
