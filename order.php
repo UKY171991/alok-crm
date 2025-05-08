@@ -3,9 +3,6 @@
 include 'inc/header.php';
 include 'inc/sidebar.php';
 include 'inc/db.php';
-
-// Fetch all orders for listing
-$order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 ?>
 <div class="content-wrapper bg-light min-vh-100">
     <section class="content-header">
@@ -27,50 +24,8 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                 <div class="card-header bg-white border-0 pb-0">
                     <h5 class="mb-0 fw-semibold text-secondary">Order List</h5>
                 </div>
-                <div class="card-body table-responsive">
-                    <table class="table table-hover table-bordered align-middle" id="orderTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Date</th>
-                                <th>Docket</th>
-                                <th>Location</th>
-                                <th>Destination</th>
-                                <th>Mode</th>
-                                <th>No of Pcs</th>
-                                <th>Pincode</th>
-                                <th>Content</th>
-                                <th>Sender</th>
-                                <th>Receiver</th>
-                                <th style="min-width:120px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php if ($order_result && $order_result->num_rows > 0):
-                            while($row = $order_result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo $row['id']; ?></td>
-                                <td><?php echo htmlspecialchars($row['date']); ?></td>
-                                <td><?php echo htmlspecialchars($row['docket']); ?></td>
-                                <td><?php echo htmlspecialchars($row['location']); ?></td>
-                                <td><?php echo htmlspecialchars($row['destination']); ?></td>
-                                <td><?php echo htmlspecialchars($row['mode']); ?></td>
-                                <td><?php echo htmlspecialchars($row['no_of_pcs']); ?></td>
-                                <td><?php echo htmlspecialchars($row['pincode']); ?></td>
-                                <td><?php echo htmlspecialchars($row['content']); ?></td>
-                                <td><?php echo htmlspecialchars($row['sender_detail']); ?></td>
-                                <td><?php echo htmlspecialchars($row['t_receiver_name']); ?></td>
-                                <td>
-                                    <button class="btn btn-info btn-sm view-order mb-1 w-100" data-id="<?php echo $row['id']; ?>"><i class="fas fa-eye"></i> View</button>
-                                    <button class="btn btn-warning btn-sm edit-order mb-1 w-100" data-id="<?php echo $row['id']; ?>"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-danger btn-sm delete-order w-100" data-id="<?php echo $row['id']; ?>"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>
-                        <?php endwhile; else: ?>
-                            <tr><td colspan="12" class="text-center text-muted">No orders found.</td></tr>
-                        <?php endif; ?>
-                        </tbody>
-                    </table>
+                <div class="card-body table-responsive" id="orderTableContainer">
+                    <!-- Table will be loaded here by AJAX -->
                 </div>
             </div>
             <!-- Add Order Modal -->
@@ -289,6 +244,26 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 $(document).ready(function() {
+    function loadOrders(page = 1) {
+        $.ajax({
+            url: 'ajax/fetch_orders.php',
+            type: 'GET',
+            data: {page: page},
+            success: function(html) {
+                $('#orderTableContainer').html(html);
+            },
+            error: function() {
+                $('#orderTableContainer').html('<div class="alert alert-danger">Failed to load orders.</div>');
+            }
+        });
+    }
+    loadOrders();
+    $(document).on('click', '.order-pagination .page-link', function(e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        if(page) loadOrders(page);
+    });
+
     $('#orderForm').on('submit', function(e) {
         e.preventDefault();
         var formData = $(this).serialize();
@@ -449,4 +424,6 @@ body, .content-wrapper { background: #f8fafc !important; }
 .table th, .table td { vertical-align: middle !important; }
 .btn { font-weight: 500; }
 .table thead th { background: #f1f3f6; color: #333; }
+.order-pagination .page-item.active .page-link { background: #007bff; color: #fff; border-color: #007bff; }
+.order-pagination .page-link { cursor:pointer; }
 </style>
