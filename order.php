@@ -171,6 +171,26 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                     </div>
                 </div>
             </div>
+            <!-- Edit Order Modal -->
+            <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editOrderModalLabel">Edit Order</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="editOrderForm">
+                        <div class="modal-body" id="editOrderBody">
+                            <!-- Edit form fields will be loaded here by AJAX -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </div>
@@ -246,8 +266,45 @@ $(document).ready(function() {
 
     $(document).on('click', '.edit-order', function() {
         var id = $(this).data('id');
-        // TODO: AJAX call to fetch order data and show in edit modal
+        $.ajax({
+            url: 'ajax/edit_order.php',
+            type: 'POST',
+            data: {id: id, action: 'fetch'},
+            dataType: 'html',
+            success: function(response) {
+                $('#editOrderBody').html(response);
+                var modal = new bootstrap.Modal(document.getElementById('editOrderModal'));
+                modal.show();
+            },
+            error: function() {
+                alert('Failed to load order for edit.');
+            }
+        });
     });
+
+    $('#editOrderForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: 'ajax/edit_order.php',
+            type: 'POST',
+            data: formData + '&action=update',
+            dataType: 'json',
+            success: function(response) {
+                if(response.success) {
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('editOrderModal'));
+                    modal.hide();
+                    location.reload();
+                } else {
+                    alert(response.message || 'Error updating order.');
+                }
+            },
+            error: function() {
+                alert('AJAX error.');
+            }
+        });
+    });
+
     $(document).on('click', '.delete-order', function() {
         var id = $(this).data('id');
         if(confirm('Are you sure you want to delete this order?')) {
