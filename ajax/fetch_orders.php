@@ -10,12 +10,13 @@ $totalRows = $totalResult ? intval($totalResult->fetch_assoc()['cnt']) : 0;
 $totalPages = ceil($totalRows / $limit);
 
 $result = $conn->query("SELECT * FROM orders ORDER BY id DESC LIMIT $limit OFFSET $offset");
+$srNo = $offset + 1;
 
 ?>
 <table class="table table-hover table-bordered align-middle">
     <thead class="table-light">
         <tr>
-            <th>ID</th>
+            <th>Sr. No.</th>
             <th>Date</th>
             <th>Docket</th>
             <th>Location</th>
@@ -33,7 +34,7 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC LIMIT $limit OFFSE
     <?php if ($result && $result->num_rows > 0):
         while($row = $result->fetch_assoc()): ?>
         <tr>
-            <td><?= $row['id'] ?></td>
+            <td><?= $srNo++ ?></td>
             <td><?= htmlspecialchars($row['date']) ?></td>
             <td><?= htmlspecialchars($row['docket']) ?></td>
             <td><?= htmlspecialchars($row['location']) ?></td>
