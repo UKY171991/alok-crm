@@ -140,7 +140,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form method="post" enctype="multipart/form-data" action="upload_orders.php">
+                        <form id="excelUploadForm" enctype="multipart/form-data">
                         <div class="modal-body">
                             <input type="file" name="excel_file" accept=".xls,.xlsx" required>
                             <small>Excel columns must match the order fields exactly.</small>
@@ -176,6 +176,30 @@ $(document).ready(function() {
                     location.reload();
                 } else {
                     alert(response.message || 'Error adding order.');
+                }
+            },
+            error: function() {
+                alert('AJAX error.');
+            }
+        });
+    });
+
+    $('#excelUploadForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            url: 'ajax/upload_orders.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(response) {
+                if(response.success) {
+                    $('#excelModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(response.message || 'Error uploading Excel.');
                 }
             },
             error: function() {
