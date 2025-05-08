@@ -59,15 +59,31 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC LIMIT $limit OFFSE
 <nav>
     <ul class="pagination order-pagination justify-content-center">
         <li class="page-item<?= $page == 1 ? ' disabled' : '' ?>">
+            <a class="page-link" data-page="1" href="#">First</a>
+        </li>
+        <li class="page-item<?= $page == 1 ? ' disabled' : '' ?>">
             <a class="page-link" data-page="<?= $page-1 ?>" href="#">Previous</a>
         </li>
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <li class="page-item<?= $i == $page ? ' active' : '' ?>">
-                <a class="page-link" data-page="<?= $i ?>" href="#"><?= $i ?></a>
-            </li>
-        <?php endfor; ?>
+        <?php
+        $range = 2; // how many pages to show around current
+        $start = max(1, $page - $range);
+        $end = min($totalPages, $page + $range);
+        if ($start > 1) {
+            echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+        for ($i = $start; $i <= $end; $i++) {
+            $active = $i == $page ? ' active' : '';
+            echo '<li class="page-item'.$active.'"><a class="page-link" data-page="'.$i.'" href="#">'.$i.'</a></li>';
+        }
+        if ($end < $totalPages) {
+            echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+        }
+        ?>
         <li class="page-item<?= $page == $totalPages ? ' disabled' : '' ?>">
             <a class="page-link" data-page="<?= $page+1 ?>" href="#">Next</a>
+        </li>
+        <li class="page-item<?= $page == $totalPages ? ' disabled' : '' ?>">
+            <a class="page-link" data-page="<?= $totalPages ?>" href="#">Last</a>
         </li>
     </ul>
 </nav>
