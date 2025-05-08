@@ -1,6 +1,7 @@
 <?php
 // order.php
 include 'inc/header.php';
+include 'inc/sidebar.php';
 include 'inc/db.php';
 
 // Handle manual form submission
