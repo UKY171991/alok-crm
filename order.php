@@ -7,7 +7,7 @@ include 'inc/db.php';
 // Handle manual form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
     $fields = [
-        'l','date','docket','location','destination','mode','no_of_pcs','pincode','content','dox_non_dox','material_value','fr_weight','valumatric','manual_weight','invoice_wt','round_off_weight','clinet_billing_value','credit_cust_amt','regular_cust_amt','customer_type','sender_detail','payment_status','sender_contact_no','address','adhaar_no','customer_attend_by','today_date','pending','td_delivery_status','td_delivery_date','t_receiver_name','receiver_contact_no','receiver_name_as_per_sendor','ref','complain_no_update','shipment_cost_by_other_mode','remarks','pod_status','pending_days'
+        'date','docket','location','destination','mode','no_of_pcs','pincode','content','dox_non_dox','material_value','fr_weight','valumatric','manual_weight','invoice_wt','round_off_weight','clinet_billing_value','credit_cust_amt','regular_cust_amt','customer_type','sender_detail','payment_status','sender_contact_no','address','adhaar_no','customer_attend_by','today_date','pending','td_delivery_status','td_delivery_date','t_receiver_name','receiver_contact_no','receiver_name_as_per_sendor','ref','complain_no_update','shipment_cost_by_other_mode','remarks','pod_status','pending_days'
     ];
     $values = [];
     foreach ($fields as $f) {
@@ -44,8 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['manual_submit'])) {
                 <div class="card-body">
                     <form method="post">
                         <div class="row">
-                            <!-- Example: Add all fields as input elements -->
-                            <div class="col-md-3 mb-2"><input type="text" name="l" class="form-control" placeholder="l"></div>
+                            <!-- All fields except 'l' -->
                             <div class="col-md-3 mb-2"><input type="date" name="date" class="form-control" placeholder="Date"></div>
                             <div class="col-md-3 mb-2"><input type="text" name="docket" class="form-control" placeholder="Docket"></div>
                             <div class="col-md-3 mb-2"><input type="text" name="location" class="form-control" placeholder="Location"></div>
