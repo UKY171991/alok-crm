@@ -7,28 +7,29 @@ include 'inc/db.php';
 // Fetch all orders for listing
 $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 ?>
-<div class="content-wrapper">
+<div class="content-wrapper bg-light min-vh-100">
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
-                    <h1>Order Page</h1>
+                    <h1 class="fw-bold text-primary">Order Page</h1>
+                </div>
+                <div class="col-sm-6 text-end">
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addOrderModal"><i class="fas fa-plus"></i> Add Data</button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#excelModal"><i class="fas fa-file-excel"></i> Add by Excel</button>
                 </div>
             </div>
         </div>
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="mb-3">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addOrderModal">Add Data</button>
-                <button class="btn btn-success" data-toggle="modal" data-target="#excelModal">Add by Excel</button>
-            </div>
-            <!-- Orders List Table -->
-            <div class="card">
-                <div class="card-header"><b>Order List</b></div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 pb-0">
+                    <h5 class="mb-0 fw-semibold text-secondary">Order List</h5>
+                </div>
                 <div class="card-body table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead>
+                    <table class="table table-hover table-bordered align-middle" id="orderTable">
+                        <thead class="table-light">
                             <tr>
                                 <th>ID</th>
                                 <th>Date</th>
@@ -41,7 +42,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                                 <th>Content</th>
                                 <th>Sender</th>
                                 <th>Receiver</th>
-                                <th>Action</th>
+                                <th style="min-width:120px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,13 +61,13 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                                 <td><?php echo htmlspecialchars($row['sender_detail']); ?></td>
                                 <td><?php echo htmlspecialchars($row['t_receiver_name']); ?></td>
                                 <td>
-                                    <button class="btn btn-info btn-sm view-order" data-id="<?php echo $row['id']; ?>">View</button>
-                                    <button class="btn btn-warning btn-sm edit-order" data-id="<?php echo $row['id']; ?>">Edit</button>
-                                    <button class="btn btn-danger btn-sm delete-order" data-id="<?php echo $row['id']; ?>">Delete</button>
+                                    <button class="btn btn-info btn-sm view-order mb-1 w-100" data-id="<?php echo $row['id']; ?>"><i class="fas fa-eye"></i> View</button>
+                                    <button class="btn btn-warning btn-sm edit-order mb-1 w-100" data-id="<?php echo $row['id']; ?>"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger btn-sm delete-order w-100" data-id="<?php echo $row['id']; ?>"><i class="fas fa-trash"></i> Delete</button>
                                 </td>
                             </tr>
                         <?php endwhile; else: ?>
-                            <tr><td colspan="12">No orders found.</td></tr>
+                            <tr><td colspan="12" class="text-center text-muted">No orders found.</td></tr>
                         <?php endif; ?>
                         </tbody>
                     </table>
@@ -330,3 +331,10 @@ $(document).ready(function() {
     });
 });
 </script>
+<style>
+body, .content-wrapper { background: #f8fafc !important; }
+.card { border-radius: 12px; }
+.table th, .table td { vertical-align: middle !important; }
+.btn { font-weight: 500; }
+.table thead th { background: #f1f3f6; color: #333; }
+</style>
