@@ -277,7 +277,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                             <!-- Edit form fields will be loaded here by AJAX -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                         </form>
@@ -296,12 +296,18 @@ $(document).ready(function() {
     $('#orderForm').on('submit', function(e) {
         e.preventDefault();
         var formData = $(this).serialize();
+        var $btn = $(this).find('button[type="submit"]');
+        var $closeBtn = $(this).find('button[data-dismiss="modal"], .btn-close');
+        $btn.prop('disabled', true).text('Processing...');
+        $closeBtn.prop('disabled', true);
         $.ajax({
             url: 'ajax/add_order.php',
             type: 'POST',
             data: formData,
             dataType: 'json',
             success: function(response) {
+                $btn.prop('disabled', false).text('Add Order');
+                $closeBtn.prop('disabled', false);
                 if(response.success) {
                     $('#addOrderModal').modal('hide');
                     location.reload();
@@ -310,6 +316,8 @@ $(document).ready(function() {
                 }
             },
             error: function() {
+                $btn.prop('disabled', false).text('Add Order');
+                $closeBtn.prop('disabled', false);
                 alert('AJAX error.');
             }
         });
@@ -318,6 +326,10 @@ $(document).ready(function() {
     $('#excelUploadForm').on('submit', function(e) {
         e.preventDefault();
         var formData = new FormData(this);
+        var $btn = $(this).find('button[type="submit"]');
+        var $closeBtn = $(this).find('button[data-dismiss="modal"], .btn-close');
+        $btn.prop('disabled', true).text('Processing...');
+        $closeBtn.prop('disabled', true);
         $.ajax({
             url: 'ajax/upload_orders.php',
             type: 'POST',
@@ -326,6 +338,8 @@ $(document).ready(function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
+                $btn.prop('disabled', false).text('Upload Excel');
+                $closeBtn.prop('disabled', false);
                 if(response.success) {
                     $('#excelModal').modal('hide');
                     location.reload();
@@ -334,6 +348,8 @@ $(document).ready(function() {
                 }
             },
             error: function() {
+                $btn.prop('disabled', false).text('Upload Excel');
+                $closeBtn.prop('disabled', false);
                 alert('AJAX error.');
             }
         });
@@ -378,12 +394,18 @@ $(document).ready(function() {
     $('#editOrderForm').on('submit', function(e) {
         e.preventDefault();
         var formData = $(this).serialize();
+        var $btn = $(this).find('button[type="submit"]');
+        var $closeBtn = $(this).find('button[data-dismiss="modal"], .btn-close');
+        $btn.prop('disabled', true).text('Processing...');
+        $closeBtn.prop('disabled', true);
         $.ajax({
             url: 'ajax/edit_order.php',
             type: 'POST',
             data: formData + '&action=update',
             dataType: 'json',
             success: function(response) {
+                $btn.prop('disabled', false).text('Save Changes');
+                $closeBtn.prop('disabled', false);
                 if(response.success) {
                     var modal = bootstrap.Modal.getInstance(document.getElementById('editOrderModal'));
                     modal.hide();
@@ -393,6 +415,8 @@ $(document).ready(function() {
                 }
             },
             error: function() {
+                $btn.prop('disabled', false).text('Save Changes');
+                $closeBtn.prop('disabled', false);
                 alert('AJAX error.');
             }
         });
