@@ -149,6 +149,98 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                         <div class="modal-body">
                             <input type="file" name="excel_file" accept=".xls,.xlsx" required>
                             <small>Excel columns must match the order fields exactly.</small>
+                            <hr>
+                            <div class="alert alert-info p-2">
+                                <b>Excel Example (first row as header):</b>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Docket</th>
+                                                <th>Location</th>
+                                                <th>Destination</th>
+                                                <th>Mode</th>
+                                                <th>No of Pcs</th>
+                                                <th>Pincode</th>
+                                                <th>Content</th>
+                                                <th>Dox / Non Dox</th>
+                                                <th>Material Value</th>
+                                                <th>FR Weight</th>
+                                                <th>Valumatric</th>
+                                                <th>Manual Weight</th>
+                                                <th>Invoice Wt</th>
+                                                <th>Round Off Weight</th>
+                                                <th>Clinet Billing Value</th>
+                                                <th>Credit Cust. Amt</th>
+                                                <th>Regular Cust. Amt</th>
+                                                <th>Customer Type</th>
+                                                <th>Sender Detail</th>
+                                                <th>PAYMENT STATUS</th>
+                                                <th>Sender Contact No</th>
+                                                <th>Address</th>
+                                                <th>Adhaar No</th>
+                                                <th>Customer Attend By</th>
+                                                <th>Today Date</th>
+                                                <th>pending</th>
+                                                <th>T /D Delivery Status</th>
+                                                <th>T / D Delivery Date</th>
+                                                <th>T  Receiver Name</th>
+                                                <th>Receiver Contact No</th>
+                                                <th>Receiver Name as per Sendor</th>
+                                                <th>Ref</th>
+                                                <th>Complain No Update</th>
+                                                <th>Shipment Cost by other Mode</th>
+                                                <th>Remarks</th>
+                                                <th>POD Status</th>
+                                                <th>Pending Days</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>2024-05-08</td>
+                                                <td>DKT123</td>
+                                                <td>Delhi</td>
+                                                <td>Mumbai</td>
+                                                <td>Air</td>
+                                                <td>10</td>
+                                                <td>110001</td>
+                                                <td>Documents</td>
+                                                <td>Dox</td>
+                                                <td>1000</td>
+                                                <td>5.5</td>
+                                                <td>6.0</td>
+                                                <td>5.8</td>
+                                                <td>6.0</td>
+                                                <td>6</td>
+                                                <td>1200</td>
+                                                <td>500</td>
+                                                <td>700</td>
+                                                <td>Regular</td>
+                                                <td>ABC Pvt Ltd</td>
+                                                <td>Paid</td>
+                                                <td>9876543210</td>
+                                                <td>123 Street, Delhi</td>
+                                                <td>123456789012</td>
+                                                <td>John Doe</td>
+                                                <td>2024-05-08</td>
+                                                <td>No</td>
+                                                <td>Delivered</td>
+                                                <td>2024-05-09</td>
+                                                <td>Jane Smith</td>
+                                                <td>9876543211</td>
+                                                <td>Jane Smith</td>
+                                                <td>REF001</td>
+                                                <td>None</td>
+                                                <td>200</td>
+                                                <td>OK</td>
+                                                <td>Received</td>
+                                                <td>0</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
