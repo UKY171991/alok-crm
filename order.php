@@ -315,7 +315,9 @@ $(document).ready(function() {
                 dataType: 'json',
                 success: function(response) {
                     if(response.success) {
-                        location.reload();
+                        // Remove the row from the table without reloading
+                        $('button.delete-order[data-id="'+id+'"]')
+                            .closest('tr').fadeOut(400, function() { $(this).remove(); });
                     } else {
                         alert(response.message || 'Error deleting order.');
                     }
