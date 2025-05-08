@@ -79,9 +79,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="addOrderModalLabel">Add Order</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="orderForm">
                         <div class="modal-body">
@@ -128,7 +126,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Add Order</button>
                         </div>
                         </form>
@@ -141,9 +139,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="excelModalLabel">Bulk Import Orders (Excel)</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="excelUploadForm" enctype="multipart/form-data">
                         <div class="modal-body">
@@ -243,7 +239,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-success">Upload Excel</button>
                         </div>
                         </form>
@@ -277,7 +273,7 @@ $order_result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                             <!-- Edit form fields will be loaded here by AJAX -->
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                         </form>
@@ -297,7 +293,7 @@ $(document).ready(function() {
         e.preventDefault();
         var formData = $(this).serialize();
         var $btn = $(this).find('button[type="submit"]');
-        var $closeBtn = $(this).find('button[data-dismiss="modal"], .btn-close');
+        var $closeBtn = $(this).find('button[data-bs-dismiss="modal"], .btn-close');
         $btn.prop('disabled', true).text('Processing...');
         $closeBtn.prop('disabled', true);
         $.ajax({
@@ -327,7 +323,7 @@ $(document).ready(function() {
         e.preventDefault();
         var formData = new FormData(this);
         var $btn = $(this).find('button[type="submit"]');
-        var $closeBtn = $(this).find('button[data-dismiss="modal"], .btn-close');
+        var $closeBtn = $(this).find('button[data-bs-dismiss="modal"], .btn-close');
         $btn.prop('disabled', true).text('Processing...');
         $closeBtn.prop('disabled', true);
         $.ajax({
@@ -395,7 +391,7 @@ $(document).ready(function() {
         e.preventDefault();
         var formData = $(this).serialize();
         var $btn = $(this).find('button[type="submit"]');
-        var $closeBtn = $(this).find('button[data-dismiss="modal"], .btn-close');
+        var $closeBtn = $(this).find('button[data-bs-dismiss="modal"], .btn-close');
         $btn.prop('disabled', true).text('Processing...');
         $closeBtn.prop('disabled', true);
         $.ajax({
