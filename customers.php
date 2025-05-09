@@ -190,60 +190,70 @@ $(function () {
                 var arr = JSON.parse(val);
                 if (Array.isArray(arr)) return arr;
             } catch (e) {}
-            // Remove brackets/quotes if present (e.g. ["foo"])
             if (typeof val === 'string' && val.startsWith("[") && val.endsWith("]")) {
                 val = val.replace(/^[\[]|[\]]$/g, '').replace(/['\"]/g, '');
             }
             return val.split(',').map(function(x){ return x.trim(); });
         }
-
         let destinations = parseField($(this).data("destination"));
         let parcelTypes = parseField($(this).data("parcel_type"));
         let weights = parseField($(this).data("weight"));
         let prices = parseField($(this).data("price"));
-
-        // Ensure all arrays have the same length by truncating to the shortest array
         const minLength = Math.min(destinations.length, parcelTypes.length, weights.length, prices.length);
         destinations = destinations.slice(0, minLength);
         parcelTypes = parcelTypes.slice(0, minLength);
         weights = weights.slice(0, minLength);
         prices = prices.slice(0, minLength);
 
-        parcelTypes.forEach((parcelType, index) => {
-            const newRow = `
-                <tr>
-                    <td>
-                        <select name="destination[]" class="form-control" required>
-                            <option value="${destinations[index]}" selected>${destinations[index]}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="parcel_type[]" class="form-control" required>
-                            <option value="Document & Light Parcel" ${parcelType === 'Document & Light Parcel' ? 'selected' : ''}>Document & Light Parcel</option>
-                            <option value="Premium" ${parcelType === 'Premium' ? 'selected' : ''}>Premium</option>
-                            <option value="Bulk Load Parcel" ${parcelType === 'Bulk Load Parcel' ? 'selected' : ''}>Bulk Load Parcel</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="weight[]" class="form-control weight-select" required>
-                            <option value="">Select Weight</option>
-                            <option value="Upto 100 gm" ${weights[index] === 'Upto 100 gm' ? 'selected' : ''}>Upto 100 gm</option>
-                            <option value="Upto 500 gm" ${weights[index] === 'Upto 500 gm' ? 'selected' : ''}>Upto 500 gm</option>
-                            <option value="Addl 500 gm" ${weights[index] === 'Addl 500 gm' ? 'selected' : ''}>Addl 500 gm</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" name="price[]" class="form-control" value="${prices[index]}" required>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger remove-row">Remove</button>
-                    </td>
-                </tr>
-            `;
-            $("#multiOptionsTable tbody").append(newRow);
+        // Load destination options first, then build rows
+        $.getJSON("fetch_destinations.php?mode=json", function (data) {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            const options = data.map(destination => `<option value="${destination.name}">${destination.name}</option>`).join("");
+            for (let index = 0; index < minLength; index++) {
+                const destVal = destinations[index] || "";
+                const parcelType = parcelTypes[index] || "";
+                const weight = weights[index] || "";
+                const price = prices[index] || "";
+                const newRow = `
+                    <tr>
+                        <td>
+                            <select name="destination[]" class="form-control" required>
+                                <option value="">Select Destination</option>
+                                ${options}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="parcel_type[]" class="form-control" required>
+                                <option value="Document & Light Parcel" ${parcelType === 'Document & Light Parcel' ? 'selected' : ''}>Document & Light Parcel</option>
+                                <option value="Premium" ${parcelType === 'Premium' ? 'selected' : ''}>Premium</option>
+                                <option value="Bulk Load Parcel" ${parcelType === 'Bulk Load Parcel' ? 'selected' : ''}>Bulk Load Parcel</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="weight[]" class="form-control weight-select" required>
+                                <option value="">Select Weight</option>
+                                <option value="Upto 100 gm" ${weight === 'Upto 100 gm' ? 'selected' : ''}>Upto 100 gm</option>
+                                <option value="Upto 500 gm" ${weight === 'Upto 500 gm' ? 'selected' : ''}>Upto 500 gm</option>
+                                <option value="Addl 500 gm" ${weight === 'Addl 500 gm' ? 'selected' : ''}>Addl 500 gm</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name="price[]" class="form-control" value="${price}" required>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-row">Remove</button>
+                        </td>
+                    </tr>
+                `;
+                $("#multiOptionsTable tbody").append(newRow);
+                // Set the selected destination value
+                $("#multiOptionsTable tbody tr:last select[name='destination[]']").val(destVal);
+            }
+            loadDestinationsForAllRows();
         });
-
-        loadDestinationsForAllRows();
     });
 
     $(document).on("click", ".delete-btn", function () {
