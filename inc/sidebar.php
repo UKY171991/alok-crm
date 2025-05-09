@@ -50,7 +50,7 @@
                 </li>
                 <!-- Order -->
                 <li class="nav-item">
-                    <a href="order.php" class="nav-link">
+                    <a href="order.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'order.php') echo ' active'; ?>">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>Order</p>
                     </a>
