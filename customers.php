@@ -11,40 +11,74 @@ include 'inc/sidebar.php';
 
 <main class="content-wrapper">
     <div class="container-fluid p-3">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0">Customer Management</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Add Customer</button>
-        </div>
+        <h2>Customer Management</h2>
 
-        <!-- Add Customer Modal -->
-        <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Shared Form -->
+        <div class="card mb-4">
+            <div class="card-header"><h3 class="card-title" id="formTitle">Add New Customer</h3></div>
+            <div class="card-body">
+                <form id="customerForm">
+                    <input type="hidden" name="id" id="customer_id">
+                    <div class="row">
+                        <div class="col-md-6"><label>Name</label><input type="text" name="name" id="name" class="form-control" required></div>
+                        <div class="col-md-6"><label>Address</label><textarea name="address" id="address" class="form-control" rows="2" required></textarea></div>
+                        <div class="col-md-4"><label>Phone</label><input type="text" name="phone" id="phone" class="form-control" required></div>
+                        <div class="col-md-4"><label>Email</label><input type="email" name="email" id="email" class="form-control"></div>
+                        <div class="col-md-4"><label>GST No</label><input type="text" name="gst_no" id="gst_no" class="form-control"></div>
+                        <div class="col-md-4"><label>HSN Code</label><input type="text" name="hsn_code" id="hsn_code" class="form-control"></div>
+                        <div class="col-md-4"><label>PAN No</label><input type="text" name="pan_no" id="pan_no" class="form-control"></div>
+                        <div class="col-md-4"><label>CIN No</label><input type="text" name="cin_no" id="cin_no" class="form-control"></div>
+                        <div class="col-md-4"><label>Aadhaar No</label><input type="text" name="aadhaar_no" id="aadhaar_no" class="form-control"></div>
+                        <div class="col-md-12">
+                            <label>Destinations, Parcel Types, and Weights</label>
+                            <table class="table table-bordered" id="multiOptionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Destination</th>
+                                        <th>Parcel Type</th>
+                                        <th>Weight</th>
+                                        <th>Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select name="destination[]" class="form-control" required>
+                                                <option value="">Select Destination</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="parcel_type[]" class="form-control" required>
+                                                <option value="">Select Parcel Type</option>
+                                                <option value="Document & Light Parcel">Document & Light Parcel</option>
+                                                <option value="Premium">Premium</option>
+                                                <option value="Bulk Load Parcel">Bulk Load Parcel</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="weight[]" class="form-control weight-select" required>
+                                                <option value="">Select Weight</option>
+                                                <option value="Upto 100 gm">Upto 100 gm</option>
+                                                <option value="Upto 500 gm">Upto 500 gm</option>
+                                                <option value="Addl 500 gm">Addl 500 gm</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="price[]" class="form-control" placeholder="Enter price (e.g., 100)" required>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger remove-row">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-success" id="addRow">Add More</button>
+                        </div>
                     </div>
-                    <form id="customerFormModal">
-                        <div class="modal-body">
-                            <input type="hidden" name="id" id="customer_id_modal">
-                            <div class="row">
-                                <div class="col-md-6"><label>Name</label><input type="text" name="name" id="name_modal" class="form-control" required></div>
-                                <div class="col-md-6"><label>Address</label><textarea name="address" id="address_modal" class="form-control" rows="2" required></textarea></div>
-                                <div class="col-md-4"><label>Phone</label><input type="text" name="phone" id="phone_modal" class="form-control" required></div>
-                                <div class="col-md-4"><label>Email</label><input type="email" name="email" id="email_modal" class="form-control"></div>
-                                <div class="col-md-4"><label>GST No</label><input type="text" name="gst_no" id="gst_no_modal" class="form-control"></div>
-                                <div class="col-md-4"><label>HSN Code</label><input type="text" name="hsn_code" id="hsn_code_modal" class="form-control"></div>
-                                <div class="col-md-4"><label>PAN No</label><input type="text" name="pan_no" id="pan_no_modal" class="form-control"></div>
-                                <div class="col-md-4"><label>CIN No</label><input type="text" name="cin_no" id="cin_no_modal" class="form-control"></div>
-                                <div class="col-md-4"><label>Aadhaar No</label><input type="text" name="aadhaar_no" id="aadhaar_no_modal" class="form-control"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Customer</button>
-                        </div>
-                    </form>
-                </div>
+                    <button type="submit" class="btn btn-primary mt-3" id="submitBtn">Add Customer</button>
+                </form>
+                <div id="message" class="mt-2"></div>
             </div>
         </div>
 
@@ -123,6 +157,7 @@ include 'inc/sidebar.php';
     }
 </style>
 
+
 <script>
 $(function () {
     function loadCustomers() {
@@ -133,14 +168,14 @@ $(function () {
 
     loadCustomers();
 
-    // Modal form AJAX submit
-    $('#customerFormModal').on('submit', function(e) {
+    $("#customerForm").on("submit", function (e) {
         e.preventDefault();
-        var $btn = $(this).find('button[type="submit"]');
-        $btn.prop('disabled', true).text('Processing...');
-        $.post('save_customer.php', $(this).serialize(), function(res) {
-            $btn.prop('disabled', false).text('Add Customer');
-            $('#addCustomerModal').modal('hide');
+        $.post("save_customer.php", $(this).serialize(), function (res) {
+            $("#message").html(res);
+            $("#customerForm")[0].reset();
+            $("#formTitle").text("Add New Customer");
+            $("#submitBtn").text("Add Customer");
+            $("#customer_id").val('');
             loadCustomers();
         });
     });
