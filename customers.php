@@ -194,7 +194,7 @@ $(function () {
                 val = val.replace(/^[\[]|[\]]$/g, '').replace(/['\"]/g, '');
             }
             if (!val) return [];
-            // Support both comma and newline separated values, but prefer comma if both present
+            // Prefer splitting by comma, then newline
             if (val.indexOf(',') !== -1) {
                 return val.split(',').map(function(x){ return x.trim(); }).filter(Boolean);
             }
@@ -207,8 +207,8 @@ $(function () {
         let parcelTypes = parseField($(this).data("parcel_type"));
         let weights = parseField($(this).data("weight"));
         let prices = parseField($(this).data("price"));
+        // Only show rows where at least one field is not empty
         const maxLength = Math.max(destinations.length, parcelTypes.length, weights.length, prices.length);
-        // Pad arrays to maxLength with empty strings
         destinations = destinations.concat(Array(maxLength - destinations.length).fill(""));
         parcelTypes = parcelTypes.concat(Array(maxLength - parcelTypes.length).fill(""));
         weights = weights.concat(Array(maxLength - weights.length).fill(""));
@@ -221,52 +221,15 @@ $(function () {
                 return;
             }
             const options = data.map(destination => `<option value="${destination.name}">${destination.name}</option>`).join("");
-            if (maxLength === 0) {
-                // If no rows, add one empty row
-                const newRow = `
-                    <tr>
-                        <td>
-                            <select name="destination[]" class="form-control" required>
-                                <option value="">Select Destination</option>
-                                ${options}
-                            </select>
-                        </td>
-                        <td>
-                            <select name="parcel_type[]" class="form-control" required>
-                                <option value="">Select Parcel Type</option>
-                                <option value="Document & Light Parcel">Document & Light Parcel</option>
-                                <option value="Premium">Premium</option>
-                                <option value="Bulk Load Parcel">Bulk Load Parcel</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="weight[]" class="form-control weight-select" required>
-                                <option value="">Select Weight</option>
-                                <option value="Upto 100 gm">Upto 100 gm</option>
-                                <option value="Upto 500 gm">Upto 500 gm</option>
-                                <option value="Addl 500 gm">Addl 500 gm</option>
-                                <option value="Up to 10 kg (Surface)">Up to 10 kg (Surface)</option>
-                                <option value="10 kg - 50 kg (Surface)">10 kg - 50 kg (Surface)</option>
-                                <option value="Above 50 kg (Surface)">Above 50 kg (Surface)</option>
-                                <option value="Up to 10 kg (Air)">Up to 10 kg (Air)</option>
-                                <option value="10 kg - Above (Air)">10 kg - Above (Air)</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" name="price[]" class="form-control" value="" required>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger remove-row">Remove</button>
-                        </td>
-                    </tr>
-                `;
-                $("#multiOptionsTable tbody").append(newRow);
-            } else {
-                for (let index = 0; index < maxLength; index++) {
-                    const destVal = destinations[index] || "";
-                    const parcelType = parcelTypes[index] || "";
-                    const weight = weights[index] || "";
-                    const price = prices[index] || "";
+            let anyRow = false;
+            for (let index = 0; index < maxLength; index++) {
+                const destVal = destinations[index] || "";
+                const parcelType = parcelTypes[index] || "";
+                const weight = weights[index] || "";
+                const price = prices[index] || "";
+                // Only add row if at least one field is not empty
+                if (destVal || parcelType || weight || price) {
+                    anyRow = true;
                     const newRow = `
                         <tr>
                             <td>
@@ -313,6 +276,47 @@ $(function () {
                         $lastRow.find("select[name='weight[]']").val(weight);
                     }, 10);
                 }
+            }
+            // If no rows, add one empty row
+            if (!anyRow) {
+                const newRow = `
+                    <tr>
+                        <td>
+                            <select name="destination[]" class="form-control" required>
+                                <option value="">Select Destination</option>
+                                ${options}
+                            </select>
+                        </td>
+                        <td>
+                            <select name="parcel_type[]" class="form-control" required>
+                                <option value="">Select Parcel Type</option>
+                                <option value="Document & Light Parcel">Document & Light Parcel</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Bulk Load Parcel">Bulk Load Parcel</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="weight[]" class="form-control weight-select" required>
+                                <option value="">Select Weight</option>
+                                <option value="Upto 100 gm">Upto 100 gm</option>
+                                <option value="Upto 500 gm">Upto 500 gm</option>
+                                <option value="Addl 500 gm">Addl 500 gm</option>
+                                <option value="Up to 10 kg (Surface)">Up to 10 kg (Surface)</option>
+                                <option value="10 kg - 50 kg (Surface)">10 kg - 50 kg (Surface)</option>
+                                <option value="Above 50 kg (Surface)">Above 50 kg (Surface)</option>
+                                <option value="Up to 10 kg (Air)">Up to 10 kg (Air)</option>
+                                <option value="10 kg - Above (Air)">10 kg - Above (Air)</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name="price[]" class="form-control" value="" required>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-row">Remove</button>
+                        </td>
+                    </tr>
+                `;
+                $("#multiOptionsTable tbody").append(newRow);
             }
             loadDestinationsForAllRows();
         });
