@@ -194,12 +194,12 @@ $(function () {
                 val = val.replace(/^[\[]|[\]]$/g, '').replace(/['\"]/g, '');
             }
             if (!val) return [];
-            // Support both comma and newline separated values
+            // Support both comma and newline separated values, but prefer comma if both present
+            if (val.indexOf(',') !== -1) {
+                return val.split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+            }
             if (val.indexOf('\n') !== -1) {
                 return val.split(/\r?\n/).map(function(x){ return x.trim(); }).filter(Boolean);
-            }
-            if (val.indexOf(',') !== -1) {
-                return val.split(',').map(function(x){ return x.trim(); });
             }
             return [val];
         }
@@ -207,11 +207,12 @@ $(function () {
         let parcelTypes = parseField($(this).data("parcel_type"));
         let weights = parseField($(this).data("weight"));
         let prices = parseField($(this).data("price"));
-        const minLength = Math.min(destinations.length, parcelTypes.length, weights.length, prices.length);
-        destinations = destinations.slice(0, minLength);
-        parcelTypes = parcelTypes.slice(0, minLength);
-        weights = weights.slice(0, minLength);
-        prices = prices.slice(0, minLength);
+        const maxLength = Math.max(destinations.length, parcelTypes.length, weights.length, prices.length);
+        // Pad arrays to maxLength with empty strings
+        destinations = destinations.concat(Array(maxLength - destinations.length).fill(""));
+        parcelTypes = parcelTypes.concat(Array(maxLength - parcelTypes.length).fill(""));
+        weights = weights.concat(Array(maxLength - weights.length).fill(""));
+        prices = prices.concat(Array(maxLength - prices.length).fill(""));
 
         // Load destination options first, then build rows
         $.getJSON("fetch_destinations.php?mode=json", function (data) {
@@ -220,7 +221,7 @@ $(function () {
                 return;
             }
             const options = data.map(destination => `<option value="${destination.name}">${destination.name}</option>`).join("");
-            if (minLength === 0) {
+            if (maxLength === 0) {
                 // If no rows, add one empty row
                 const newRow = `
                     <tr>
@@ -261,7 +262,7 @@ $(function () {
                 `;
                 $("#multiOptionsTable tbody").append(newRow);
             } else {
-                for (let index = 0; index < minLength; index++) {
+                for (let index = 0; index < maxLength; index++) {
                     const destVal = destinations[index] || "";
                     const parcelType = parcelTypes[index] || "";
                     const weight = weights[index] || "";
