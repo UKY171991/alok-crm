@@ -193,11 +193,15 @@ $(function () {
             if (typeof val === 'string' && val.startsWith("[") && val.endsWith("]")) {
                 val = val.replace(/^[\[]|[\]]$/g, '').replace(/['\"]/g, '');
             }
-            // If still empty, return []
             if (!val) return [];
-            // If only one value, return as array
-            if (val.indexOf(',') === -1) return [val];
-            return val.split(',').map(function(x){ return x.trim(); });
+            // Support both comma and newline separated values
+            if (val.indexOf('\n') !== -1) {
+                return val.split(/\r?\n/).map(function(x){ return x.trim(); }).filter(Boolean);
+            }
+            if (val.indexOf(',') !== -1) {
+                return val.split(',').map(function(x){ return x.trim(); });
+            }
+            return [val];
         }
         let destinations = parseField($(this).data("destination"));
         let parcelTypes = parseField($(this).data("parcel_type"));
