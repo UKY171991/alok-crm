@@ -162,10 +162,10 @@ $(function () {
     });
 
     $(document).on("click", ".edit-btn", function () {
-        console.log("Raw data-destination:", $(this).data("destination"));
-        console.log("Raw data-parcel_type:", $(this).data("parcel_type"));
-        console.log("Raw data-weight:", $(this).data("weight"));
-        console.log("Raw data-price:", $(this).data("price"));
+        console.log("Raw data-destination:", $(this).attr("data-destination"));
+        console.log("Raw data-parcel_type:", $(this).attr("data-parcel_type"));
+        console.log("Raw data-weight:", $(this).attr("data-weight"));
+        console.log("Raw data-price:", $(this).attr("data-price"));
 
         $("#formTitle").text("Update Customer");
         $("#submitBtn").text("Update Customer");
@@ -203,10 +203,10 @@ $(function () {
             }
             return [val];
         }
-        let destinations = parseField($(this).data("destination"));
-        let parcelTypes = parseField($(this).data("parcel_type"));
-        let weights = parseField($(this).data("weight"));
-        let prices = parseField($(this).data("price"));
+        let destinations = parseField($(this).attr("data-destination"));
+        let parcelTypes = parseField($(this).attr("data-parcel_type"));
+        let weights = parseField($(this).attr("data-weight"));
+        let prices = parseField($(this).attr("data-price"));
         // Only show rows where at least one field is not empty
         const maxLength = Math.max(destinations.length, parcelTypes.length, weights.length, prices.length);
         destinations = destinations.concat(Array(maxLength - destinations.length).fill(""));
