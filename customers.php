@@ -90,7 +90,6 @@ include 'inc/sidebar.php';
                     <table class="table table-bordered table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th>ID</th>
                                 <th>Name</th>
                                 <th>Phone</th>
                                 <th>Email</th>
@@ -104,13 +103,12 @@ include 'inc/sidebar.php';
                             $result = mysqli_query($conn, $query);
                             while ($row = mysqli_fetch_assoc($result)) {
                                 echo "<tr>";
-                                echo "<td>{$row['id']}</td>";
                                 echo "<td>{$row['name']}</td>";
                                 echo "<td>{$row['phone']}</td>";
                                 echo "<td>{$row['email']}</td>";
                                 echo "<td>{$row['gst_no']}</td>";
                                 echo "<td>";
-                                echo "<button type='button' class='btn btn-info view-details-btn' data-id='{$row['id']}'>View Details</button> ";
+                                echo "<button type='button' class='btn btn-info view-details-btn' data-id='{$row['id']}'>View</button> ";
                                 echo "<button type='button' class='btn btn-warning edit-btn' data-id='{$row['id']}' data-name='{$row['name']}' data-address='{$row['address']}' data-phone='{$row['phone']}' data-email='{$row['email']}' data-gst='{$row['gst_no']}' data-hsn='{$row['hsn_code']}' data-pan='{$row['pan_no']}' data-cin='{$row['cin_no']}' data-aadhaar='{$row['aadhaar_no']}' data-destination='{$row['destination']}' data-parcel_type='{$row['parcel_type']}' data-weight='{$row['weight']}' data-price='{$row['price']}'>Edit</button> ";
                                 echo "<button type='button' class='btn btn-danger delete-btn' data-id='{$row['id']}'>Delete</button>";
                                 echo "</td>";
