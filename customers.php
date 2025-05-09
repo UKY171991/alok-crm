@@ -227,17 +227,23 @@ $(function () {
                         </td>
                         <td>
                             <select name="parcel_type[]" class="form-control" required>
-                                <option value="Document & Light Parcel" ${parcelType === 'Document & Light Parcel' ? 'selected' : ''}>Document & Light Parcel</option>
-                                <option value="Premium" ${parcelType === 'Premium' ? 'selected' : ''}>Premium</option>
-                                <option value="Bulk Load Parcel" ${parcelType === 'Bulk Load Parcel' ? 'selected' : ''}>Bulk Load Parcel</option>
+                                <option value="">Select Parcel Type</option>
+                                <option value="Document & Light Parcel">Document & Light Parcel</option>
+                                <option value="Premium">Premium</option>
+                                <option value="Bulk Load Parcel">Bulk Load Parcel</option>
                             </select>
                         </td>
                         <td>
                             <select name="weight[]" class="form-control weight-select" required>
                                 <option value="">Select Weight</option>
-                                <option value="Upto 100 gm" ${weight === 'Upto 100 gm' ? 'selected' : ''}>Upto 100 gm</option>
-                                <option value="Upto 500 gm" ${weight === 'Upto 500 gm' ? 'selected' : ''}>Upto 500 gm</option>
-                                <option value="Addl 500 gm" ${weight === 'Addl 500 gm' ? 'selected' : ''}>Addl 500 gm</option>
+                                <option value="Upto 100 gm">Upto 100 gm</option>
+                                <option value="Upto 500 gm">Upto 500 gm</option>
+                                <option value="Addl 500 gm">Addl 500 gm</option>
+                                <option value="Up to 10 kg (Surface)">Up to 10 kg (Surface)</option>
+                                <option value="10 kg - 50 kg (Surface)">10 kg - 50 kg (Surface)</option>
+                                <option value="Above 50 kg (Surface)">Above 50 kg (Surface)</option>
+                                <option value="Up to 10 kg (Air)">Up to 10 kg (Air)</option>
+                                <option value="10 kg - Above (Air)">10 kg - Above (Air)</option>
                             </select>
                         </td>
                         <td>
@@ -249,8 +255,13 @@ $(function () {
                     </tr>
                 `;
                 $("#multiOptionsTable tbody").append(newRow);
-                // Set the selected destination value
-                $("#multiOptionsTable tbody tr:last select[name='destination[]']").val(destVal);
+                // Set the selected values
+                const $lastRow = $("#multiOptionsTable tbody tr:last");
+                $lastRow.find("select[name='destination[]']").val(destVal);
+                $lastRow.find("select[name='parcel_type[]']").val(parcelType).trigger('change');
+                setTimeout(function() {
+                    $lastRow.find("select[name='weight[]']").val(weight);
+                }, 10);
             }
             loadDestinationsForAllRows();
         });
