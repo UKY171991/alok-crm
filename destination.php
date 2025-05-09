@@ -15,19 +15,32 @@ include 'inc/sidebar.php';
     <div class='container-fluid p-3'>
         <h2>Destinations Management</h2>
 
-        <!-- Add New Destination Form -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title">Add New Destination</h3>
-            </div>
-            <div class="card-body">
-                <form id="addDestinationForm">
-                    <div class="form-group">
-                        <label for="name">Destination Name</label>
-                        <input type="text" name="name" id="name" class="form-control" required>
+        <!-- Button to open Add Destination Modal -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
+            Add Destination
+        </button>
+
+        <!-- Add Destination Modal -->
+        <div class="modal fade" id="addDestinationModal" tabindex="-1" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addDestinationModalLabel">Add New Destination</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Destination</button>
-                </form>
+                    <form id="addDestinationForm">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Destination Name</label>
+                                <input type="text" name="name" id="name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Destination</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -99,15 +112,22 @@ include 'inc/sidebar.php';
         $('#addDestinationForm').on('submit', function (e) {
             e.preventDefault();
             const name = $('#name').val();
-
+            const $btn = $(this).find('button[type="submit"]');
+            $btn.prop('disabled', true).text('Processing...');
             $.ajax({
                 url: 'add_destination.php',
                 method: 'POST',
                 data: { name: name },
                 success: function (response) {
-                    $('#name').val(''); // Clear the input field
-                    loadDestinations(); // Reload the destinations
-                    alert(response); // Show success message
+                    $('#name').val('');
+                    $('#addDestinationModal').modal('hide');
+                    $btn.prop('disabled', false).text('Add Destination');
+                    loadDestinations();
+                    alert(response);
+                },
+                error: function() {
+                    $btn.prop('disabled', false).text('Add Destination');
+                    alert('AJAX error.');
                 }
             });
         });
