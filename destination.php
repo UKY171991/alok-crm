@@ -13,12 +13,12 @@ include 'inc/sidebar.php';
 ?>
 <main class='content-wrapper'>
     <div class='container-fluid p-3'>
-        <h2>Destinations Management</h2>
-
-        <!-- Button to open Add Destination Modal -->
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
-            Add Destination
-        </button>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Destinations Management</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
+                Add Destination
+            </button>
+        </div>
 
         <!-- Add Destination Modal -->
         <div class="modal fade" id="addDestinationModal" tabindex="-1" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
