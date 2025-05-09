@@ -22,28 +22,28 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Dashboard -->
                 <li class="nav-item">
-                    <a href="index.php" class="nav-link">
+                    <a href="index.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'index.php') echo ' active'; ?>">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
                 <!-- Destinations -->
                 <li class="nav-item">
-                    <a href="destination.php" class="nav-link">
+                    <a href="destination.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'destination.php') echo ' active'; ?>">
                         <i class="nav-icon fas fa-map-marker-alt"></i>
                         <p>Destinations</p>
                     </a>
                 </li>
                 <!-- Customers -->
                 <li class="nav-item">
-                    <a href="customers.php" class="nav-link">
+                    <a href="customers.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'customers.php') echo ' active'; ?>">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Customers</p>
                     </a>
                 </li>
                 <!-- Invoices -->
                 <li class="nav-item">
-                    <a href="invoices.php" class="nav-link">
+                    <a href="invoices.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'invoices.php') echo ' active'; ?>">
                         <i class="nav-icon fas fa-file-invoice"></i>
                         <p>Invoices</p>
                     </a>
@@ -57,7 +57,7 @@
                 </li>
                 <!-- Reports -->
                 <li class="nav-item">
-                    <a href="reports.php" class="nav-link">
+                    <a href="reports.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'reports.php') echo ' active'; ?>">
                         <i class="nav-icon fas fa-chart-bar"></i>
                         <p>Reports</p>
                     </a>
