@@ -230,6 +230,7 @@ $(function () {
                 // Only add row if at least one field is not empty
                 if (destVal || parcelType || weight || price) {
                     anyRow = true;
+                    const formattedPrice = price.replace(/\s+/g, '').replace(/,+$/, '');
                     const newRow = `
                         <tr>
                             <td>
@@ -260,7 +261,7 @@ $(function () {
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="price[]" class="form-control" value="${price}" required>
+                                <input type="text" name="price[]" class="form-control" value="${formattedPrice}" required>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger remove-row">Remove</button>
