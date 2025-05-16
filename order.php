@@ -34,7 +34,9 @@ include 'inc/db.php';
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="addOrderModalLabel">Add Order</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">+</span>
+                            </button>
                         </div>
                         <form id="orderForm">
                         <div class="modal-body">
@@ -94,7 +96,9 @@ include 'inc/db.php';
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="excelModalLabel">Bulk Import Orders (Excel)</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">+</span>
+                            </button>
                         </div>
                         <form id="excelUploadForm" enctype="multipart/form-data">
                         <div class="modal-body">
@@ -207,7 +211,9 @@ include 'inc/db.php';
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="viewOrderModalLabel">Order Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">+</span>
+                            </button>
                         </div>
                         <div class="modal-body" id="viewOrderBody">
                             <!-- Order details will be loaded here by AJAX -->
@@ -221,7 +227,9 @@ include 'inc/db.php';
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editOrderModalLabel">Edit Order</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">+</span>
+                            </button>
                         </div>
                         <form id="editOrderForm">
                         <div class="modal-body" id="editOrderBody">

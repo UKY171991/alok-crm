@@ -13,6 +13,12 @@ include 'inc/sidebar.php';
 ?>
 <main class='content-wrapper'>
     <div class='container-fluid p-3'>
+        <div id="adminlte-alert" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+            <span id="adminlte-alert-message"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">+</span>
+            </button>
+        </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="mb-0">Destinations Management</h2>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
@@ -26,7 +32,9 @@ include 'inc/sidebar.php';
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addDestinationModalLabel">Add New Destination</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">+</span>
+                        </button>
                     </div>
                     <form id="addDestinationForm">
                         <div class="modal-body">
@@ -71,7 +79,9 @@ include 'inc/sidebar.php';
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editDestinationModalLabel">Edit Destination</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">+</span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <form id="editDestinationForm">
@@ -105,6 +115,19 @@ include 'inc/sidebar.php';
             });
         }
 
+        // Function to show AdminLTE alert
+        function showAdminLTEAlert(message, type = 'success') {
+            const alertDiv = $('#adminlte-alert');
+            alertDiv.removeClass('alert-success alert-danger alert-warning alert-info d-none')
+                .addClass('alert-' + type)
+                .addClass('show');
+            $('#adminlte-alert-message').text(message);
+            alertDiv.removeClass('d-none');
+            setTimeout(() => {
+                alertDiv.alert('close');
+            }, 3000);
+        }
+
         // Load destinations on page load
         loadDestinations();
 
@@ -123,11 +146,11 @@ include 'inc/sidebar.php';
                     $('#addDestinationModal').modal('hide');
                     $btn.prop('disabled', false).text('Add Destination');
                     loadDestinations();
-                    alert(response);
+                    showAdminLTEAlert(response, 'success');
                 },
                 error: function() {
                     $btn.prop('disabled', false).text('Add Destination');
-                    alert('AJAX error.');
+                    showAdminLTEAlert('AJAX error.', 'danger');
                 }
             });
         });
@@ -142,7 +165,10 @@ include 'inc/sidebar.php';
                     data: { id: id },
                     success: function (response) {
                         loadDestinations(); // Reload the destinations
-                        alert(response); // Show success message
+                        showAdminLTEAlert(response, 'success'); // Show success message
+                    },
+                    error: function() {
+                        showAdminLTEAlert('AJAX error.', 'danger');
                     }
                 });
             }
@@ -177,10 +203,10 @@ include 'inc/sidebar.php';
                     console.log("Response:", response); // Debugging
                     $('#editDestinationModal').modal('hide'); // Hide the modal
                     loadDestinations(); // Reload the destinations
-                    alert(response); // Show success message
+                    showAdminLTEAlert(response, 'success'); // Show success message
                 },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error:", error); // Debugging
+                error: function () {
+                    showAdminLTEAlert('AJAX error.', 'danger');
                 }
             });
         });

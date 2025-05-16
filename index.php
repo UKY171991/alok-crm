@@ -29,6 +29,10 @@ $stats['revenue'] = $result->fetch_assoc()['total'] ?? 0;
 $result = $conn->query("SELECT COUNT(*) as total FROM invoices WHERE status = 'pending'");
 $stats['pending_invoices'] = $result->fetch_assoc()['total'];
 
+// Total Destinations
+$result = $conn->query("SELECT COUNT(*) as total FROM destinations");
+$stats['destinations'] = $result->fetch_assoc()['total'];
+
 // Recent Invoices
 $recent_invoices = $conn->query("
     SELECT i.*, c.name as customer_name 
@@ -44,12 +48,31 @@ $recent_customers = $conn->query("
     ORDER BY created_at DESC 
     LIMIT 5
 ");
+
+// Fetch revenue for the last 6 months for the chart
+$revenue_by_month = [];
+$months = [];
+$revenue_query = $conn->query("SELECT DATE_FORMAT(invoice_date, '%b %Y') as month, SUM(grand_total) as revenue FROM invoices WHERE status = 'paid' GROUP BY month ORDER BY MIN(invoice_date) DESC LIMIT 6");
+while ($row = $revenue_query->fetch_assoc()) {
+    $months[] = $row['month'];
+    $revenue_by_month[] = $row['revenue'] ?? 0;
+}
+$months = array_reverse($months);
+$revenue_by_month = array_reverse($revenue_by_month);
 ?>
 
 <main class='content-wrapper'>
     <div class='container-fluid p-3'>
         <h2>Dashboard</h2>
         <p>Welcome to Courier Billing CRM</p>
+
+        <!-- Quick Actions -->
+        <div class="mb-4 d-flex flex-wrap gap-2">
+            <a href="customers.php" class="btn btn-primary"><i class="fas fa-user-plus"></i> Add Customer</a>
+            <a href="invoices.php" class="btn btn-success"><i class="fas fa-file-invoice"></i> Create Invoice</a>
+            <a href="order.php" class="btn btn-warning"><i class="fas fa-shopping-cart"></i> New Order</a>
+            <a href="reports.php" class="btn btn-info"><i class="fas fa-chart-bar"></i> View Reports</a>
+        </div>
 
         <!-- Dashboard Cards -->
         <div class="row">
@@ -64,6 +87,19 @@ $recent_customers = $conn->query("
                         <i class="fas fa-users"></i>
                     </div>
                     <a href="customers.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- Total Destinations Card -->
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3><?php echo number_format($stats['destinations']); ?></h3>
+                        <p>Total Destinations</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <a href="destination.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -104,6 +140,16 @@ $recent_customers = $conn->query("
                     </div>
                     <a href="invoices.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
+            </div>
+        </div>
+
+        <!-- Revenue Trend Chart -->
+        <div class="card mb-4">
+            <div class="card-header bg-gradient-primary text-white">
+                <h3 class="card-title mb-0"><i class="fas fa-chart-line"></i> Revenue Trend (Last 6 Months)</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="80"></canvas>
             </div>
         </div>
 
@@ -191,27 +237,29 @@ include 'inc/footer.php';
 <!-- ChartJS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Sample data for the graph
+    // Revenue chart with real data from PHP
+    const revenueLabels = <?php echo json_encode($months); ?>;
+    const revenueData = <?php echo json_encode($revenue_by_month); ?>;
     const ctx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: revenueLabels,
             datasets: [{
                 label: 'Revenue (₹)',
-                data: [1200, 1900, 3000, 5000, 2300, 3400, 4500],
+                data: revenueData,
                 backgroundColor: 'rgba(60, 141, 188, 0.2)',
                 borderColor: 'rgba(60, 141, 188, 1)',
-                borderWidth: 2
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(60, 141, 188, 1)',
+                tension: 0.3
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
-                    beginAtZero: true
-                }
+                y: { beginAtZero: true }
             }
         }
     });
