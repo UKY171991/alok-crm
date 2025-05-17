@@ -211,7 +211,38 @@ $(function () {
 
         if (confirm("Are you sure you want to delete this invoice?")) {
             $.post("delete_invoice.php", { id: id }, function (response) {
-                loadInvoices();
+                var msg = 'Invoice deleted successfully!';
+                var type = 'success';
+                try {
+                    var json = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (json && typeof json === 'object') {
+                        msg = json.message || msg;
+                        type = json.success ? 'success' : 'error';
+                    } else {
+                        // Attempt to infer from string response
+                        if (response && response.toLowerCase().includes('error')) {
+                            type = 'error';
+                            msg = response;
+                        } else if (response && response.toLowerCase().includes('success')) {
+                            type = 'success';
+                            msg = response;
+                        } else {
+                            msg = response || msg; // Use response if available, otherwise default
+                        }
+                    }
+                } catch (e) {
+                    // If parsing fails, treat response as a plain string
+                    if (typeof response === 'string' && response.toLowerCase().includes('error')) {
+                        type = 'error';
+                    }
+                    msg = typeof response === 'string' ? response : 'Error processing response.';
+                }
+                showToast(msg, type);
+                if (type === 'success') {
+                    loadInvoices();
+                }
+            }).fail(function() {
+                showToast('Error deleting invoice. Please try again.', 'error');
             });
         }
     });
