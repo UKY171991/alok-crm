@@ -17,6 +17,7 @@ $srNo = $offset + 1;
     <thead class="table-light">
         <tr>
             <th>Sr. No.</th>
+            <th>Customer</th>
             <th>Date</th>
             <th>Docket</th>
             <th>Location</th>
@@ -32,9 +33,24 @@ $srNo = $offset + 1;
     </thead>
     <tbody>
     <?php if ($result && $result->num_rows > 0):
-        while($row = $result->fetch_assoc()): ?>
+        // Pre-fetch all customer names for the orders in this page
+        $customerIds = [];
+        $orders = [];
+        $result->data_seek(0);
+        while($row = $result->fetch_assoc()) {
+            $orders[] = $row;
+            if (!empty($row['customer_id'])) $customerIds[] = intval($row['customer_id']);
+        }
+        $customerNames = [];
+        if ($customerIds) {
+            $ids = implode(',', array_unique($customerIds));
+            $q = $conn->query("SELECT id, name FROM customers WHERE id IN ($ids)");
+            while($c = $q->fetch_assoc()) $customerNames[$c['id']] = $c['name'];
+        }
+        foreach($orders as $row): ?>
         <tr>
             <td><?= $srNo++ ?></td>
+            <td><?= isset($customerNames[$row['customer_id']]) ? htmlspecialchars($customerNames[$row['customer_id']]) : '' ?></td>
             <td><?= htmlspecialchars($row['date']) ?></td>
             <td><?= htmlspecialchars($row['docket']) ?></td>
             <td><?= htmlspecialchars($row['location']) ?></td>
