@@ -388,6 +388,19 @@ $(document).ready(function() {
             }
         });
     });
+    // Populate customer select in Edit Order Modal
+    $(document).on('shown.bs.modal', '#editOrderModal', function() {
+        var $select = $(this).find('select[name="customer_id"]');
+        if ($select.length) {
+            // Try to get selectedId from data-selected attribute, fallback to value if present
+            var selectedId = $select.data('selected') || $select.val();
+            $select.html('<option value="">Loading...</option>');
+            $.get('ajax/fetch_customers_select.php', function(data) {
+                $select.html(data);
+                if (selectedId) $select.val(selectedId);
+            });
+        }
+    });
 });
 $(document).ready(function() {
     function loadOrders(page = 1) {
