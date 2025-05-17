@@ -207,28 +207,7 @@ include 'inc/db.php';
                             <button type="submit" class="btn btn-primary">Add Order</button>
                         </div>
                         </form>
-                        <script>
-                        $(document).ready(function() {
-                            // Populate customer select in Add Order Modal
-                            $('#addOrderModal').on('show.bs.modal', function() {
-                                // Use modal-scoped selector to avoid duplicate ID issues
-                                var $select = $(this).find('select[name="customer_id"]');
-                                $select.html('<option value="">Loading...</option>');
-                                $.ajax({
-                                    url: 'ajax/fetch_customers_select.php',
-                                    type: 'GET',
-                                    success: function(data) {
-                                        console.log('Customer select AJAX response:', data);
-                                        $select.html(data);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Error loading customer list:', error);
-                                        $select.html('<option value="">Error loading customers</option>');
-                                    }
-                                });
-                            });
-                        });
-                        </script>
+                        <!-- jQuery and Bootstrap JS must be loaded before any script using $ -->
                     </div>
                 </div>
             </div>
@@ -393,6 +372,23 @@ include 'inc/db.php';
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// Populate customer select in Add Order Modal
+$(document).ready(function() {
+    $('#addOrderModal').on('show.bs.modal', function() {
+        var $select = $(this).find('select[name="customer_id"]');
+        $select.html('<option value="">Loading...</option>');
+        $.ajax({
+            url: 'ajax/fetch_customers_select.php',
+            type: 'GET',
+            success: function(data) {
+                $select.html(data);
+            },
+            error: function(xhr, status, error) {
+                $select.html('<option value="">Error loading customers</option>');
+            }
+        });
+    });
+});
 $(document).ready(function() {
     function loadOrders(page = 1) {
         $.ajax({
