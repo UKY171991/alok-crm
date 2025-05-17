@@ -112,6 +112,20 @@ $invoice_no = generateInvoiceNo($conn);
     </div>
 </main>
 
+
+<!-- Toast Container for AdminLTE -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="fas fa-check-circle me-2"></i>
+                <span id="successToastMsg">Success!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <?php include 'inc/footer.php'; ?>
 
 <style>
@@ -123,6 +137,13 @@ $invoice_no = generateInvoiceNo($conn);
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(function () {
+    // Show AdminLTE-style success toast
+    function showSuccessToast(msg) {
+        $('#successToastMsg').text(msg || 'Success!');
+        var toastEl = document.getElementById('successToast');
+        var toast = bootstrap.Toast.getOrCreateInstance(toastEl);
+        toast.show();
+    }
     function loadInvoices() {
         $.get("fetch_invoices.php", function (data) {
             $("#invoiceTableBody").html(data);
@@ -144,6 +165,10 @@ $(function () {
             var modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal'));
             if (modal) modal.hide();
             loadInvoices();
+            // Show toast if success (simple check: response contains 'success' or customize as needed)
+            if (typeof res === 'string' && res.toLowerCase().includes('success')) {
+                showSuccessToast('Invoice saved successfully!');
+            }
         });
     });
 
