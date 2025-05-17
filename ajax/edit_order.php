@@ -17,7 +17,7 @@ if ($_POST['action'] === 'fetch' && isset($_POST['id'])) {
                 // Customer select field with label
                 echo '<div class="col-md-3 mb-2">';
                 echo '<label for="edit_customer_id" class="form-label">Customer</label>';
-                echo '<select name="customer_id" id="edit_customer_id" class="form-select" required><option value="">Loading...</option></select>';
+                echo '<select name="customer_id" id="edit_customer_id" class="form-select form-control" required><option value="">Loading...</option></select>';
                 echo '</div>';
                 continue;
             }
