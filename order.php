@@ -211,10 +211,20 @@ include 'inc/db.php';
                         $(document).ready(function() {
                             // Populate customer select in Add Order Modal
                             $('#addOrderModal').on('show.bs.modal', function() {
-                                var $select = $('#customer_id');
+                                // Use modal-scoped selector to avoid duplicate ID issues
+                                var $select = $(this).find('select[name="customer_id"]');
                                 $select.html('<option value="">Loading...</option>');
-                                $.get('ajax/fetch_customers_select.php', function(data) {
-                                    $select.html(data);
+                                $.ajax({
+                                    url: 'ajax/fetch_customers_select.php',
+                                    type: 'GET',
+                                    success: function(data) {
+                                        console.log('Customer select AJAX response:', data);
+                                        $select.html(data);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('Error loading customer list:', error);
+                                        $select.html('<option value="">Error loading customers</option>');
+                                    }
                                 });
                             });
                         });
