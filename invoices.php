@@ -15,65 +15,78 @@ $invoice_no = generateInvoiceNo($conn);
     <div class="container-fluid p-3">
         <h2>Invoices Management</h2>
 
-        <!-- Add/Edit Invoice Form -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title" id="formTitle">Add New Invoice</h3>
-            </div>
-            <div class="card-body">
-                <form id="invoiceForm">
-                    <input type="hidden" name="id" id="invoice_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Invoice No</label>
-                            <input type="text" name="invoice_no" id="invoice_no" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Customer</label>
-                            <select name="customer_id" id="customer_id" class="form-control" required>
-                                <option value="">Select Customer</option>
-                                <?php
-                                $query = "SELECT id, name FROM customers ORDER BY name ASC";
-                                $result = $conn->query($query);
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Invoice Date</label>
-                            <input type="date" name="invoice_date" id="invoice_date" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Destination</label>
-                            <select name="destination" id="destination" class="form-control" required>
-                                <option value="">Select Destination</option>
-                                <?php
-                                $query = "SELECT name FROM destinations ORDER BY name ASC";
-                                $result = $conn->query($query);
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label>Total Amount</label>
-                            <input type="number" step="0.01" name="total_amount" id="total_amount" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label>GST Amount</label>
-                            <input type="number" step="0.01" name="gst_amount" id="gst_amount" class="form-control">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Grand Total</label>
-                            <input type="number" step="0.01" name="grand_total" id="grand_total" class="form-control" required>
-                        </div>
+        <!-- Add Invoice Button -->
+        <div class="mb-3 text-end">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invoiceModal"><i class="fas fa-plus"></i> Add Invoice</button>
+        </div>
+
+        <!-- Add/Edit Invoice Modal -->
+        <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="invoiceModalLabel">Add New Invoice</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3" id="submitBtn">Add Invoice</button>
-                </form>
-                <div id="message" class="mt-2"></div>
+                    <form id="invoiceForm">
+                        <div class="modal-body">
+                            <input type="hidden" name="id" id="invoice_id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Invoice No</label>
+                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Customer</label>
+                                    <select name="customer_id" id="customer_id" class="form-control" required>
+                                        <option value="">Select Customer</option>
+                                        <?php
+                                        $query = "SELECT id, name FROM customers ORDER BY name ASC";
+                                        $result = $conn->query($query);
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Invoice Date</label>
+                                    <input type="date" name="invoice_date" id="invoice_date" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Destination</label>
+                                    <select name="destination" id="destination" class="form-control" required>
+                                        <option value="">Select Destination</option>
+                                        <?php
+                                        $query = "SELECT name FROM destinations ORDER BY name ASC";
+                                        $result = $conn->query($query);
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Total Amount</label>
+                                    <input type="number" step="0.01" name="total_amount" id="total_amount" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>GST Amount</label>
+                                    <input type="number" step="0.01" name="gst_amount" id="gst_amount" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Grand Total</label>
+                                    <input type="number" step="0.01" name="grand_total" id="grand_total" class="form-control" required>
+                                </div>
+                            </div>
+                            <div id="message" class="mt-2"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Add Invoice</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
