@@ -112,57 +112,46 @@ $invoice_no = generateInvoiceNo($conn);
     </div>
 </main>
 
-
-<!-- Toast Container for AdminLTE (dynamic for success/error) -->
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
-    <div id="mainToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body d-flex align-items-center">
-                <i id="mainToastIcon" class="fas fa-info-circle me-2"></i>
-                <span id="mainToastMsg">Message</span>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
-
 <?php include 'inc/footer.php'; ?>
 
-<style>
-    table th, table td {
-        white-space: nowrap;
-    }
-</style>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
 $(function () {
-    // Show AdminLTE-style toast (success or error)
+    // Configure Toastr options (optional)
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+    // Show Toastr notification
     function showToast(msg, type) {
-        var $toast = $('#mainToast');
-        var $icon = $('#mainToastIcon');
-        var $msg = $('#mainToastMsg');
-        $msg.text(msg || '');
-        // Remove all bg classes
-        $toast.removeClass('text-bg-success text-bg-danger text-bg-warning text-bg-info');
-        $icon.removeClass('fa-check-circle fa-times-circle fa-info-circle fa-exclamation-triangle');
+        msg = msg || ''; // Ensure msg is not null or undefined
         if (type === 'success') {
-            $toast.addClass('text-bg-success');
-            $icon.addClass('fa-check-circle');
+            toastr.success(msg);
         } else if (type === 'error') {
-            $toast.addClass('text-bg-danger');
-            $icon.addClass('fa-times-circle');
+            toastr.error(msg);
         } else if (type === 'warning') {
-            $toast.addClass('text-bg-warning');
-            $icon.addClass('fa-exclamation-triangle');
+            toastr.warning(msg);
         } else {
-            $toast.addClass('text-bg-info');
-            $icon.addClass('fa-info-circle');
+            toastr.info(msg);
         }
-        var toastEl = document.getElementById('mainToast');
-        var toast = bootstrap.Toast.getOrCreateInstance(toastEl);
-        toast.show();
     }
+
     function loadInvoices() {
         $.get("fetch_invoices.php", function (data) {
             $("#invoiceTableBody").html(data);
@@ -171,11 +160,9 @@ $(function () {
 
     loadInvoices();
 
-
     $("#invoiceForm").on("submit", function (e) {
         e.preventDefault();
         $.post("save_invoice.php", $(this).serialize(), function (res) {
-            // --- Toast logic: always show toast, extract message from HTML or JSON ---
             var msg = '';
             var type = 'info';
             try {
@@ -187,7 +174,6 @@ $(function () {
                     msg = res;
                 }
             } catch (e) {
-                // Not JSON, try to extract from HTML alert
                 var m = (typeof res === 'string') ? res.match(/<div[^>]*>(.*?)<\/div>/i) : null;
                 msg = m ? m[1] : (typeof res === 'string' ? res : 'Action completed');
                 if (res && res.toLowerCase().includes('success')) type = 'success';
@@ -195,7 +181,6 @@ $(function () {
                 else if (res && res.toLowerCase().includes('warning')) type = 'warning';
             }
             showToast(msg, type);
-            // Reset and close modal only on success
             if (type === 'success') {
                 $("#invoiceForm")[0].reset();
                 $("#invoiceModalLabel").text("Add New Invoice");
@@ -209,10 +194,8 @@ $(function () {
     });
 
     $(document).on("click", ".edit-btn", function () {
-        // Set modal title and button
         $("#invoiceModalLabel").text("Update Invoice");
         $("#submitBtn").text("Update Invoice");
-        // Fill form fields
         $("#invoice_id").val($(this).data("id"));
         $("#invoice_no").val($(this).data("invoice_no"));
         $("#customer_id").val($(this).data("customer_id"));
@@ -221,7 +204,6 @@ $(function () {
         $("#total_amount").val($(this).data("total_amount"));
         $("#gst_amount").val($(this).data("gst_amount"));
         $("#grand_total").val($(this).data("grand_total"));
-        // Show the modal
         var modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
         modal.show();
     });
@@ -231,8 +213,7 @@ $(function () {
 
         if (confirm("Are you sure you want to delete this invoice?")) {
             $.post("delete_invoice.php", { id: id }, function (response) {
-                // Optional: alert(response);
-                loadInvoices(); // refresh table
+                loadInvoices();
             });
         }
     });
