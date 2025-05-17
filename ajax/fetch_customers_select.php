@@ -1,3 +1,4 @@
+<?php
 $inc_path = dirname(__DIR__) . '/inc/db.php';
 include $inc_path;
 
@@ -22,3 +23,4 @@ while ($row = $result->fetch_assoc()) {
     $options .= "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['name']) . "</option>";
 }
 echo $options;
+?>
