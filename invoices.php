@@ -175,15 +175,6 @@ $(function () {
     $("#invoiceForm").on("submit", function (e) {
         e.preventDefault();
         $.post("save_invoice.php", $(this).serialize(), function (res) {
-            $("#message").html(res);
-            $("#invoiceForm")[0].reset();
-            $("#invoiceModalLabel").text("Add New Invoice");
-            $("#submitBtn").text("Add Invoice");
-            $("#invoice_id").val('');
-            // Hide modal after submit
-            var modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal'));
-            if (modal) modal.hide();
-            loadInvoices();
             // --- Toast logic: always show toast, extract message from HTML or JSON ---
             var msg = '';
             var type = 'info';
@@ -204,6 +195,16 @@ $(function () {
                 else if (res && res.toLowerCase().includes('warning')) type = 'warning';
             }
             showToast(msg, type);
+            // Reset and close modal only on success
+            if (type === 'success') {
+                $("#invoiceForm")[0].reset();
+                $("#invoiceModalLabel").text("Add New Invoice");
+                $("#submitBtn").text("Add Invoice");
+                $("#invoice_id").val('');
+                var modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal'));
+                if (modal) modal.hide();
+                loadInvoices();
+            }
         });
     });
 
