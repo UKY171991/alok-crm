@@ -184,14 +184,26 @@ $(function () {
             var modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal'));
             if (modal) modal.hide();
             loadInvoices();
-            // Always show toast with message and type
+            // --- Toast logic: always show toast, extract message from HTML or JSON ---
+            var msg = '';
             var type = 'info';
-            if (typeof res === 'string') {
-                if (res.toLowerCase().includes('success')) type = 'success';
-                else if (res.toLowerCase().includes('error') || res.toLowerCase().includes('fail')) type = 'error';
-                else if (res.toLowerCase().includes('warning')) type = 'warning';
+            try {
+                var json = typeof res === 'string' ? JSON.parse(res) : res;
+                if (json && typeof json === 'object' && json.message) {
+                    msg = json.message;
+                    type = json.success ? 'success' : 'error';
+                } else {
+                    msg = res;
+                }
+            } catch (e) {
+                // Not JSON, try to extract from HTML alert
+                var m = (typeof res === 'string') ? res.match(/<div[^>]*>(.*?)<\\/div>/i) : null;
+                msg = m ? m[1] : (typeof res === 'string' ? res : 'Action completed');
+                if (res && res.toLowerCase().includes('success')) type = 'success';
+                else if (res && (res.toLowerCase().includes('error') || res.toLowerCase().includes('fail'))) type = 'error';
+                else if (res && res.toLowerCase().includes('warning')) type = 'warning';
             }
-            showToast(res, type);
+            showToast(msg, type);
         });
     });
 
