@@ -41,45 +41,165 @@ include 'inc/db.php';
                         <form id="orderForm">
                         <div class="modal-body">
                             <div class="row">
-                                <!-- All fields except 'l' -->
-                                <div class="col-md-3 mb-2"><input type="date" name="date" class="form-control" placeholder="Date"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="docket" class="form-control" placeholder="Docket"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="location" class="form-control" placeholder="Location"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="destination" class="form-control" placeholder="Destination"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="mode" class="form-control" placeholder="Mode"></div>
-                                <div class="col-md-3 mb-2"><input type="number" name="no_of_pcs" class="form-control" placeholder="No of Pcs"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="pincode" class="form-control" placeholder="Pincode"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="content" class="form-control" placeholder="Content"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="dox_non_dox" class="form-control" placeholder="Dox / Non Dox"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="material_value" class="form-control" placeholder="Material Value"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="fr_weight" class="form-control" placeholder="FR Weight"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="valumatric" class="form-control" placeholder="Valumatric"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="manual_weight" class="form-control" placeholder="Manual Weight"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="invoice_wt" class="form-control" placeholder="Invoice Wt"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="round_off_weight" class="form-control" placeholder="Round Off Weight"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="clinet_billing_value" class="form-control" placeholder="Clinet Billing Value"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="credit_cust_amt" class="form-control" placeholder="Credit Cust.  Amt"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="regular_cust_amt" class="form-control" placeholder="Regular Cust. Amt"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="customer_type" class="form-control" placeholder="Customer Type"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="sender_detail" class="form-control" placeholder="Sender Detail"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="payment_status" class="form-control" placeholder="PAYMENT STATUS"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="sender_contact_no" class="form-control" placeholder="Sender Contact No"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="address" class="form-control" placeholder="Address"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="adhaar_no" class="form-control" placeholder="Adhaar No"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="customer_attend_by" class="form-control" placeholder="Customer Attend By"></div>
-                                <div class="col-md-3 mb-2"><input type="date" name="today_date" class="form-control" placeholder="Today Date"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="pending" class="form-control" placeholder="pending"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="td_delivery_status" class="form-control" placeholder="T /D Delivery Status"></div>
-                                <div class="col-md-3 mb-2"><input type="date" name="td_delivery_date" class="form-control" placeholder="T / D Delivery Date"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="t_receiver_name" class="form-control" placeholder="T  Receiver Name"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="receiver_contact_no" class="form-control" placeholder="Receiver Contact No"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="receiver_name_as_per_sendor" class="form-control" placeholder="Receiver Name as per Sendor"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="ref" class="form-control" placeholder="Ref"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="complain_no_update" class="form-control" placeholder="Complain No Update"></div>
-                                <div class="col-md-3 mb-2"><input type="number" step="0.01" name="shipment_cost_by_other_mode" class="form-control" placeholder="Shipment Cost by other Mode"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="remarks" class="form-control" placeholder="Remarks"></div>
-                                <div class="col-md-3 mb-2"><input type="text" name="pod_status" class="form-control" placeholder="POD Status"></div>
-                                <div class="col-md-3 mb-2"><input type="number" name="pending_days" class="form-control" placeholder="Pending Days"></div>
+                                <!-- Customer Select -->
+                                <div class="col-md-3 mb-2">
+                                    <label for="customer_id" class="form-label">Customer</label>
+                                    <select name="customer_id" id="customer_id" class="form-select" required>
+                                        <option value="">Loading...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="date" class="form-label">Date</label>
+                                    <input type="date" name="date" id="date" class="form-control" placeholder="Date">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="docket" class="form-label">Docket</label>
+                                    <input type="text" name="docket" id="docket" class="form-control" placeholder="Docket">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="location" class="form-label">Location</label>
+                                    <input type="text" name="location" id="location" class="form-control" placeholder="Location">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="destination" class="form-label">Destination</label>
+                                    <input type="text" name="destination" id="destination" class="form-control" placeholder="Destination">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="mode" class="form-label">Mode</label>
+                                    <input type="text" name="mode" id="mode" class="form-control" placeholder="Mode">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="no_of_pcs" class="form-label">No of Pcs</label>
+                                    <input type="number" name="no_of_pcs" id="no_of_pcs" class="form-control" placeholder="No of Pcs">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="pincode" class="form-label">Pincode</label>
+                                    <input type="text" name="pincode" id="pincode" class="form-control" placeholder="Pincode">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="content" class="form-label">Content</label>
+                                    <input type="text" name="content" id="content" class="form-control" placeholder="Content">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="dox_non_dox" class="form-label">Dox / Non Dox</label>
+                                    <input type="text" name="dox_non_dox" id="dox_non_dox" class="form-control" placeholder="Dox / Non Dox">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="material_value" class="form-label">Material Value</label>
+                                    <input type="number" step="0.01" name="material_value" id="material_value" class="form-control" placeholder="Material Value">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="fr_weight" class="form-label">FR Weight</label>
+                                    <input type="number" step="0.01" name="fr_weight" id="fr_weight" class="form-control" placeholder="FR Weight">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="valumatric" class="form-label">Valumatric</label>
+                                    <input type="number" step="0.01" name="valumatric" id="valumatric" class="form-control" placeholder="Valumatric">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="manual_weight" class="form-label">Manual Weight</label>
+                                    <input type="number" step="0.01" name="manual_weight" id="manual_weight" class="form-control" placeholder="Manual Weight">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="invoice_wt" class="form-label">Invoice Wt</label>
+                                    <input type="number" step="0.01" name="invoice_wt" id="invoice_wt" class="form-control" placeholder="Invoice Wt">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="round_off_weight" class="form-label">Round Off Weight</label>
+                                    <input type="number" step="0.01" name="round_off_weight" id="round_off_weight" class="form-control" placeholder="Round Off Weight">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="clinet_billing_value" class="form-label">Clinet Billing Value</label>
+                                    <input type="number" step="0.01" name="clinet_billing_value" id="clinet_billing_value" class="form-control" placeholder="Clinet Billing Value">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="credit_cust_amt" class="form-label">Credit Cust. Amt</label>
+                                    <input type="number" step="0.01" name="credit_cust_amt" id="credit_cust_amt" class="form-control" placeholder="Credit Cust. Amt">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="regular_cust_amt" class="form-label">Regular Cust. Amt</label>
+                                    <input type="number" step="0.01" name="regular_cust_amt" id="regular_cust_amt" class="form-control" placeholder="Regular Cust. Amt">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="customer_type" class="form-label">Customer Type</label>
+                                    <input type="text" name="customer_type" id="customer_type" class="form-control" placeholder="Customer Type">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="sender_detail" class="form-label">Sender Detail</label>
+                                    <input type="text" name="sender_detail" id="sender_detail" class="form-control" placeholder="Sender Detail">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="payment_status" class="form-label">PAYMENT STATUS</label>
+                                    <input type="text" name="payment_status" id="payment_status" class="form-control" placeholder="PAYMENT STATUS">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="sender_contact_no" class="form-label">Sender Contact No</label>
+                                    <input type="text" name="sender_contact_no" id="sender_contact_no" class="form-control" placeholder="Sender Contact No">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="address" class="form-label">Address</label>
+                                    <input type="text" name="address" id="address" class="form-control" placeholder="Address">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="adhaar_no" class="form-label">Adhaar No</label>
+                                    <input type="text" name="adhaar_no" id="adhaar_no" class="form-control" placeholder="Adhaar No">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="customer_attend_by" class="form-label">Customer Attend By</label>
+                                    <input type="text" name="customer_attend_by" id="customer_attend_by" class="form-control" placeholder="Customer Attend By">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="today_date" class="form-label">Today Date</label>
+                                    <input type="date" name="today_date" id="today_date" class="form-control" placeholder="Today Date">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="pending" class="form-label">Pending</label>
+                                    <input type="text" name="pending" id="pending" class="form-control" placeholder="Pending">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="td_delivery_status" class="form-label">T /D Delivery Status</label>
+                                    <input type="text" name="td_delivery_status" id="td_delivery_status" class="form-control" placeholder="T /D Delivery Status">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="td_delivery_date" class="form-label">T / D Delivery Date</label>
+                                    <input type="date" name="td_delivery_date" id="td_delivery_date" class="form-control" placeholder="T / D Delivery Date">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="t_receiver_name" class="form-label">T Receiver Name</label>
+                                    <input type="text" name="t_receiver_name" id="t_receiver_name" class="form-control" placeholder="T Receiver Name">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="receiver_contact_no" class="form-label">Receiver Contact No</label>
+                                    <input type="text" name="receiver_contact_no" id="receiver_contact_no" class="form-control" placeholder="Receiver Contact No">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="receiver_name_as_per_sendor" class="form-label">Receiver Name as per Sendor</label>
+                                    <input type="text" name="receiver_name_as_per_sendor" id="receiver_name_as_per_sendor" class="form-control" placeholder="Receiver Name as per Sendor">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="ref" class="form-label">Ref</label>
+                                    <input type="text" name="ref" id="ref" class="form-control" placeholder="Ref">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="complain_no_update" class="form-label">Complain No Update</label>
+                                    <input type="text" name="complain_no_update" id="complain_no_update" class="form-control" placeholder="Complain No Update">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="shipment_cost_by_other_mode" class="form-label">Shipment Cost by other Mode</label>
+                                    <input type="number" step="0.01" name="shipment_cost_by_other_mode" id="shipment_cost_by_other_mode" class="form-control" placeholder="Shipment Cost by other Mode">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="remarks" class="form-label">Remarks</label>
+                                    <input type="text" name="remarks" id="remarks" class="form-control" placeholder="Remarks">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="pod_status" class="form-label">POD Status</label>
+                                    <input type="text" name="pod_status" id="pod_status" class="form-control" placeholder="POD Status">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="pending_days" class="form-label">Pending Days</label>
+                                    <input type="number" name="pending_days" id="pending_days" class="form-control" placeholder="Pending Days">
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -87,6 +207,18 @@ include 'inc/db.php';
                             <button type="submit" class="btn btn-primary">Add Order</button>
                         </div>
                         </form>
+                        <script>
+                        $(document).ready(function() {
+                            // Populate customer select in Add Order Modal
+                            $('#addOrderModal').on('show.bs.modal', function() {
+                                var $select = $('#customer_id');
+                                $select.html('<option value="">Loading...</option>');
+                                $.get('ajax/fetch_customers_select.php', function(data) {
+                                    $select.html(data);
+                                });
+                            });
+                        });
+                        </script>
                     </div>
                 </div>
             </div>
