@@ -34,18 +34,22 @@ $srNo = $offset + 1;
     <tbody>
     <?php if ($result && $result->num_rows > 0):
         // Pre-fetch all customer names for the orders in this page
-        $customerIds = [];
-        $orders = [];
+        $customerIds = array();
+        $orders = array();
         $result->data_seek(0);
         while($row = $result->fetch_assoc()) {
             $orders[] = $row;
             if (!empty($row['customer_id'])) $customerIds[] = intval($row['customer_id']);
         }
-        $customerNames = [];
-        if ($customerIds) {
+        $customerNames = array();
+        if (!empty($customerIds)) {
             $ids = implode(',', array_unique($customerIds));
-            $q = $conn->query("SELECT id, name FROM customers WHERE id IN ($ids)");
-            while($c = $q->fetch_assoc()) $customerNames[$c['id']] = $c['name'];
+            if (!empty($ids)) {
+                $q = $conn->query("SELECT id, name FROM customers WHERE id IN ($ids)");
+                if ($q) {
+                    while($c = $q->fetch_assoc()) $customerNames[$c['id']] = $c['name'];
+                }
+            }
         }
         foreach($orders as $row): ?>
         <tr>
@@ -67,8 +71,8 @@ $srNo = $offset + 1;
                 <button class="btn btn-danger btn-sm delete-order w-100" data-id="<?= $row['id'] ?>"><i class="fas fa-trash"></i> Delete</button>
             </td>
         </tr>
-    <?php endwhile; else: ?>
-        <tr><td colspan="12" class="text-center text-muted">No orders found.</td></tr>
+    <?php endforeach; else: ?>
+        <tr><td colspan="13" class="text-center text-muted">No orders found.</td></tr>
     <?php endif; ?>
     </tbody>
 </table>
