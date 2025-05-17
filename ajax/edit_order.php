@@ -17,7 +17,7 @@ if ($_POST['action'] === 'fetch' && isset($_POST['id'])) {
                 // Customer select field with label
                 echo '<div class="col-md-3 mb-2">';
                 echo '<label for="edit_customer_id" class="form-label">Customer</label>';
-                echo '<select name="customer_id" id="edit_customer_id" class="form-select form-control" required><option value="">Loading...</option></select>';
+                echo '<select name="customer_id" id="edit_customer_id" class="form-select form-control" required data-selected="'.htmlspecialchars($row['customer_id']).'"><option value="">Loading...</option></select>';
                 echo '</div>';
                 continue;
             }
@@ -30,8 +30,7 @@ if ($_POST['action'] === 'fetch' && isset($_POST['id'])) {
             echo '</div>';
         }
         echo '</div>';
-        // JS to populate customer select and set selected value
-        echo '<script>$(function() { var selectedId = "'.htmlspecialchars($row['customer_id'] ?? '').'"; var $select = $("#edit_customer_id"); $.get("ajax/fetch_customers_select.php", function(data) { $select.html(data); if(selectedId) $select.val(selectedId); }); });<\/script>';
+        // JS to populate customer select and set selected value (handled globally in order.php)
     } else {
         echo '<div class="alert alert-warning">Order not found.</div>';
     }
