@@ -13,10 +13,8 @@ $invoice_no = generateInvoiceNo($conn);
 
 <main class="content-wrapper">
     <div class="container-fluid p-3">
-        <h2>Invoices Management</h2>
-
-        <!-- Add Invoice Button -->
-        <div class="mb-3 text-end">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Invoices Management</h2>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#invoiceModal"><i class="fas fa-plus"></i> Add Invoice</button>
         </div>
 
