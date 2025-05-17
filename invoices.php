@@ -197,7 +197,7 @@ $(function () {
                 }
             } catch (e) {
                 // Not JSON, try to extract from HTML alert
-                var m = (typeof res === 'string') ? res.match(/<div[^>]*>(.*?)<\\/div>/i) : null;
+                var m = (typeof res === 'string') ? res.match(/<div[^>]*>(.*?)<\/div>/i) : null;
                 msg = m ? m[1] : (typeof res === 'string' ? res : 'Action completed');
                 if (res && res.toLowerCase().includes('success')) type = 'success';
                 else if (res && (res.toLowerCase().includes('error') || res.toLowerCase().includes('fail'))) type = 'error';
