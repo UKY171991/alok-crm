@@ -41,13 +41,6 @@
                         <p>Customers</p>
                     </a>
                 </li>
-                <!-- Invoices -->
-                <li class="nav-item">
-                    <a href="invoices.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'invoices.php') echo ' active'; ?>">
-                        <i class="nav-icon fas fa-file-invoice"></i>
-                        <p>Invoices</p>
-                    </a>
-                </li>
                 <!-- Order -->
                 <li class="nav-item">
                     <a href="order.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'order.php') echo ' active'; ?>">
@@ -55,6 +48,14 @@
                         <p>Order</p>
                     </a>
                 </li>
+                <!-- Invoices -->
+                <li class="nav-item">
+                    <a href="invoices.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'invoices.php') echo ' active'; ?>">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>Invoices</p>
+                    </a>
+                </li>
+                
                 <!-- Reports -->
                 <li class="nav-item">
                     <a href="reports.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'reports.php') echo ' active'; ?>">
