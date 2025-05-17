@@ -131,21 +131,27 @@ $(function () {
 
     loadInvoices();
 
+
     $("#invoiceForm").on("submit", function (e) {
         e.preventDefault();
         $.post("save_invoice.php", $(this).serialize(), function (res) {
             $("#message").html(res);
             $("#invoiceForm")[0].reset();
-            $("#formTitle").text("Add New Invoice");
+            $("#invoiceModalLabel").text("Add New Invoice");
             $("#submitBtn").text("Add Invoice");
             $("#invoice_id").val('');
+            // Hide modal after submit
+            var modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal'));
+            if (modal) modal.hide();
             loadInvoices();
         });
     });
 
     $(document).on("click", ".edit-btn", function () {
-        $("#formTitle").text("Update Invoice");
+        // Set modal title and button
+        $("#invoiceModalLabel").text("Update Invoice");
         $("#submitBtn").text("Update Invoice");
+        // Fill form fields
         $("#invoice_id").val($(this).data("id"));
         $("#invoice_no").val($(this).data("invoice_no"));
         $("#customer_id").val($(this).data("customer_id"));
@@ -154,6 +160,9 @@ $(function () {
         $("#total_amount").val($(this).data("total_amount"));
         $("#gst_amount").val($(this).data("gst_amount"));
         $("#grand_total").val($(this).data("grand_total"));
+        // Show the modal
+        var modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+        modal.show();
     });
 
     $(document).on("click", ".delete-btn", function () {
