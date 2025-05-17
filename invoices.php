@@ -113,13 +113,13 @@ $invoice_no = generateInvoiceNo($conn);
 </main>
 
 
-<!-- Toast Container for AdminLTE -->
+<!-- Toast Container for AdminLTE (dynamic for success/error) -->
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
-    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="mainToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas fa-check-circle me-2"></i>
-                <span id="successToastMsg">Success!</span>
+            <div class="toast-body d-flex align-items-center">
+                <i id="mainToastIcon" class="fas fa-info-circle me-2"></i>
+                <span id="mainToastMsg">Message</span>
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
@@ -137,10 +137,29 @@ $invoice_no = generateInvoiceNo($conn);
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(function () {
-    // Show AdminLTE-style success toast
-    function showSuccessToast(msg) {
-        $('#successToastMsg').text(msg || 'Success!');
-        var toastEl = document.getElementById('successToast');
+    // Show AdminLTE-style toast (success or error)
+    function showToast(msg, type) {
+        var $toast = $('#mainToast');
+        var $icon = $('#mainToastIcon');
+        var $msg = $('#mainToastMsg');
+        $msg.text(msg || '');
+        // Remove all bg classes
+        $toast.removeClass('text-bg-success text-bg-danger text-bg-warning text-bg-info');
+        $icon.removeClass('fa-check-circle fa-times-circle fa-info-circle fa-exclamation-triangle');
+        if (type === 'success') {
+            $toast.addClass('text-bg-success');
+            $icon.addClass('fa-check-circle');
+        } else if (type === 'error') {
+            $toast.addClass('text-bg-danger');
+            $icon.addClass('fa-times-circle');
+        } else if (type === 'warning') {
+            $toast.addClass('text-bg-warning');
+            $icon.addClass('fa-exclamation-triangle');
+        } else {
+            $toast.addClass('text-bg-info');
+            $icon.addClass('fa-info-circle');
+        }
+        var toastEl = document.getElementById('mainToast');
         var toast = bootstrap.Toast.getOrCreateInstance(toastEl);
         toast.show();
     }
@@ -165,10 +184,14 @@ $(function () {
             var modal = bootstrap.Modal.getInstance(document.getElementById('invoiceModal'));
             if (modal) modal.hide();
             loadInvoices();
-            // Show toast if success (simple check: response contains 'success' or customize as needed)
-            if (typeof res === 'string' && res.toLowerCase().includes('success')) {
-                showSuccessToast('Invoice saved successfully!');
+            // Always show toast with message and type
+            var type = 'info';
+            if (typeof res === 'string') {
+                if (res.toLowerCase().includes('success')) type = 'success';
+                else if (res.toLowerCase().includes('error') || res.toLowerCase().includes('fail')) type = 'error';
+                else if (res.toLowerCase().includes('warning')) type = 'warning';
             }
+            showToast(res, type);
         });
     });
 
