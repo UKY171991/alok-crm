@@ -44,7 +44,7 @@ include 'inc/db.php';
                                 <!-- Customer Select -->
                                 <div class="col-md-3 mb-2">
                                     <label for="customer_id" class="form-label">Customer</label>
-                                    <select name="customer_id" id="customer_id" class="form-select" required>
+                                    <select name="customer_id" id="customer_id" class="form-select form-control" required>
                                         <option value="">Loading...</option>
                                     </select>
                                 </div>
