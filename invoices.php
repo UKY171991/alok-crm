@@ -1,20 +1,19 @@
 <?php
-
-
 session_start();
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
 }
 include 'inc/db.php';
-
-
-
 include 'inc/header.php';
 include 'inc/sidebar.php';
 
-echo "<script>alert('Debug: invoices.php loaded');</script>"; die;
+// Ensure database connection is valid
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
 
+// Function to generate invoice number
 function generateInvoiceNo($conn) {
     $query = "SELECT MAX(id) AS max_id FROM invoices";
     $result = $conn->query($query);
@@ -53,7 +52,7 @@ $invoice_no = generateInvoiceNo($conn);
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Invoice No</label>
-                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control" required>
+                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control" value="<?php echo $invoice_no; ?>" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label>Customer</label>
