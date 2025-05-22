@@ -5,6 +5,13 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 include 'inc/db.php';
+
+// Debugging: Check database connection
+if ($conn->connect_error) {
+    error_log("Database connection failed: " . $conn->connect_error);
+    die("Database connection failed. Please check the logs.");
+}
+
 include 'inc/header.php';
 include 'inc/sidebar.php';
 
