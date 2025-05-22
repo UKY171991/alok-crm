@@ -1,6 +1,6 @@
 <?php
 
-echo "<script>alert('Debug: invoices.php loaded');</script>"; die;
+
 session_start();
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
@@ -12,6 +12,8 @@ include 'inc/db.php';
 
 include 'inc/header.php';
 include 'inc/sidebar.php';
+
+echo "<script>alert('Debug: invoices.php loaded');</script>"; die;
 
 function generateInvoiceNo($conn) {
     $query = "SELECT MAX(id) AS max_id FROM invoices";
