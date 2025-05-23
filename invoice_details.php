@@ -81,12 +81,12 @@ if ($invoice_id > 0) {
                                 <?php foreach ($line_items as $idx => $item): ?>
                                     <tr>
                                         <td><?= $idx + 1 ?></td>
-                                        <td><?= htmlspecialchars($item['booking_date']) ?></td>
-                                        <td><?= htmlspecialchars($item['consignment_no']) ?></td>
-                                        <td><?= htmlspecialchars($item['destination_city']) ?></td>
-                                        <td><?= htmlspecialchars($item['weight']) ?></td>
-                                        <td><?= htmlspecialchars($item['amt']) ?></td>
-                                        <td><?= htmlspecialchars($item['way_bill_value']) ?></td>
+                                        <td><?= !empty($item['booking_date']) ? htmlspecialchars($item['booking_date']) : '–' ?></td>
+                                        <td><?= !empty($item['consignment_no']) ? htmlspecialchars($item['consignment_no']) : '–' ?></td>
+                                        <td><?= !empty($item['destination_city']) ? htmlspecialchars($item['destination_city']) : '–' ?></td>
+                                        <td><?= !empty($item['weight']) ? htmlspecialchars($item['weight']) : '–' ?></td>
+                                        <td><?= !empty($item['amt']) ? htmlspecialchars($item['amt']) : '–' ?></td>
+                                        <td><?= !empty($item['way_bill_value']) ? htmlspecialchars($item['way_bill_value']) : '–' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
