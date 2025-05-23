@@ -26,7 +26,7 @@ if ($id == '') {
             VALUES ('$invoice_no', '$customer_id', '$invoice_date', '$destination', '$total_amount', '$gst_amount', '$grand_total')";
     $msg = "Invoice added successfully.";
 } else {
-    $check = $conn->query("SELECT id FROM invoices WHERE invoice_no = '$invoice_no' AND id != $id");
+    $check = $conn->query("SELECT id FROM invoices WHERE invoice_no = '$invoice_no' AND id != '$id'");
     if ($check && $check->num_rows > 0) {
         echo "<div class='alert alert-danger'>Error: Invoice No already exists.</div>";
         $conn->close();
