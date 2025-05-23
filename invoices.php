@@ -17,21 +17,6 @@ if ($conn->connect_error) {
     die("Database connection failed: " . $conn->connect_error);
 }
 
-// Function to generate invoice number
-function generateInvoiceNo($conn) {
-    $query = "SELECT MAX(id) AS max_id FROM invoices";
-    $result = $conn->query($query);
-
-    if (!$result) {
-        error_log("Database query failed: " . $conn->error);
-        return "INV-000001"; // Default invoice number if query fails
-    }
-
-    $row = $result->fetch_assoc();
-    $nextId = isset($row['max_id']) ? $row['max_id'] + 1 : 1;
-    return "INV-" . str_pad($nextId, 6, "0", STR_PAD_LEFT);
-}
-
 $invoice_no = generateInvoiceNo($conn);
 ?>
 
