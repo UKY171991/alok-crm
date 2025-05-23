@@ -57,10 +57,6 @@ $invoice_no = generateInvoiceNo($conn);
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Invoice Date</label>
-                                    <input type="date" name="invoice_date" id="invoice_date" class="form-control" required>
-                                </div>
-                                <div class="col-md-6">
                                     <label>Destination</label>
                                     <select name="destination" id="destination" class="form-control" required>
                                         <option value="">Select Destination</option>
@@ -253,7 +249,6 @@ $(function () {
         $("#invoice_id").val($(this).data("id"));
         $("#invoice_no").val($(this).data("invoice_no"));
         $("#customer_id").val($(this).data("customer_id"));
-        $("#invoice_date").val($(this).data("invoice_date"));
         $("#destination").val($(this).data("destination"));
         $("#total_amount").val($(this).data("total_amount"));
         $("#gst_amount").val($(this).data("gst_amount"));

@@ -4,7 +4,7 @@ include 'inc/db.php';
 $id = $_POST['id'];
 $invoice_no = mysqli_real_escape_string($conn, $_POST['invoice_no']);
 $customer_id = intval($_POST['customer_id']);
-$invoice_date = $_POST['invoice_date'];
+$invoice_date = isset($_POST['invoice_date']) && $_POST['invoice_date'] !== '' ? $_POST['invoice_date'] : date('Y-m-d');
 $destination = mysqli_real_escape_string($conn, $_POST['destination']);
 $total_amount = floatval($_POST['total_amount']);
 $gst_amount = isset($_POST['gst_amount']) ? floatval($_POST['gst_amount']) : 0;
