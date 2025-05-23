@@ -8,6 +8,18 @@ include 'inc/db.php';
 include 'inc/header.php';
 include 'inc/sidebar.php';
 
+// Fetch invoice ID from GET or another source
+$invoice_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Fetch invoice line items
+$line_items = [];
+if ($invoice_id > 0) {
+    $result = $conn->query("SELECT * FROM invoice_items WHERE invoice_id = $invoice_id ORDER BY booking_date, id");
+    while ($row = $result && $result->fetch_assoc()) {
+        $line_items[] = $row;
+    }
+}
+
 ?>
 
 <main class="content-wrapper">
@@ -65,25 +77,21 @@ include 'inc/sidebar.php';
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>3-Apr-25</td>
-                                <td>D2001151437</td>
-                                <td>GORAKHPUR</td>
-                                <td>2.820</td>
-                                <td>---</td>
-                                <td>---</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>5-Apr-25</td>
-                                <td>D2001151472</td>
-                                <td>RAEBARELI</td>
-                                <td>2.590</td>
-                                <td>---</td>
-                                <td>---</td>
-                            </tr>
-                            <!-- Add more rows as needed -->
+                            <?php if (!empty($line_items)): ?>
+                                <?php foreach ($line_items as $idx => $item): ?>
+                                    <tr>
+                                        <td><?= $idx + 1 ?></td>
+                                        <td><?= htmlspecialchars($item['booking_date']) ?></td>
+                                        <td><?= htmlspecialchars($item['consignment_no']) ?></td>
+                                        <td><?= htmlspecialchars($item['destination_city']) ?></td>
+                                        <td><?= htmlspecialchars($item['weight']) ?></td>
+                                        <td><?= htmlspecialchars($item['amt']) ?></td>
+                                        <td><?= htmlspecialchars($item['way_bill_value']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="7" class="text-center">No line items found.</td></tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
