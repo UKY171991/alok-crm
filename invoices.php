@@ -258,6 +258,37 @@ $(function () {
         $("#total_amount").val($(this).data("total_amount"));
         $("#gst_amount").val($(this).data("gst_amount"));
         $("#grand_total").val($(this).data("grand_total"));
+        // Load line items via AJAX
+        var invoiceId = $(this).data("id");
+        $.get("fetch_invoice_items.php", {invoice_id: invoiceId}, function (data) {
+            var items = [];
+            try { items = JSON.parse(data); } catch (e) {}
+            var tbody = "";
+            if (items.length > 0) {
+                for (var i = 0; i < items.length; i++) {
+                    tbody += `<tr>
+                        <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${items[i].booking_date || ""}' required></td>
+                        <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${items[i].consignment_no || ""}' required></td>
+                        <td><input type='text' name='line_items[${i}][destination_city]' class='form-control' value='${items[i].destination_city || ""}' required></td>
+                        <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${items[i].weight || ""}' required></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${items[i].amt || ""}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${items[i].way_bill_value || ""}'></td>
+                        <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
+                    </tr>`;
+                }
+            } else {
+                tbody = `<tr>
+                    <td><input type='date' name='line_items[0][booking_date]' class='form-control' required></td>
+                    <td><input type='text' name='line_items[0][consignment_no]' class='form-control' required></td>
+                    <td><input type='text' name='line_items[0][destination_city]' class='form-control' required></td>
+                    <td><input type='number' step='0.001' name='line_items[0][weight]' class='form-control' required></td>
+                    <td><input type='number' step='0.01' name='line_items[0][amt]' class='form-control'></td>
+                    <td><input type='number' step='0.01' name='line_items[0][way_bill_value]' class='form-control'></td>
+                    <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
+                </tr>`;
+            }
+            $("#lineItemsTable tbody").html(tbody);
+        });
         var modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
         modal.show();
     });
