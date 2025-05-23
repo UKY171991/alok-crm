@@ -5,6 +5,9 @@ include 'inc/db.php';
 // Fetch customer names for all invoices in one query
 $sql = "SELECT i.*, c.name AS customer_name FROM invoices i LEFT JOIN customers c ON i.customer_id = c.id ORDER BY i.id DESC";
 $result = $conn->query($sql);
+if (!$result) {
+    die("Query failed: " . $conn->error);
+}
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
