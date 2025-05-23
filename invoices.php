@@ -29,23 +29,22 @@ $invoice_no = generateInvoiceNo($conn);
 
         <!-- Add/Edit Invoice Modal -->
         <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="invoiceModalLabel">Add New Invoice</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title fw-bold" id="invoiceModalLabel">Add New Invoice</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form id="invoiceForm">
-                        <div class="modal-body">
-                            <input type="hidden" name="id" id="invoice_id">
-                            <div class="row">
+                        <div class="modal-body p-4">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label>Invoice No</label>
-                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control" value="<?php echo $invoice_no; ?>" readonly>
+                                    <label class="form-label fw-semibold">Invoice No</label>
+                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control bg-light" value="<?php echo $invoice_no; ?>" readonly>
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Customer</label>
-                                    <select name="customer_id" id="customer_id" class="form-control" required>
+                                    <label class="form-label fw-semibold">Customer</label>
+                                    <select name="customer_id" id="customer_id" class="form-select" required>
                                         <option value="">Select Customer</option>
                                         <?php
                                         $query = "SELECT id, name FROM customers ORDER BY name ASC";
@@ -57,8 +56,8 @@ $invoice_no = generateInvoiceNo($conn);
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Destination</label>
-                                    <select name="destination" id="destination" class="form-control" required>
+                                    <label class="form-label fw-semibold">Destination</label>
+                                    <select name="destination" id="destination" class="form-select" required>
                                         <option value="">Select Destination</option>
                                         <?php
                                         $query = "SELECT name FROM destinations ORDER BY name ASC";
@@ -70,11 +69,11 @@ $invoice_no = generateInvoiceNo($conn);
                                     </select>
                                 </div>
                             </div>
-                            <hr>
-                            <h5>Invoice Line Items</h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="lineItemsTable">
-                                    <thead>
+                            <hr class="my-3">
+                            <h5 class="fw-bold mb-3 text-primary">Invoice Line Items</h5>
+                            <div class="table-responsive mb-3">
+                                <table class="table table-bordered align-middle" id="lineItemsTable">
+                                    <thead class="table-light">
                                         <tr>
                                             <th>Booking Date</th>
                                             <th>Consignment No.</th>
@@ -93,30 +92,30 @@ $invoice_no = generateInvoiceNo($conn);
                                             <td><input type="number" step="0.001" name="line_items[0][weight]" class="form-control" required></td>
                                             <td><input type="number" step="0.01" name="line_items[0][amt]" class="form-control"></td>
                                             <td><input type="number" step="0.01" name="line_items[0][way_bill_value]" class="form-control"></td>
-                                            <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                                            <td><button type="button" class="btn btn-outline-danger btn-sm remove-row">Remove</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
-                                <button type="button" class="btn btn-success btn-sm" id="addRowBtn">Add Row</button>
+                                <button type="button" class="btn btn-success btn-sm" id="addRowBtn"><i class="fas fa-plus"></i> Add Row</button>
                             </div>
-                            <hr>
-                            <div class="row">
+                            <hr class="my-3">
+                            <div class="row g-3">
                                 <div class="col-md-4">
-                                    <label>Total Amount</label>
+                                    <label class="form-label fw-semibold">Total Amount</label>
                                     <input type="number" step="0.01" name="total_amount" id="total_amount" class="form-control" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <label>GST Amount</label>
+                                    <label class="form-label fw-semibold">GST Amount</label>
                                     <input type="number" step="0.01" name="gst_amount" id="gst_amount" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label>Grand Total</label>
+                                    <label class="form-label fw-semibold">Grand Total</label>
                                     <input type="number" step="0.01" name="grand_total" id="grand_total" class="form-control" required>
                                 </div>
                             </div>
-                            <div id="message" class="mt-2"></div>
+                            <div id="message" class="mt-3"></div>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer bg-light">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" id="submitBtn">Add Invoice</button>
                         </div>
