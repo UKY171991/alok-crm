@@ -73,15 +73,47 @@ $invoice_no = generateInvoiceNo($conn);
                                         ?>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
+                            </div>
+                            <hr>
+                            <h5>Invoice Line Items</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="lineItemsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Booking Date</th>
+                                            <th>Consignment No.</th>
+                                            <th>Destination City</th>
+                                            <th>Weight or N</th>
+                                            <th>Amt.</th>
+                                            <th>Way Bill Value</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="date" name="line_items[0][booking_date]" class="form-control" required></td>
+                                            <td><input type="text" name="line_items[0][consignment_no]" class="form-control" required></td>
+                                            <td><input type="text" name="line_items[0][destination_city]" class="form-control" required></td>
+                                            <td><input type="number" step="0.001" name="line_items[0][weight]" class="form-control" required></td>
+                                            <td><input type="number" step="0.01" name="line_items[0][amt]" class="form-control"></td>
+                                            <td><input type="number" step="0.01" name="line_items[0][way_bill_value]" class="form-control"></td>
+                                            <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn btn-success btn-sm" id="addRowBtn">Add Row</button>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <label>Total Amount</label>
                                     <input type="number" step="0.01" name="total_amount" id="total_amount" class="form-control" required>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label>GST Amount</label>
                                     <input type="number" step="0.01" name="gst_amount" id="gst_amount" class="form-control">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label>Grand Total</label>
                                     <input type="number" step="0.01" name="grand_total" id="grand_total" class="form-control" required>
                                 </div>
@@ -258,6 +290,25 @@ $(function () {
 
     $(document).ready(function () {
         $("#invoice_no").val("<?php echo $invoice_no; ?>");
+        let rowIdx = 1;
+        $('#addRowBtn').click(function () {
+            const row = `<tr>
+                <td><input type="date" name="line_items[${rowIdx}][booking_date]" class="form-control" required></td>
+                <td><input type="text" name="line_items[${rowIdx}][consignment_no]" class="form-control" required></td>
+                <td><input type="text" name="line_items[${rowIdx}][destination_city]" class="form-control" required></td>
+                <td><input type="number" step="0.001" name="line_items[${rowIdx}][weight]" class="form-control" required></td>
+                <td><input type="number" step="0.01" name="line_items[${rowIdx}][amt]" class="form-control"></td>
+                <td><input type="number" step="0.01" name="line_items[${rowIdx}][way_bill_value]" class="form-control"></td>
+                <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+            </tr>`;
+            $('#lineItemsTable tbody').append(row);
+            rowIdx++;
+        });
+        $(document).on('click', '.remove-row', function () {
+            if ($('#lineItemsTable tbody tr').length > 1) {
+                $(this).closest('tr').remove();
+            }
+        });
     });
 
 });
