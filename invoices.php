@@ -37,36 +37,42 @@ $invoice_no = generateInvoiceNo($conn);
                     </div>
                     <form id="invoiceForm">
                         <div class="modal-body p-4">
-                            <div class="row g-3 mb-3">
+                            <div class="row g-3 mb-3 align-items-end">
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Invoice No</label>
                                     <input type="text" name="invoice_no" id="invoice_no" class="form-control bg-light" value="<?php echo $invoice_no; ?>" readonly>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <label class="form-label fw-semibold">Customer</label>
-                                    <select name="customer_id" id="customer_id" class="form-select" required>
-                                        <option value="">Select Customer</option>
-                                        <?php
-                                        $query = "SELECT id, name FROM customers ORDER BY name ASC";
-                                        $result = $conn->query($query);
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                                        }
-                                        ?>
-                                    </select>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <select name="customer_id" id="customer_id" class="form-select" required>
+                                            <option value="">Select Customer</option>
+                                            <?php
+                                            $query = "SELECT id, name FROM customers ORDER BY name ASC";
+                                            $result = $conn->query($query);
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <label class="form-label fw-semibold">Destination</label>
-                                    <select name="destination" id="destination" class="form-select" required>
-                                        <option value="">Select Destination</option>
-                                        <?php
-                                        $query = "SELECT name FROM destinations ORDER BY name ASC";
-                                        $result = $conn->query($query);
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                                        }
-                                        ?>
-                                    </select>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        <select name="destination" id="destination" class="form-select" required>
+                                            <option value="">Select Destination</option>
+                                            <?php
+                                            $query = "SELECT name FROM destinations ORDER BY name ASC";
+                                            $result = $conn->query($query);
+                                            while ($row = $result->fetch_assoc()) {
+                                                echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <hr class="my-3">
