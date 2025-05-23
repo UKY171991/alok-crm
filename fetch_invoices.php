@@ -22,7 +22,8 @@ if ($result && $result->num_rows > 0) {
             <td>" . htmlspecialchars($row['grand_total']) . "</td>
             <td>" . htmlspecialchars($row['created_at']) . "</td>
             <td>
-                <button class='btn btn-warning btn-sm edit-btn'
+                <button class='btn btn-info btn-sm view-btn' data-id='" . htmlspecialchars($row['id']) . "'>View</button>\n" .
+                "<button class='btn btn-warning btn-sm edit-btn'
                     data-id='" . htmlspecialchars($row['id']) . "'
                     data-invoice_no='" . htmlspecialchars($row['invoice_no']) . "'
                     data-customer_id='" . htmlspecialchars($row['customer_id']) . "'
