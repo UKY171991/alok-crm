@@ -151,6 +151,21 @@ $invoice_no = generateInvoiceNo($conn);
     </div>
 </main>
 
+<!-- Invoice Details Modal -->
+<div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-labelledby="viewInvoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewInvoiceModalLabel">Invoice Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="viewInvoiceModalBody">
+        <!-- Invoice details will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php include 'inc/footer.php'; ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -308,6 +323,17 @@ $(function () {
             if ($('#lineItemsTable tbody tr').length > 1) {
                 $(this).closest('tr').remove();
             }
+        });
+    });
+
+    $(document).on('click', '.view-btn', function () {
+        var invoiceId = $(this).data('id');
+        $('#viewInvoiceModalBody').html('<div class="text-center p-4">Loading...</div>');
+        $('#viewInvoiceModal').modal('show');
+        $.get('invoice_details.php', {id: invoiceId}, function (data) {
+            // Extract only the main content from the response
+            var mainContent = $(data).find('main.content-wrapper').html();
+            $('#viewInvoiceModalBody').html(mainContent ? mainContent : data);
         });
     });
 
