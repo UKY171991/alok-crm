@@ -68,7 +68,13 @@ if ($conn->query($sql)) {
             $weight = isset($item['weight']) ? floatval($item['weight']) : 0;
             $amt = isset($item['amt']) ? floatval($item['amt']) : 0;
             $way_bill_value = isset($item['way_bill_value']) ? floatval($item['way_bill_value']) : 0;
-            $conn->query("INSERT INTO invoice_items (invoice_id, booking_date, consignment_no, destination_city, weight, amt, way_bill_value) VALUES ($invoice_id, '$booking_date', '$consignment_no', '$destination_city', '$weight', '$amt', '$way_bill_value')");
+            $insert_sql = "INSERT INTO invoice_items (invoice_id, booking_date, consignment_no, destination_city, weight, amt, way_bill_value) VALUES ($invoice_id, '$booking_date', '$consignment_no', '$destination_city', '$weight', '$amt', '$way_bill_value')";
+            if (!$conn->query($insert_sql)) {
+                error_log('Invoice item insert error: ' . $conn->error . ' | SQL: ' . $insert_sql);
+                echo "<div class='alert alert-danger'>Error saving line item: " . $conn->error . "</div>";
+                $conn->close();
+                exit;
+            }
         }
     }
     echo "<div class='alert alert-success'>$msg</div>";
