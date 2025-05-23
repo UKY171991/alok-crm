@@ -13,7 +13,7 @@ $total_amount = floatval($_POST['total_amount']);
 $gst_amount = isset($_POST['gst_amount']) ? floatval($_POST['gst_amount']) : 0;
 $grand_total = floatval($_POST['grand_total']);
 
-// Function to generate next invoice number
+if (!function_exists('generateInvoiceNo')) {
 function generateInvoiceNo($conn) {
     $query = "SELECT MAX(id) AS max_id FROM invoices";
     $result = $conn->query($query);
@@ -22,6 +22,7 @@ function generateInvoiceNo($conn) {
         $nextId = isset($row['max_id']) ? $row['max_id'] + 1 : 1;
     }
     return "INV-" . str_pad($nextId, 6, "0", STR_PAD_LEFT);
+}
 }
 
 if ($id == '') {
