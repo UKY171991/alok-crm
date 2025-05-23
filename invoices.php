@@ -38,10 +38,6 @@ $invoice_no = generateInvoiceNo($conn);
                     <form id="invoiceForm">
                         <div class="modal-body p-4">
                             <div class="row g-3 mb-3 align-items-end">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-semibold">Invoice No</label>
-                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control bg-light" value="<?php echo $invoice_no; ?>" readonly>
-                                </div>
                                 <div class="col-md-3">
                                     <label class="form-label fw-semibold">Customer</label>
                                     <div class="input-group">
@@ -252,7 +248,6 @@ $(function () {
         $("#invoiceModalLabel").text("Update Invoice");
         $("#submitBtn").text("Update Invoice");
         $("#invoice_id").val($(this).data("id"));
-        $("#invoice_no").val($(this).data("invoice_no"));
         $("#customer_id").val($(this).data("customer_id"));
         $("#destination").val($(this).data("destination"));
         $("#total_amount").val($(this).data("total_amount"));
@@ -335,7 +330,6 @@ $(function () {
     });
 
     $(document).ready(function () {
-        $("#invoice_no").val("<?php echo $invoice_no; ?>");
         let rowIdx = 1;
         $('#addRowBtn').click(function () {
             const row = `<tr>
