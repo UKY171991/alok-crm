@@ -21,6 +21,25 @@ if ($id == '') {
 }
 
 if ($conn->query($sql)) {
+    // Get invoice ID
+    $invoice_id = ($id == '') ? $conn->insert_id : $id;
+
+    // Handle line items
+    if (!empty($_POST['line_items']) && is_array($_POST['line_items'])) {
+        // On edit, delete old line items first
+        if ($id != '') {
+            $conn->query("DELETE FROM invoice_items WHERE invoice_id = $invoice_id");
+        }
+        foreach ($_POST['line_items'] as $item) {
+            $booking_date = $conn->real_escape_string($item['booking_date']);
+            $consignment_no = $conn->real_escape_string($item['consignment_no']);
+            $destination_city = $conn->real_escape_string($item['destination_city']);
+            $weight = isset($item['weight']) ? floatval($item['weight']) : 0;
+            $amt = isset($item['amt']) ? floatval($item['amt']) : 0;
+            $way_bill_value = isset($item['way_bill_value']) ? floatval($item['way_bill_value']) : 0;
+            $conn->query("INSERT INTO invoice_items (invoice_id, booking_date, consignment_no, destination_city, weight, amt, way_bill_value) VALUES ($invoice_id, '$booking_date', '$consignment_no', '$destination_city', '$weight', '$amt', '$way_bill_value')");
+        }
+    }
     echo "<div class='alert alert-success'>$msg</div>";
 } else {
     echo "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
