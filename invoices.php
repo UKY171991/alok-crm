@@ -20,6 +20,11 @@ if ($conn->connect_error) {
 $invoice_no = generateInvoiceNo($conn);
 ?>
 
+<!-- Ensure jQuery is loaded first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Then Bootstrap JS (if used) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <main class="content-wrapper">
     <div class="container-fluid p-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
