@@ -16,7 +16,7 @@ if ($result && $result->num_rows > 0) {
             <td>" . htmlspecialchars($row['invoice_no']) . "</td>
             <td>" . htmlspecialchars($row['customer_name'] ?? $row['customer_id']) . "</td>
             <td>" . htmlspecialchars($row['invoice_date']) . "</td>
-            <td>" . htmlspecialchars($row['destination']) . "</td>
+            <!--<td>" . htmlspecialchars($row['destination']) . "</td>-->
             <td>" . htmlspecialchars($row['total_amount']) . "</td>
             <td>" . htmlspecialchars($row['gst_amount']) . "</td>
             <td>" . htmlspecialchars($row['grand_total']) . "</td>
