@@ -1,0 +1,196 @@
+invoice_id: 38
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2016-01-09
+            [consignment_no] => Perspiciatis quia e
+            [destination_city] => Special Sector
+            [weight] => 87.000
+            [amt] => 89.00
+            [way_bill_value] => 22.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+    [1] => Array
+        (
+            [booking_date] => 2018-08-21
+            [consignment_no] => Nostrud repudiandae 
+            [destination_city] => Delhi
+            [weight] => 91.000
+            [amt] => 25.00
+            [way_bill_value] => 17.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 38
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2013-06-17
+            [consignment_no] => Necessitatibus id cu
+            [destination_city] => Local (Lucknow)
+            [weight] => 37.000
+            [amt] => 50.00
+            [way_bill_value] => 79.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 38
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 1970-07-01
+            [consignment_no] => Irure quo earum quis
+            [destination_city] => Special Sector
+            [weight] => 42.000
+            [amt] => 21.00
+            [way_bill_value] => 100.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+    [1] => Array
+        (
+            [booking_date] => 1972-02-02
+            [consignment_no] => Lorem lorem ut vitae
+            [destination_city] => Delhi
+            [weight] => 6.000
+            [amt] => 24.00
+            [way_bill_value] => 61.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+    [2] => Array
+        (
+            [booking_date] => 1977-12-23
+            [consignment_no] => Consectetur id delen
+            [destination_city] => Metro
+            [weight] => 92.000
+            [amt] => 63.00
+            [way_bill_value] => 79.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 36
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2018-12-30
+            [consignment_no] => Qui esse sunt obcae
+            [destination_city] => UP
+            [weight] => 81.000
+            [amt] => 53.00
+            [way_bill_value] => 74.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 36
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2018-12-30
+            [consignment_no] => Qui esse sunt obcae
+            [destination_city] => UP
+            [weight] => 81.000
+            [amt] => 53.00
+            [way_bill_value] => 74.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 38
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 1970-07-01
+            [consignment_no] => Irure quo earum quis
+            [destination_city] => Special Sector
+            [weight] => 42.000
+            [amt] => 21.00
+            [way_bill_value] => 100.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+    [1] => Array
+        (
+            [booking_date] => 1972-02-02
+            [consignment_no] => Lorem lorem ut vitae
+            [destination_city] => Delhi
+            [weight] => 6.000
+            [amt] => 24.00
+            [way_bill_value] => 61.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+    [2] => Array
+        (
+            [booking_date] => 1977-12-23
+            [consignment_no] => Consectetur id delen
+            [destination_city] => Metro
+            [weight] => 92.000
+            [amt] => 63.00
+            [way_bill_value] => 79.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 39
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 1974-08-24
+            [consignment_no] => Distinctio Fuga Do
+            [destination_city] => Bihar / Jharkhand
+            [weight] => 67.000
+            [amt] => 59.00
+            [way_bill_value] => 2.00
+            [description] => 
+            [quantity] => 1
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)

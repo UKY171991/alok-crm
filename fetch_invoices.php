@@ -19,9 +19,10 @@ if (!$result) {
 if ($result && $result->num_rows > 0) {
     // Debug: output the number of rows as an HTML comment
     echo "<!-- Rows: {$result->num_rows} -->\n";
+    $serial = 1;
     while ($row = $result->fetch_assoc()) {
         echo "<tr>
-            <td>{$row['id']}</td>
+            <td>" . $serial++ . "</td>
             <td>" . htmlspecialchars($row['invoice_no']) . "</td>
             <td>" . htmlspecialchars($row['customer_name'] ?? $row['customer_id']) . "</td>
             <td>" . htmlspecialchars($row['invoice_date']) . "</td>

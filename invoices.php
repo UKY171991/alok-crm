@@ -167,7 +167,7 @@ while ($row = $destResult->fetch_assoc()) {
                     <table class="table table-bordered table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th>ID</th><th>Invoice No</th><th>Customer</th><th>Invoice Date</th><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
+                                <th>#</th><th>Invoice No</th><th>Customer</th><th>Invoice Date</th><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody">
@@ -182,7 +182,7 @@ while ($row = $destResult->fetch_assoc()) {
 
 <!-- Invoice Details Modal -->
 <div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-labelledby="viewInvoiceModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="viewInvoiceModalLabel">Invoice Details</h5>
@@ -331,7 +331,7 @@ $(function () {
                     tbody += `<tr>
                         <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${item.booking_date || ''}' required></td>
                         <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${item.consignment_no || ''}' required></td>
-                        <td><select name='line_items[${i}][destination_city]' class='form-select' required><option value=''>Select Destination</option>${destinationOptions.replace(`value='${item.destination_city || ''}'`, `value='${item.destination_city || ''}' selected`)}</select></td>
+                        <td><select name='line_items[${i}][destination_city]' class='form-select' required><option value=''>Select Destination</option>${destinationOptions}</select></td>
                         <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${item.weight != null ? item.weight : ''}' required></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${item.amt != null ? item.amt : ''}'></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${item.way_bill_value != null ? item.way_bill_value : ''}'></td>
@@ -358,6 +358,13 @@ $(function () {
                 </tr>`;
             }
             $("#lineItemsTable tbody").html(tbody);
+            // Set destination select value for each row
+            $("#lineItemsTable tbody tr").each(function(index) {
+                var item = items[index];
+                if (item && item.destination_city) {
+                    $(this).find("select[name^='line_items']").val(item.destination_city);
+                }
+            });
         });
         var modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
         modal.show();
