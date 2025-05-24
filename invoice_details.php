@@ -14,7 +14,7 @@ $invoice_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 // Fetch invoice line items
 $line_items = [];
 if ($invoice_id > 0) {
-    $result = $conn->query("SELECT * FROM invoice_items WHERE invoice_id = $invoice_id AND (booking_date IS NOT NULL AND booking_date != '' AND consignment_no IS NOT NULL AND consignment_no != '' AND destination_city IS NOT NULL AND destination_city != '' AND weight IS NOT NULL AND amt IS NOT NULL AND way_bill_value IS NOT NULL) ORDER BY booking_date, id");
+    $result = $conn->query("SELECT * FROM invoice_items WHERE invoice_id = $invoice_id ORDER BY booking_date, id");
     while ($row = $result && $result->fetch_assoc()) {
         $line_items[] = $row;
     }
