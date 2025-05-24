@@ -54,22 +54,6 @@ $invoice_no = generateInvoiceNo($conn);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-semibold">Destination</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                                        <select name="destination" id="destination" class="form-select" required>
-                                            <option value="">Select Destination</option>
-                                            <?php
-                                            $query = "SELECT name FROM destinations ORDER BY name ASC";
-                                            $result = $conn->query($query);
-                                            while ($row = $result->fetch_assoc()) {
-                                                echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
                             <hr class="my-3">
                             <h5 class="fw-bold mb-3 text-primary">Invoice Line Items</h5>
