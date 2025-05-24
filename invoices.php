@@ -33,7 +33,9 @@ $invoice_no = generateInvoiceNo($conn);
                 <div class="modal-content shadow-lg border-0">
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title fw-bold" id="invoiceModalLabel">Add New Invoice</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn btn-danger btn-sm ms-auto" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fas fa-times"></i> Close
+                        </button>
                     </div>
                     <form id="invoiceForm">
                         <div class="modal-body p-4">
