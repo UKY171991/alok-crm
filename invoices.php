@@ -140,7 +140,7 @@ $invoice_no = generateInvoiceNo($conn);
                         <thead class="table-dark">
                             <tr>
                                 <th>ID</th><th>Invoice No</th><th>Customer ID</th><th>Invoice Date</th>
-                                <th>Destination</th><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
+                                <!--<th>Destination</th>--><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody"></tbody>
