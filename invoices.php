@@ -79,7 +79,7 @@ $invoice_no = generateInvoiceNo($conn);
                                         <tr>
                                             <th>Booking Date</th>
                                             <th>Consignment No.</th>
-                                            <th>Destination City</th>
+                                            <th>Destination</th>
                                             <th>Weight or N</th>
                                             <th>Amt.</th>
                                             <th>Way Bill Value</th>
@@ -90,7 +90,18 @@ $invoice_no = generateInvoiceNo($conn);
                                         <tr>
                                             <td><input type="date" name="line_items[0][booking_date]" class="form-control" required></td>
                                             <td><input type="text" name="line_items[0][consignment_no]" class="form-control" required></td>
-                                            <td><input type="text" name="line_items[0][destination_city]" class="form-control" required></td>
+                                            <td>
+                                                <select name="line_items[0][destination_city]" class="form-select" required>
+                                                    <option value="">Select Destination</option>
+                                                    <?php
+                                                    $query = "SELECT name FROM destinations ORDER BY name ASC";
+                                                    $result = $conn->query($query);
+                                                    while ($row = $result->fetch_assoc()) {
+                                                        echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </td>
                                             <td><input type="number" step="0.001" name="line_items[0][weight]" class="form-control" required></td>
                                             <td><input type="number" step="0.01" name="line_items[0][amt]" class="form-control"></td>
                                             <td><input type="number" step="0.01" name="line_items[0][way_bill_value]" class="form-control"></td>
@@ -264,7 +275,7 @@ $(function () {
                     tbody += `<tr>
                         <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${items[i].booking_date || ""}' required></td>
                         <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${items[i].consignment_no || ""}' required></td>
-                        <td><input type='text' name='line_items[${i}][destination_city]' class='form-control' value='${items[i].destination_city || ""}' required></td>
+                        <td><select name='line_items[${i}][destination_city]' class='form-select' required>${destinationOptions}</select></td>
                         <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${items[i].weight || ""}' required></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${items[i].amt || ""}'></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${items[i].way_bill_value || ""}'></td>
@@ -275,7 +286,7 @@ $(function () {
                 tbody = `<tr>
                     <td><input type='date' name='line_items[0][booking_date]' class='form-control' required></td>
                     <td><input type='text' name='line_items[0][consignment_no]' class='form-control' required></td>
-                    <td><input type='text' name='line_items[0][destination_city]' class='form-control' required></td>
+                    <td><select name='line_items[0][destination_city]' class='form-select' required>${destinationOptions}</select></td>
                     <td><input type='number' step='0.001' name='line_items[0][weight]' class='form-control' required></td>
                     <td><input type='number' step='0.01' name='line_items[0][amt]' class='form-control'></td>
                     <td><input type='number' step='0.01' name='line_items[0][way_bill_value]' class='form-control'></td>
@@ -331,11 +342,22 @@ $(function () {
 
     $(document).ready(function () {
         let rowIdx = 1;
+        // Get destination options HTML
+        var destinationOptions = '';
+        <?php
+        $query = "SELECT name FROM destinations ORDER BY name ASC";
+        $result = $conn->query($query);
+        $options = "<option value=''>Select Destination</option>";
+        while ($row = $result->fetch_assoc()) {
+            $options .= "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
+        }
+        ?>
+        destinationOptions = `<?php echo $options; ?>`;
         $('#addRowBtn').click(function () {
             const row = `<tr>
                 <td><input type="date" name="line_items[${rowIdx}][booking_date]" class="form-control" required></td>
                 <td><input type="text" name="line_items[${rowIdx}][consignment_no]" class="form-control" required></td>
-                <td><input type="text" name="line_items[${rowIdx}][destination_city]" class="form-control" required></td>
+                <td><select name="line_items[${rowIdx}][destination_city]" class="form-select" required>${destinationOptions}</select></td>
                 <td><input type="number" step="0.001" name="line_items[${rowIdx}][weight]" class="form-control" required></td>
                 <td><input type="number" step="0.01" name="line_items[${rowIdx}][amt]" class="form-control"></td>
                 <td><input type="number" step="0.01" name="line_items[${rowIdx}][way_bill_value]" class="form-control"></td>
