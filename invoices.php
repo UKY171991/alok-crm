@@ -361,4 +361,18 @@ $(function () {
         }
     });
 });
+
+// Add a showToast function for notifications
+function showToast(msg, type) {
+    var alertType = 'info';
+    if (type === 'success') alertType = 'success';
+    else if (type === 'error') alertType = 'danger';
+    else if (type === 'warning') alertType = 'warning';
+    var alertHtml = '<div class="alert alert-' + alertType + ' alert-dismissible fade show" role="alert">' +
+        msg +
+        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+        '</div>';
+    $("#ajaxError").removeClass('d-none').html(alertHtml);
+    setTimeout(function() { $("#ajaxError").addClass('d-none').html(''); }, 5000);
+}
 </script>
