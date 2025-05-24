@@ -256,10 +256,14 @@ $(function () {
             var tbody = "";
             if (items.length > 0) {
                 for (var i = 0; i < items.length; i++) {
+                    var destOptions = destinationOptions.replace(
+                        `value='${items[i].destination_city}'`,
+                        `value='${items[i].destination_city}' selected`
+                    );
                     tbody += `<tr>
                         <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${items[i].booking_date || ""}' required></td>
                         <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${items[i].consignment_no || ""}' required></td>
-                        <td><select name='line_items[${i}][destination_city]' class='form-select' required>${destinationOptions}</select></td>
+                        <td><select name='line_items[${i}][destination_city]' class='form-select' required>${destOptions}</select></td>
                         <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${items[i].weight || ""}' required></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${items[i].amt || ""}'></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${items[i].way_bill_value || ""}'></td>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 17, 2025 at 12:02 PM
+-- Generation Time: May 24, 2025 at 02:38 AM
 -- Server version: 10.11.11-MariaDB-cll-lve
 -- PHP Version: 8.3.11
 
@@ -51,7 +51,8 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `name`, `email`, `phone`, `address`, `gst_no`, `hsn_code`, `pan_no`, `cin_no`, `aadhaar_no`, `destination`, `parcel_type`, `weight`, `price`, `created_at`, `updated_at`) VALUES
-(10, 'Eden Hale', 'mylycavy@mailinator.com', '+1 (253) 107-4417', 'Quibusdam qui conseq', 'Officiis odio nostru', 'Ab saepe fugit non ', 'Consequuntur perspic', 'Eiusmod magni ea min', 'Amet ullamco dolore', '[\"Local (Lucknow)\",\"Delhi\"]', '[\"Document & Light Parcel\",\"Premium\"]', '[\"Upto 100 gm\",\"Upto 500 gm\"]', '[\"405\",\"55\"]', '2025-05-17 09:43:05', '2025-05-17 09:43:05');
+(10, 'Eden Hale', 'mylycavy@mailinator.com', '+1 (253) 107-4417', 'Quibusdam qui conseq', 'Officiis odio nostru', 'Ab saepe fugit non ', 'Consequuntur perspic', 'Eiusmod magni ea min', 'Amet ullamco dolore', '[\"Local (Lucknow)\",\"Delhi\"]', '[\"Document & Light Parcel\",\"Premium\"]', '[\"Upto 100 gm\",\"Upto 500 gm\"]', '[\"405\",\"55\"]', '2025-05-17 09:43:05', '2025-05-17 09:43:05'),
+(11, 'Kitra Lancaster', 'qyti@mailinator.com', '+1 (152) 127-6541', 'Beatae voluptas fugi', 'Vel voluptates conse', 'Aut iste anim sed in', 'Consequatur et minim', 'Corrupti excepteur ', 'Nam in dolor eu est ', '[\"North\",\"UP\"]', '[\"Document & Light Parcel\",\"Premium\"]', '[\"Addl 500 gm\",\"Addl 500 gm\"]', '[\"805\",\"54\"]', '2025-05-17 10:19:22', '2025-05-17 10:19:22');
 
 -- --------------------------------------------------------
 
@@ -94,6 +95,8 @@ CREATE TABLE `invoices` (
   `customer_id` int(11) NOT NULL,
   `destination` varchar(255) DEFAULT NULL,
   `invoice_date` date NOT NULL,
+  `from_date` date DEFAULT NULL,
+  `to_date` date DEFAULT NULL,
   `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
   `gst_amount` decimal(10,2) DEFAULT 0.00,
   `grand_total` decimal(10,2) NOT NULL DEFAULT 0.00,
@@ -101,6 +104,25 @@ CREATE TABLE `invoices` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `invoices`
+--
+
+INSERT INTO `invoices` (`id`, `invoice_no`, `customer_id`, `destination`, `invoice_date`, `from_date`, `to_date`, `total_amount`, `gst_amount`, `grand_total`, `status`, `created_at`, `updated_at`) VALUES
+(12, 'INV-000001', 10, 'Delhi', '2025-05-17', NULL, NULL, 100.00, 20.00, 120.00, 'pending', '2025-05-17 10:59:45', '2025-05-17 10:59:45'),
+(17, 'INV-000015', 11, 'Special Sector', '2013-01-03', NULL, NULL, 68.00, 88.00, 2.00, 'pending', '2025-05-23 15:28:12', '2025-05-23 15:30:06'),
+(18, 'INV-000018', 11, 'Local (Lucknow)', '1986-05-02', NULL, NULL, 51.00, 19.00, 27.00, 'pending', '2025-05-23 15:30:58', '2025-05-23 15:30:58'),
+(19, 'INV-000019', 11, 'North East', '1972-11-08', NULL, NULL, 51.00, 8.00, 48.00, 'pending', '2025-05-23 15:32:08', '2025-05-23 15:32:08'),
+(20, 'INV-000020', 10, 'Metro', '2025-05-23', NULL, NULL, 47.00, 41.00, 85.00, 'pending', '2025-05-23 15:53:17', '2025-05-23 15:53:17'),
+(23, 'INV-000021', 10, 'Bihar / Jharkhand', '2025-05-23', NULL, NULL, 84.00, 39.00, 18.00, 'pending', '2025-05-23 16:01:32', '2025-05-23 16:01:32'),
+(27, 'INV-000024', 10, 'North', '2025-05-23', NULL, NULL, 33.00, 31.00, 12.00, 'pending', '2025-05-23 16:18:41', '2025-05-23 16:18:41'),
+(28, 'INV-000028', 11, 'ROI', '2025-05-23', NULL, NULL, 7.00, 83.00, 75.00, 'pending', '2025-05-23 16:36:57', '2025-05-23 16:36:57'),
+(29, 'INV-000029', 11, 'North East', '2025-05-23', NULL, NULL, 76.00, 55.00, 38.00, 'pending', '2025-05-23 16:37:10', '2025-05-23 16:37:10'),
+(30, 'INV-000030', 10, 'North', '2025-05-23', NULL, NULL, 83.00, 27.00, 56.00, 'pending', '2025-05-23 16:59:35', '2025-05-23 16:59:35'),
+(31, 'INV-000031', 10, '', '2025-05-24', NULL, NULL, 50.00, 40.00, 11.00, 'pending', '2025-05-24 00:24:45', '2025-05-24 00:24:45'),
+(32, 'INV-000032', 11, '', '2025-05-24', NULL, NULL, 25.00, 56.00, 85.00, 'pending', '2025-05-24 00:24:54', '2025-05-24 00:24:54'),
+(33, 'INV-000033', 10, '', '2025-05-24', NULL, NULL, 26.00, 57.00, 79.00, 'pending', '2025-05-24 00:25:24', '2025-05-24 00:25:24');
 
 -- --------------------------------------------------------
 
@@ -111,12 +133,42 @@ CREATE TABLE `invoices` (
 CREATE TABLE `invoice_items` (
   `id` int(11) NOT NULL,
   `invoice_id` int(11) NOT NULL,
+  `booking_date` date DEFAULT NULL,
+  `consignment_no` varchar(50) DEFAULT NULL,
+  `destination_city` varchar(100) DEFAULT NULL,
+  `weight` decimal(10,3) DEFAULT NULL,
+  `amt` decimal(10,2) DEFAULT NULL,
+  `way_bill_value` decimal(10,2) DEFAULT NULL,
   `description` text NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1,
   `rate` decimal(10,2) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `invoice_items`
+--
+
+INSERT INTO `invoice_items` (`id`, `invoice_id`, `booking_date`, `consignment_no`, `destination_city`, `weight`, `amt`, `way_bill_value`, `description`, `quantity`, `rate`, `amount`, `created_at`) VALUES
+(2, 19, '2025-05-23', 'sdf', 'Sequi quae eiusmod u', 3.000, 3.00, 3.00, '', 1, 0.00, 0.00, '2025-05-23 15:40:57'),
+(3, 20, '2015-10-30', 'Distinctio Ut numqu', 'Officiis distinctio', 49.000, 27.00, 32.00, '', 1, 0.00, 0.00, '2025-05-23 15:53:17'),
+(4, 20, '2025-05-23', 'sdf', 'asdf', 50.000, 56.00, 56.00, '', 1, 0.00, 0.00, '2025-05-23 15:53:17'),
+(5, 23, '2008-12-27', 'Iusto illum rerum n', 'Accusantium in ea ea', 65.000, 94.00, 69.00, '', 1, 0.00, 0.00, '2025-05-23 16:01:32'),
+(6, 23, '1983-10-24', 'Molestiae voluptas e', 'Sed voluptate perspi', 3.000, 74.00, 96.00, '', 1, 0.00, 0.00, '2025-05-23 16:01:32'),
+(7, 27, '1972-09-29', 'Amet dolores velit ', 'Ex laboriosam vel e', 37.000, 48.00, 6.00, '', 1, 0.00, 0.00, '2025-05-23 16:18:41'),
+(8, 27, '1985-10-16', 'Tempore dolore inci', 'Dolorem non non volu', 1.000, 54.00, 6.00, '', 1, 0.00, 0.00, '2025-05-23 16:18:41'),
+(9, 28, '1990-12-28', 'Voluptatem quas haru', 'Inventore sequi aliq', 16.000, 68.00, 88.00, '', 1, 0.00, 0.00, '2025-05-23 16:36:57'),
+(10, 28, '1979-07-22', 'Laudantium autem qu', 'Sed reprehenderit u', 46.000, 2.00, 94.00, '', 1, 0.00, 0.00, '2025-05-23 16:36:57'),
+(11, 29, '2001-08-02', 'Ut ullam blanditiis ', 'Recusandae Optio c', 14.000, 30.00, 58.00, '', 1, 0.00, 0.00, '2025-05-23 16:37:10'),
+(12, 29, '2009-11-06', 'Placeat veritatis l', 'Velit ut doloribus ', 19.000, 72.00, 28.00, '', 1, 0.00, 0.00, '2025-05-23 16:37:10'),
+(13, 30, '2000-02-28', 'Ut lorem eum error n', 'Deserunt et laboris ', 81.000, 60.00, 67.00, '', 1, 0.00, 0.00, '2025-05-23 16:59:35'),
+(14, 30, '2001-05-01', 'Sequi est omnis aspe', 'Vitae aut est cillum', 22.000, 52.00, 26.00, '', 1, 0.00, 0.00, '2025-05-23 16:59:35'),
+(15, 31, '1975-07-21', 'Dolores maxime dolor', 'Local (Lucknow)', 94.000, 66.00, 32.00, '', 1, 0.00, 0.00, '2025-05-24 00:24:45'),
+(16, 32, '2023-05-05', 'Quidem aliquip dolor', 'Metro', 65.000, 26.00, 62.00, '', 1, 0.00, 0.00, '2025-05-24 00:24:54'),
+(17, 33, '1997-03-24', 'Labore quod incididu', 'Delhi', 88.000, 15.00, 49.00, '', 1, 0.00, 0.00, '2025-05-24 00:25:24'),
+(18, 33, '2009-05-20', 'Similique enim dolor', 'Bihar / Jharkhand', 84.000, 4.00, 95.00, '', 1, 0.00, 0.00, '2025-05-24 00:25:24'),
+(19, 33, '1976-01-10', 'Debitis harum ut cul', 'North East', 82.000, 30.00, 47.00, '', 1, 0.00, 0.00, '2025-05-24 00:25:24');
 
 -- --------------------------------------------------------
 
@@ -3505,7 +3557,7 @@ INSERT INTO `orders` (`id`, `customer_id`, `date`, `docket`, `location`, `destin
 (3312, NULL, NULL, '500508299834', NULL, NULL, '3.3', 0, 'SF', '1', '224001', 30.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3.3', NULL),
 (3313, NULL, NULL, '500508299843', NULL, NULL, '9.7', 0, 'SF', '1', '211001', 30.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '9.7', NULL),
 (3314, NULL, NULL, '500508297494', NULL, NULL, '3.85', 0, 'SF', '1', '244001', 30.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3.85', NULL),
-(3315, NULL, NULL, '500508297503', NULL, NULL, '3.7', 0, 'SF', '1', '242001', 30.00, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3.7', NULL);
+(3315, 10, '2025-05-17', '500508297503', '', '', '3.7', 0, 'SF', '1', '242001', 30.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, '', '', '1000', '', '', '', '', '0000-00-00', '', '', '0000-00-00', '', '', '', '', '', 0.00, '', '3.7', 0);
 
 -- --------------------------------------------------------
 
@@ -3618,31 +3670,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `destinations`
 --
 ALTER TABLE `destinations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `invoices`
 --
 ALTER TABLE `invoices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `invoice_items`
 --
 ALTER TABLE `invoice_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3317;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3318;
 
 --
 -- AUTO_INCREMENT for table `rates`
