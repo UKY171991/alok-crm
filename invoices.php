@@ -255,5 +255,110 @@ $(function () {
         $("#ajaxError").removeClass('d-none').text('JS Error: ' + message + ' at ' + source + ':' + lineno);
         return false;
     };
+
+    // Event delegation for dynamic buttons
+    $(document).on("click", ".view-btn", function () {
+        var invoiceId = $(this).data('id');
+        $('#viewInvoiceModalBody').html('<div class="text-center p-4">Loading...</div>');
+        $('#viewInvoiceModal').modal('show');
+        $.get('invoice_details.php', {id: invoiceId}, function (data) {
+            // Extract only the main content from the response
+            var mainContent = $(data).find('main.content-wrapper').html();
+            $('#viewInvoiceModalBody').html(mainContent ? mainContent : data);
+        });
+    });
+    $(document).on("click", ".edit-btn", function () {
+        $("#invoiceModalLabel").text("Update Invoice");
+        $("#submitBtn").text("Update Invoice");
+        $("#invoice_id").val($(this).data("id"));
+        $("#customer_id").val($(this).data("customer_id"));
+        $("#destination").val($(this).data("destination"));
+        $("#total_amount").val($(this).data("total_amount"));
+        $("#gst_amount").val($(this).data("gst_amount"));
+        $("#grand_total").val($(this).data("grand_total"));
+        // Load line items via AJAX
+        var invoiceId = $(this).data("id");
+        $.get("fetch_invoice_items.php", {invoice_id: invoiceId}, function (data) {
+            var items = [];
+            try { items = JSON.parse(data); } catch (e) {}
+            var tbody = "";
+            if (items.length > 0) {
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i] || {};
+                    var destOptions = destinationOptions.replace(
+                        `value='${item.destination_city || ''}'`,
+                        `value='${item.destination_city || ''}' selected`
+                    );
+                    tbody += `<tr>
+                        <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${item.booking_date || ''}' required></td>
+                        <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${item.consignment_no || ''}' required></td>
+                        <td><select name='line_items[${i}][destination_city]' class='form-select' required>${destOptions}</select></td>
+                        <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${item.weight != null ? item.weight : ''}' required></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${item.amt != null ? item.amt : ''}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${item.way_bill_value != null ? item.way_bill_value : ''}'></td>
+                        <td><input type='text' name='line_items[${i}][description]' class='form-control' value='${item.description || ''}'></td>
+                        <td><input type='number' name='line_items[${i}][quantity]' class='form-control' value='${item.quantity != null ? item.quantity : ''}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][rate]' class='form-control' value='${item.rate != null ? item.rate : ''}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][amount]' class='form-control' value='${item.amount != null ? item.amount : ''}'></td>
+                        <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
+                    </tr>`;
+                }
+            } else {
+                tbody = `<tr>
+                    <td><input type='date' name='line_items[0][booking_date]' class='form-control' required></td>
+                    <td><input type='text' name='line_items[0][consignment_no]' class='form-control' required></td>
+                    <td><select name='line_items[0][destination_city]' class='form-select' required>${destinationOptions}</select></td>
+                    <td><input type='number' step='0.001' name='line_items[0][weight]' class='form-control' required></td>
+                    <td><input type='number' step='0.01' name='line_items[0][amt]' class='form-control'></td>
+                    <td><input type='number' step='0.01' name='line_items[0][way_bill_value]' class='form-control'></td>
+                    <td><input type='text' name='line_items[0][description]' class='form-control'></td>
+                    <td><input type='number' name='line_items[0][quantity]' class='form-control'></td>
+                    <td><input type='number' step='0.01' name='line_items[0][rate]' class='form-control'></td>
+                    <td><input type='number' step='0.01' name='line_items[0][amount]' class='form-control'></td>
+                    <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
+                </tr>`;
+            }
+            $("#lineItemsTable tbody").html(tbody);
+        });
+        var modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+        modal.show();
+    });
+    $(document).on("click", ".delete-btn", function () {
+        const id = $(this).data("id");
+        if (confirm("Are you sure you want to delete this invoice?")) {
+            $.post("delete_invoice.php", { id: id }, function (response) {
+                var msg = 'Invoice deleted successfully!';
+                var type = 'success';
+                try {
+                    var json = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (json && typeof json === 'object') {
+                        msg = json.message || msg;
+                        type = json.success ? 'success' : 'error';
+                    } else {
+                        if (response && response.toLowerCase().includes('error')) {
+                            type = 'error';
+                            msg = response;
+                        } else if (response && response.toLowerCase().includes('success')) {
+                            type = 'success';
+                            msg = response;
+                        } else {
+                            msg = response || msg;
+                        }
+                    }
+                } catch (e) {
+                    if (typeof response === 'string' && response.toLowerCase().includes('error')) {
+                        type = 'error';
+                    }
+                    msg = typeof response === 'string' ? response : 'Error processing response.';
+                }
+                showToast(msg, type);
+                if (type === 'success') {
+                    loadInvoices();
+                }
+            }).fail(function() {
+                showToast('Error deleting invoice. Please try again.', 'error');
+            });
+        }
+    });
 });
 </script>
