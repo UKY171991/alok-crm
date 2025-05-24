@@ -267,6 +267,10 @@ $(function () {
                         <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${items[i].weight || ""}' required></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${items[i].amt || ""}'></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${items[i].way_bill_value || ""}'></td>
+                        <td><input type='text' name='line_items[${i}][description]' class='form-control' value='${items[i].description || ""}'></td>
+                        <td><input type='number' name='line_items[${i}][quantity]' class='form-control' value='${items[i].quantity || ""}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][rate]' class='form-control' value='${items[i].rate || ""}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][amount]' class='form-control' value='${items[i].amount || ""}'></td>
                         <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
                     </tr>`;
                 }
@@ -278,6 +282,10 @@ $(function () {
                     <td><input type='number' step='0.001' name='line_items[0][weight]' class='form-control' required></td>
                     <td><input type='number' step='0.01' name='line_items[0][amt]' class='form-control'></td>
                     <td><input type='number' step='0.01' name='line_items[0][way_bill_value]' class='form-control'></td>
+                    <td><input type='text' name='line_items[0][description]' class='form-control'></td>
+                    <td><input type='number' name='line_items[0][quantity]' class='form-control'></td>
+                    <td><input type='number' step='0.01' name='line_items[0][rate]' class='form-control'></td>
+                    <td><input type='number' step='0.01' name='line_items[0][amount]' class='form-control'></td>
                     <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
                 </tr>`;
             }
@@ -349,6 +357,10 @@ $(function () {
                 <td><input type="number" step="0.001" name="line_items[${rowIdx}][weight]" class="form-control" required></td>
                 <td><input type="number" step="0.01" name="line_items[${rowIdx}][amt]" class="form-control"></td>
                 <td><input type="number" step="0.01" name="line_items[${rowIdx}][way_bill_value]" class="form-control"></td>
+                <td><input type="text" name="line_items[${rowIdx}][description]" class="form-control"></td>
+                <td><input type="number" name="line_items[${rowIdx}][quantity]" class="form-control"></td>
+                <td><input type="number" step="0.01" name="line_items[${rowIdx}][rate]" class="form-control"></td>
+                <td><input type="number" step="0.01" name="line_items[${rowIdx}][amount]" class="form-control"></td>
                 <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
             </tr>`;
             $('#lineItemsTable tbody').append(row);
