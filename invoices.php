@@ -18,6 +18,13 @@ if ($conn->connect_error) {
 }
 
 $invoice_no = generateInvoiceNo($conn);
+
+// Fetch destinations for JS use
+$destinations = [];
+$destResult = $conn->query("SELECT name FROM destinations ORDER BY name ASC");
+while ($row = $destResult->fetch_assoc()) {
+    $destinations[] = $row['name'];
+}
 ?>
 
 <!-- Ensure jQuery is loaded first -->
@@ -43,6 +50,7 @@ $invoice_no = generateInvoiceNo($conn);
                         </button>
                     </div>
                     <form id="invoiceForm">
+                        <input type="hidden" name="id" id="invoice_id">
                         <div class="modal-body p-4">
                             <div class="row g-3 mb-3 align-items-end">
                                 <div class="col-md-3">
@@ -60,6 +68,23 @@ $invoice_no = generateInvoiceNo($conn);
                                             ?>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Invoice Date</label>
+                                    <input type="date" name="invoice_date" id="invoice_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Invoice No</label>
+                                    <input type="text" name="invoice_no" id="invoice_no" class="form-control" value="<?= htmlspecialchars($invoice_no) ?>" readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Destination (optional)</label>
+                                    <select name="destination" id="destination" class="form-select">
+                                        <option value="">Select Destination</option>
+                                        <?php foreach ($destinations as $dest): ?>
+                                            <option value="<?= htmlspecialchars($dest) ?>"><?= htmlspecialchars($dest) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
                             <hr class="my-3">
@@ -88,13 +113,9 @@ $invoice_no = generateInvoiceNo($conn);
                                             <td>
                                                 <select name="line_items[0][destination_city]" class="form-select" required>
                                                     <option value="">Select Destination</option>
-                                                    <?php
-                                                    $query = "SELECT name FROM destinations ORDER BY name ASC";
-                                                    $result = $conn->query($query);
-                                                    while ($row = $result->fetch_assoc()) {
-                                                        echo "<option value='" . htmlspecialchars($row['name']) . "'>" . htmlspecialchars($row['name']) . "</option>";
-                                                    }
-                                                    ?>
+                                                    <?php foreach ($destinations as $dest): ?>
+                                                        <option value="<?= htmlspecialchars($dest) ?>"><?= htmlspecialchars($dest) ?></option>
+                                                    <?php endforeach; ?>
                                                 </select>
                                             </td>
                                             <td><input type="number" step="0.001" name="line_items[0][weight]" class="form-control" required></td>
@@ -146,8 +167,7 @@ $invoice_no = generateInvoiceNo($conn);
                     <table class="table table-bordered table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th>ID</th><th>Invoice No</th><th>Customer ID</th><th>Invoice Date</th>
-                                <!--<th>Destination</th>--><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
+                                <th>ID</th><th>Invoice No</th><th>Customer</th><th>Invoice Date</th><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="invoiceTableBody">
@@ -192,11 +212,39 @@ $invoice_no = generateInvoiceNo($conn);
 <div id="ajaxError" class="alert alert-danger d-none mt-3"></div>
 
 <script>
+// Destination options for JS
+const destinationOptions = `<?php foreach ($destinations as $dest): ?><option value="<?= htmlspecialchars($dest) ?>"><?= htmlspecialchars($dest) ?></option><?php endforeach; ?>`;
+
+// Add/Remove line item rows
+document.addEventListener('DOMContentLoaded', function() {
+    let rowIdx = 1;
+    $(document).on('click', '#addRowBtn', function() {
+        const row = `<tr>
+            <td><input type='date' name='line_items[${rowIdx}][booking_date]' class='form-control' required></td>
+            <td><input type='text' name='line_items[${rowIdx}][consignment_no]' class='form-control' required></td>
+            <td><select name='line_items[${rowIdx}][destination_city]' class='form-select' required><option value=''>Select Destination</option>${destinationOptions}</select></td>
+            <td><input type='number' step='0.001' name='line_items[${rowIdx}][weight]' class='form-control' required></td>
+            <td><input type='number' step='0.01' name='line_items[${rowIdx}][amt]' class='form-control'></td>
+            <td><input type='number' step='0.01' name='line_items[${rowIdx}][way_bill_value]' class='form-control'></td>
+            <td><input type='text' name='line_items[${rowIdx}][description]' class='form-control'></td>
+            <td><input type='number' name='line_items[${rowIdx}][quantity]' class='form-control'></td>
+            <td><input type='number' step='0.01' name='line_items[${rowIdx}][rate]' class='form-control'></td>
+            <td><input type='number' step='0.01' name='line_items[${rowIdx}][amount]' class='form-control'></td>
+            <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
+        </tr>`;
+        $('#lineItemsTable tbody').append(row);
+        rowIdx++;
+    });
+    $(document).on('click', '.remove-row', function() {
+        if ($('#lineItemsTable tbody tr').length > 1) {
+            $(this).closest('tr').remove();
+        }
+    });
+});
+
 $(function () {
-    // ... existing code ...
     function loadInvoices() {
         $.get("fetch_invoices.php", function (data) {
-            console.log('AJAX response:', data);
             if (!data || data.indexOf('No invoices found') !== -1) {
                 $("#ajaxError").removeClass('d-none').text('No invoices found or failed to load invoices.');
                 $("#invoiceTableBody").html('<tr><td colspan="10" class="text-center text-danger">No invoices found or failed to load invoices.</td></tr>');
@@ -245,24 +293,18 @@ $(function () {
             }
         });
     });
-    // ... existing code ...
-    // Ensure Add Invoice button is always enabled
     $("#invoiceModal").on('hidden.bs.modal', function () {
         $("#addRowBtn").prop('disabled', false);
     });
-    // Catch-all JS error handler
     window.onerror = function(message, source, lineno, colno, error) {
         $("#ajaxError").removeClass('d-none').text('JS Error: ' + message + ' at ' + source + ':' + lineno);
         return false;
     };
-
-    // Event delegation for dynamic buttons
     $(document).on("click", ".view-btn", function () {
         var invoiceId = $(this).data('id');
         $('#viewInvoiceModalBody').html('<div class="text-center p-4">Loading...</div>');
         $('#viewInvoiceModal').modal('show');
         $.get('invoice_details.php', {id: invoiceId}, function (data) {
-            // Extract only the main content from the response
             var mainContent = $(data).find('main.content-wrapper').html();
             $('#viewInvoiceModalBody').html(mainContent ? mainContent : data);
         });
@@ -272,11 +314,12 @@ $(function () {
         $("#submitBtn").text("Update Invoice");
         $("#invoice_id").val($(this).data("id"));
         $("#customer_id").val($(this).data("customer_id"));
+        $("#invoice_date").val($(this).data("invoice_date"));
+        $("#invoice_no").val($(this).data("invoice_no"));
         $("#destination").val($(this).data("destination"));
         $("#total_amount").val($(this).data("total_amount"));
         $("#gst_amount").val($(this).data("gst_amount"));
         $("#grand_total").val($(this).data("grand_total"));
-        // Load line items via AJAX
         var invoiceId = $(this).data("id");
         $.get("fetch_invoice_items.php", {invoice_id: invoiceId}, function (data) {
             var items = [];
@@ -285,14 +328,10 @@ $(function () {
             if (items.length > 0) {
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i] || {};
-                    var destOptions = destinationOptions.replace(
-                        `value='${item.destination_city || ''}'`,
-                        `value='${item.destination_city || ''}' selected`
-                    );
                     tbody += `<tr>
                         <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${item.booking_date || ''}' required></td>
                         <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${item.consignment_no || ''}' required></td>
-                        <td><select name='line_items[${i}][destination_city]' class='form-select' required>${destOptions}</select></td>
+                        <td><select name='line_items[${i}][destination_city]' class='form-select' required><option value=''>Select Destination</option>${destinationOptions.replace(`value='${item.destination_city || ''}'`, `value='${item.destination_city || ''}' selected`)}</select></td>
                         <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${item.weight != null ? item.weight : ''}' required></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${item.amt != null ? item.amt : ''}'></td>
                         <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${item.way_bill_value != null ? item.way_bill_value : ''}'></td>
@@ -307,7 +346,7 @@ $(function () {
                 tbody = `<tr>
                     <td><input type='date' name='line_items[0][booking_date]' class='form-control' required></td>
                     <td><input type='text' name='line_items[0][consignment_no]' class='form-control' required></td>
-                    <td><select name='line_items[0][destination_city]' class='form-select' required>${destinationOptions}</select></td>
+                    <td><select name='line_items[0][destination_city]' class='form-select' required><option value=''>Select Destination</option>${destinationOptions}</select></td>
                     <td><input type='number' step='0.001' name='line_items[0][weight]' class='form-control' required></td>
                     <td><input type='number' step='0.01' name='line_items[0][amt]' class='form-control'></td>
                     <td><input type='number' step='0.01' name='line_items[0][way_bill_value]' class='form-control'></td>
@@ -362,7 +401,6 @@ $(function () {
     });
 });
 
-// Add a showToast function for notifications
 function showToast(msg, type) {
     var alertType = 'info';
     if (type === 'success') alertType = 'success';
@@ -376,3 +414,5 @@ function showToast(msg, type) {
     setTimeout(function() { $("#ajaxError").addClass('d-none').html(''); }, 5000);
 }
 </script>
+
+<?php include 'inc/footer.php'; ?>
