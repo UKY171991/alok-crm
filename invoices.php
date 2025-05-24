@@ -180,3 +180,34 @@ $invoice_no = generateInvoiceNo($conn);
     </div>
   </div>
 </div>
+
+<!-- Add a div for AJAX/JS errors -->
+<div id="ajaxError" class="alert alert-danger d-none mt-3"></div>
+
+<script>
+$(function () {
+    // ... existing code ...
+    function loadInvoices() {
+        $.get("fetch_invoices.php", function (data) {
+            if (!data || data.indexOf('No invoices found') !== -1) {
+                $("#ajaxError").removeClass('d-none').text('No invoices found or failed to load invoices.');
+            } else {
+                $("#ajaxError").addClass('d-none').text('');
+            }
+            $("#invoiceTableBody").html(data);
+        }).fail(function(xhr, status, error) {
+            $("#ajaxError").removeClass('d-none').text('AJAX error: ' + error);
+        });
+    }
+    // ... existing code ...
+    // Ensure Add Invoice button is always enabled
+    $("#invoiceModal").on('hidden.bs.modal', function () {
+        $("#addRowBtn").prop('disabled', false);
+    });
+    // Catch-all JS error handler
+    window.onerror = function(message, source, lineno, colno, error) {
+        $("#ajaxError").removeClass('d-none').text('JS Error: ' + message + ' at ' + source + ':' + lineno);
+        return false;
+    };
+});
+</script>
