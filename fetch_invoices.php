@@ -3,7 +3,7 @@ include 'inc/db.php';
 
 
 // Fetch customer names for all invoices in one query
-$sql = "SELECT i.id, i.invoice_no, i.customer_id, c.name AS customer_name, i.invoice_date, i.total_amount, i.gst_amount, i.grand_total, i.created_at
+$sql = "SELECT i.id, i.invoice_no, i.customer_id, c.name AS customer_name, i.invoice_date, i.destination, i.total_amount, i.gst_amount, i.grand_total, i.created_at
         FROM invoices i
         LEFT JOIN customers c ON i.customer_id = c.id
         ORDER BY i.id DESC";
