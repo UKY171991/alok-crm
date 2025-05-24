@@ -65,45 +65,62 @@ if ($invoice_id > 0) {
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped table-hover align-middle">
                         <thead class="table-dark">
                             <tr>
                                 <th>Sr.</th>
                                 <th>Booking Date</th>
                                 <th>Consignment No.</th>
                                 <th>Destination</th>
-                                <th>Weight or N</th>
-                                <th>Amt.</th>
-                                <th>Way Bill Value</th>
+                                <th class="text-end">Weight or N</th>
+                                <th class="text-end">Amt.</th>
+                                <th class="text-end">Way Bill Value</th>
                                 <th>Description</th>
-                                <th>Quantity</th>
-                                <th>Rate</th>
-                                <th>Amount</th>
+                                <th class="text-end">Quantity</th>
+                                <th class="text-end">Rate</th>
+                                <th class="text-end text-primary">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($line_items)): ?>
-                                <?php foreach ($line_items as $idx => $item): ?>
-                                    <tr>
-                                        <td><?= $idx + 1 ?></td>
-                                        <td><?= !empty($item['booking_date']) ? htmlspecialchars($item['booking_date']) : '–' ?></td>
-                                        <td><?= !empty($item['consignment_no']) ? htmlspecialchars($item['consignment_no']) : '–' ?></td>
-                                        <td><?= !empty($item['destination_city']) ? htmlspecialchars($item['destination_city']) : '–' ?></td>
-                                        <td><?= !empty($item['weight']) ? htmlspecialchars($item['weight']) : '–' ?></td>
-                                        <td><?= isset($item['amt']) && $item['amt'] !== '' ? htmlspecialchars($item['amt']) : '–' ?></td>
-                                        <td><?= isset($item['way_bill_value']) && $item['way_bill_value'] !== '' ? htmlspecialchars($item['way_bill_value']) : '–' ?></td>
-                                        <td><?= !empty($item['description']) ? htmlspecialchars($item['description']) : '–' ?></td>
-                                        <td><?= isset($item['quantity']) && $item['quantity'] !== '' ? htmlspecialchars($item['quantity']) : '–' ?></td>
-                                        <td><?= isset($item['rate']) && $item['rate'] !== '' ? htmlspecialchars($item['rate']) : '–' ?></td>
-                                        <td><?= isset($item['amount']) && $item['amount'] !== '' ? htmlspecialchars($item['amount']) : '–' ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
+                            <?php
+                            $total_amt = $total_waybill = $total_amount = 0;
+                            if (!empty($line_items)):
+                                foreach ($line_items as $idx => $item):
+                                    $total_amt += floatval($item['amt']);
+                                    $total_waybill += floatval($item['way_bill_value']);
+                                    $total_amount += floatval($item['amount']);
+                            ?>
                                 <tr>
-                                    <td colspan="11" class="text-center">No line items found.</td>
+                                    <td><?= $idx + 1 ?></td>
+                                    <td><?= !empty($item['booking_date']) && $item['booking_date'] != '0000-00-00' ? date('d-m-Y', strtotime($item['booking_date'])) : '–' ?></td>
+                                    <td><?= !empty($item['consignment_no']) ? htmlspecialchars($item['consignment_no']) : '–' ?></td>
+                                    <td><?= !empty($item['destination_city']) ? htmlspecialchars($item['destination_city']) : '–' ?></td>
+                                    <td class="text-end"><?= $item['weight'] !== null ? htmlspecialchars($item['weight']) : '–' ?></td>
+                                    <td class="text-end"><?= $item['amt'] !== null ? number_format($item['amt'], 2) : '–' ?></td>
+                                    <td class="text-end"><?= $item['way_bill_value'] !== null ? number_format($item['way_bill_value'], 2) : '–' ?></td>
+                                    <td><?= !empty($item['description']) ? htmlspecialchars($item['description']) : '–' ?></td>
+                                    <td class="text-end"><?= $item['quantity'] !== null ? htmlspecialchars($item['quantity']) : '–' ?></td>
+                                    <td class="text-end"><?= $item['rate'] !== null ? number_format($item['rate'], 2) : '–' ?></td>
+                                    <td class="text-end text-primary fw-bold"><?= $item['amount'] !== null ? number_format($item['amount'], 2) : '–' ?></td>
                                 </tr>
-                            <?php endif; ?>
+                            <?php endforeach; ?>
                         </tbody>
+                        <tfoot>
+                            <tr class="table-secondary fw-bold">
+                                <td colspan="5" class="text-end">Totals:</td>
+                                <td class="text-end"><?= number_format($total_amt, 2) ?></td>
+                                <td class="text-end"><?= number_format($total_waybill, 2) ?></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-end text-primary"><?= number_format($total_amount, 2) ?></td>
+                            </tr>
+                        </tfoot>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="11" class="text-center">No line items found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </table>
                 </div>
             </div>
