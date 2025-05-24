@@ -67,6 +67,10 @@ $invoice_no = generateInvoiceNo($conn);
                                             <th>Weight or N</th>
                                             <th>Amt.</th>
                                             <th>Way Bill Value</th>
+                                            <th>Description</th>
+                                            <th>Quantity</th>
+                                            <th>Rate</th>
+                                            <th>Amount</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -89,6 +93,10 @@ $invoice_no = generateInvoiceNo($conn);
                                             <td><input type="number" step="0.001" name="line_items[0][weight]" class="form-control" required></td>
                                             <td><input type="number" step="0.01" name="line_items[0][amt]" class="form-control"></td>
                                             <td><input type="number" step="0.01" name="line_items[0][way_bill_value]" class="form-control"></td>
+                                            <td><input type="text" name="line_items[0][description]" class="form-control"></td>
+                                            <td><input type="number" name="line_items[0][quantity]" class="form-control"></td>
+                                            <td><input type="number" step="0.01" name="line_items[0][rate]" class="form-control"></td>
+                                            <td><input type="number" step="0.01" name="line_items[0][amount]" class="form-control"></td>
                                             <td><button type="button" class="btn btn-outline-danger btn-sm remove-row">Remove</button></td>
                                         </tr>
                                     </tbody>
@@ -253,6 +261,7 @@ $(function () {
         $.get("fetch_invoice_items.php", {invoice_id: invoiceId}, function (data) {
             var items = [];
             try { items = JSON.parse(data); } catch (e) {}
+            console.log('Loaded items:', items);
             var tbody = "";
             if (items.length > 0) {
                 for (var i = 0; i < items.length; i++) {
