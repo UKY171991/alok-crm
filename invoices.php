@@ -145,7 +145,9 @@ $invoice_no = generateInvoiceNo($conn);
                                 <!--<th>Destination</th>--><th>Total Amount</th><th>GST Amount</th><th>Grand Total</th><th>Created</th><th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="invoiceTableBody"></tbody>
+                        <tbody id="invoiceTableBody">
+                            <tr id="fallbackRow"><td colspan="10" class="text-center">Loading or no data...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -189,14 +191,17 @@ $(function () {
     // ... existing code ...
     function loadInvoices() {
         $.get("fetch_invoices.php", function (data) {
+            console.log('AJAX response:', data);
             if (!data || data.indexOf('No invoices found') !== -1) {
                 $("#ajaxError").removeClass('d-none').text('No invoices found or failed to load invoices.');
+                $("#invoiceTableBody").html('<tr><td colspan="10" class="text-center text-danger">No invoices found or failed to load invoices.</td></tr>');
             } else {
                 $("#ajaxError").addClass('d-none').text('');
+                $("#invoiceTableBody").html(data);
             }
-            $("#invoiceTableBody").html(data);
         }).fail(function(xhr, status, error) {
             $("#ajaxError").removeClass('d-none').text('AJAX error: ' + error);
+            $("#invoiceTableBody").html('<tr><td colspan="10" class="text-center text-danger">AJAX error: ' + error + '</td></tr>');
         });
     }
     // ... existing code ...
