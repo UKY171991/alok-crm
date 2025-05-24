@@ -17,8 +17,8 @@ if ($invoice_id > 0) {
     $result = $conn->query("SELECT * FROM invoice_items WHERE invoice_id = $invoice_id ORDER BY booking_date, id");
     while ($row = $result && $result->fetch_assoc()) {
         $line_items[] = $row;
-        echo "Hello";
     }
+    error_log('Fetched line_items: ' . print_r($line_items, true));
 }
 
 ?>
