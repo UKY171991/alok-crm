@@ -70,7 +70,7 @@ if ($invoice_id > 0) {
                                 <th>Sr.</th>
                                 <th>Booking Date</th>
                                 <th>Consignment No.</th>
-                                <th>Destination City</th>
+                                <th>Destination</th>
                                 <th>Weight or N</th>
                                 <th>Amt.</th>
                                 <th>Way Bill Value</th>
@@ -85,12 +85,14 @@ if ($invoice_id > 0) {
                                         <td><?= !empty($item['consignment_no']) ? htmlspecialchars($item['consignment_no']) : '–' ?></td>
                                         <td><?= !empty($item['destination_city']) ? htmlspecialchars($item['destination_city']) : '–' ?></td>
                                         <td><?= !empty($item['weight']) ? htmlspecialchars($item['weight']) : '–' ?></td>
-                                        <td><?= !empty($item['amt']) ? htmlspecialchars($item['amt']) : '–' ?></td>
-                                        <td><?= !empty($item['way_bill_value']) ? htmlspecialchars($item['way_bill_value']) : '–' ?></td>
+                                        <td><?= isset($item['amt']) && $item['amt'] !== '' ? htmlspecialchars($item['amt']) : '–' ?></td>
+                                        <td><?= isset($item['way_bill_value']) && $item['way_bill_value'] !== '' ? htmlspecialchars($item['way_bill_value']) : '–' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="7" class="text-center">No line items found.</td></tr>
+                                <tr>
+                                    <td colspan="7" class="text-center">No line items found.</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
