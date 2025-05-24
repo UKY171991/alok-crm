@@ -75,6 +75,10 @@ if ($invoice_id > 0) {
                                 <th>Weight or N</th>
                                 <th>Amt.</th>
                                 <th>Way Bill Value</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,11 +92,15 @@ if ($invoice_id > 0) {
                                         <td><?= !empty($item['weight']) ? htmlspecialchars($item['weight']) : '–' ?></td>
                                         <td><?= isset($item['amt']) && $item['amt'] !== '' ? htmlspecialchars($item['amt']) : '–' ?></td>
                                         <td><?= isset($item['way_bill_value']) && $item['way_bill_value'] !== '' ? htmlspecialchars($item['way_bill_value']) : '–' ?></td>
+                                        <td><?= !empty($item['description']) ? htmlspecialchars($item['description']) : '–' ?></td>
+                                        <td><?= isset($item['quantity']) && $item['quantity'] !== '' ? htmlspecialchars($item['quantity']) : '–' ?></td>
+                                        <td><?= isset($item['rate']) && $item['rate'] !== '' ? htmlspecialchars($item['rate']) : '–' ?></td>
+                                        <td><?= isset($item['amount']) && $item['amount'] !== '' ? htmlspecialchars($item['amount']) : '–' ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="7" class="text-center">No line items found.</td>
+                                    <td colspan="11" class="text-center">No line items found.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
