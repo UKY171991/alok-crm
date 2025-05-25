@@ -32,6 +32,19 @@ while ($row = $destResult->fetch_assoc()) {
 <!-- Then Bootstrap JS (if used) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<style>
+#invoiceModal .table th, #invoiceModal .table td {
+    vertical-align: middle;
+    padding: 0.4rem 0.5rem;
+}
+#invoiceModal .form-control-sm, #invoiceModal .form-select-sm {
+    min-width: 80px;
+}
+#invoiceModal .table-primary {
+    background-color: #e9f5ff;
+}
+</style>
+
 <main class="content-wrapper">
     <div class="container-fluid p-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -90,20 +103,20 @@ while ($row = $destResult->fetch_assoc()) {
                             <hr class="my-3">
                             <h5 class="fw-bold mb-3 text-primary">Invoice Line Items</h5>
                             <div class="table-responsive mb-3">
-                                <table class="table table-bordered align-middle" id="lineItemsTable">
-                                    <thead class="table-light">
+                                <table class="table table-bordered table-hover align-middle" id="lineItemsTable">
+                                    <thead class="table-primary">
                                         <tr>
-                                            <th>Booking Date</th>
-                                            <th>Consignment No.</th>
-                                            <th>Destination</th>
-                                            <th>Weight or N</th>
-                                            <th>Amt.</th>
-                                            <th>Way Bill Value</th>
-                                            <th>Description</th>
-                                            <th>Quantity</th>
-                                            <th>Rate</th>
-                                            <th>Amount</th>
-                                            <th>Action</th>
+                                            <th class="text-center">Booking Date</th>
+                                            <th class="text-center">Consignment No.</th>
+                                            <th class="text-center">Destination</th>
+                                            <th class="text-center">Weight or N</th>
+                                            <th class="text-center">Amt.</th>
+                                            <th class="text-center">Way Bill Value</th>
+                                            <th class="text-center">Description</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-center">Rate</th>
+                                            <th class="text-center">Amount</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -186,6 +199,7 @@ while ($row = $destResult->fetch_assoc()) {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="viewInvoiceModalLabel">Invoice Details</h5>
+        <button type="button" class="btn btn-secondary btn-sm me-2" id="printInvoiceModalBtn"><i class="fas fa-print"></i> Print</button>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="viewInvoiceModalBody">
@@ -323,23 +337,28 @@ $(function () {
         var invoiceId = $(this).data("id");
         $.get("fetch_invoice_items.php", {invoice_id: invoiceId}, function (data) {
             var items = [];
-            try { items = JSON.parse(data); } catch (e) {}
+            try { items = typeof data === 'string' ? JSON.parse(data) : data; } catch (e) {}
             var tbody = "";
             if (items.length > 0) {
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i] || {};
                     tbody += `<tr>
-                        <td><input type='date' name='line_items[${i}][booking_date]' class='form-control' value='${item.booking_date || ''}' required></td>
-                        <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control' value='${item.consignment_no || ''}' required></td>
-                        <td><select name='line_items[${i}][destination_city]' class='form-select' required><option value=''>Select Destination</option>${destinationOptions}</select></td>
-                        <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control' value='${item.weight != null ? item.weight : ''}' required></td>
-                        <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control' value='${item.amt != null ? item.amt : ''}'></td>
-                        <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control' value='${item.way_bill_value != null ? item.way_bill_value : ''}'></td>
-                        <td><input type='text' name='line_items[${i}][description]' class='form-control' value='${item.description || ''}'></td>
-                        <td><input type='number' name='line_items[${i}][quantity]' class='form-control' value='${item.quantity != null ? item.quantity : ''}'></td>
-                        <td><input type='number' step='0.01' name='line_items[${i}][rate]' class='form-control' value='${item.rate != null ? item.rate : ''}'></td>
-                        <td><input type='number' step='0.01' name='line_items[${i}][amount]' class='form-control' value='${item.amount != null ? item.amount : ''}'></td>
-                        <td><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Remove</button></td>
+                        <td><input type='date' name='line_items[${i}][booking_date]' class='form-control form-control-sm' value='${item.booking_date || ''}' required></td>
+                        <td><input type='text' name='line_items[${i}][consignment_no]' class='form-control form-control-sm' value='${item.consignment_no || ''}' required></td>
+                        <td>
+                          <select name='line_items[${i}][destination_city]' class='form-select form-select-sm' required>
+                            <option value=''>Select Destination</option>
+                            ${destinationOptions}
+                          </select>
+                        </td>
+                        <td><input type='number' step='0.001' name='line_items[${i}][weight]' class='form-control form-control-sm text-center' value='${item.weight != null ? item.weight : ''}' required></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][amt]' class='form-control form-control-sm text-center' value='${item.amt != null ? item.amt : ''}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][way_bill_value]' class='form-control form-control-sm text-center' value='${item.way_bill_value != null ? item.way_bill_value : ''}'></td>
+                        <td><input type='text' name='line_items[${i}][description]' class='form-control form-control-sm' value='${item.description || ''}'></td>
+                        <td><input type='number' name='line_items[${i}][quantity]' class='form-control form-control-sm text-center' value='${item.quantity != null ? item.quantity : ''}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][rate]' class='form-control form-control-sm text-center' value='${item.rate != null ? item.rate : ''}'></td>
+                        <td><input type='number' step='0.01' name='line_items[${i}][amount]' class='form-control form-control-sm text-center' value='${item.amount != null ? item.amount : ''}'></td>
+                        <td class='text-center'><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Rem</button></td>
                     </tr>`;
                 }
             } else {
@@ -406,6 +425,29 @@ $(function () {
             });
         }
     });
+    $(document).on("click", ".print-btn", function () {
+        var invoiceId = $(this).data('id');
+        $('#viewInvoiceModalBody').html('<div class="text-center p-4">Loading...</div>');
+        $('#viewInvoiceModal').modal('show');
+        $.get('invoice_details.php', {id: invoiceId}, function (data) {
+            var mainContent = $(data).find('main.content-wrapper').html();
+            $('#viewInvoiceModalBody').html(mainContent ? mainContent : data);
+            setTimeout(function() {
+                printInvoiceModalContent();
+            }, 500);
+        });
+    });
+    $('#printInvoiceModalBtn').on('click', function() {
+        printInvoiceModalContent();
+    });
+    function printInvoiceModalContent() {
+        var printContents = document.getElementById('viewInvoiceModalBody').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.reload(); // To restore JS events and DOM
+    }
 });
 
 function showToast(msg, type) {
@@ -419,6 +461,55 @@ function showToast(msg, type) {
         '</div>';
     $("#ajaxError").removeClass('d-none').html(alertHtml);
     setTimeout(function() { $("#ajaxError").addClass('d-none').html(''); }, 5000);
+}
+
+$(document).on('click', '[data-bs-target="#invoiceModal"]', function () {
+    // Reset form fields
+    $('#invoiceForm')[0].reset();
+    $('#invoice_id').val('');
+    $('#invoiceModalLabel').text('Add New Invoice');
+    $('#submitBtn').text('Add Invoice');
+    $('#invoice_no').val('<?= htmlspecialchars($invoice_no) ?>');
+    // Reset destination dropdown
+    $('#destination').val('');
+    // Reset line items to a single empty row
+    var tbody = `<tr>
+        <td><input type='date' name='line_items[0][booking_date]' class='form-control form-control-sm' required></td>
+        <td><input type='text' name='line_items[0][consignment_no]' class='form-control form-control-sm' required></td>
+        <td><select name='line_items[0][destination_city]' class='form-select form-select-sm' required><option value=''>Select Destination</option>${destinationOptions}</select></td>
+        <td><input type='number' step='0.001' name='line_items[0][weight]' class='form-control form-control-sm text-center' required></td>
+        <td><input type='number' step='0.01' name='line_items[0][amt]' class='form-control form-control-sm text-center'></td>
+        <td><input type='number' step='0.01' name='line_items[0][way_bill_value]' class='form-control form-control-sm text-center'></td>
+        <td><input type='text' name='line_items[0][description]' class='form-control form-control-sm'></td>
+        <td><input type='number' name='line_items[0][quantity]' class='form-control form-control-sm text-center'></td>
+        <td><input type='number' step='0.01' name='line_items[0][rate]' class='form-control form-control-sm text-center'></td>
+        <td><input type='number' step='0.01' name='line_items[0][amount]' class='form-control form-control-sm text-center'></td>
+        <td class='text-center'><button type='button' class='btn btn-outline-danger btn-sm remove-row'>Rem</button></td>
+    </tr>`;
+    $('#lineItemsTable tbody').html(tbody);
+});
+
+// Auto-calculate amount and total when rate or quantity changes
+$(document).on('input', 'input[name^="line_items"][name$="[rate]"], input[name^="line_items"][name$="[quantity]"]', function() {
+    var $row = $(this).closest('tr');
+    var qty = parseFloat($row.find('input[name$="[quantity]"]').val()) || 0;
+    var rate = parseFloat($row.find('input[name$="[rate]"]').val()) || 0;
+    var amount = qty * rate;
+    $row.find('input[name$="[amount]"]').val(amount.toFixed(2));
+    updateTotalAmount();
+});
+
+// Also recalculate total if amount is edited directly
+$(document).on('input', 'input[name^="line_items"][name$="[amount]"]', function() {
+    updateTotalAmount();
+});
+
+function updateTotalAmount() {
+    var total = 0;
+    $('input[name^="line_items"][name$="[amount]"]').each(function() {
+        total += parseFloat($(this).val()) || 0;
+    });
+    $('#total_amount').val(total.toFixed(2));
 }
 </script>
 

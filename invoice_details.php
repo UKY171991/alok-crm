@@ -85,12 +85,17 @@ if ($invoice_id > 0) {
                         </thead>
                         <tbody>
                             <?php
-                            $total_amt = $total_waybill = $total_amount = 0;
+                            $total_amt = $total_waybill = $total_amount = $total_quantity = $total_rate = 0;
                             if (!empty($line_items)):
                                 foreach ($line_items as $idx => $item):
+                                    $quantity = isset($item['quantity']) ? floatval($item['quantity']) : 0;
+                                    $rate = isset($item['rate']) ? floatval($item['rate']) : 0;
+                                    $calculated_amount = $quantity * $rate;
                                     $total_amt += floatval($item['amt']);
                                     $total_waybill += floatval($item['way_bill_value']);
-                                    $total_amount += floatval($item['amount']);
+                                    $total_amount += $calculated_amount;
+                                    $total_quantity += $quantity;
+                                    $total_rate += $rate;
                             ?>
                                 <tr>
                                     <td><?= $idx + 1 ?></td>
@@ -103,7 +108,7 @@ if ($invoice_id > 0) {
                                     <td><?= !empty($item['description']) ? htmlspecialchars($item['description']) : '–' ?></td>
                                     <td class="text-end"><?= $item['quantity'] !== null ? htmlspecialchars($item['quantity']) : '–' ?></td>
                                     <td class="text-end"><?= $item['rate'] !== null ? number_format($item['rate'], 2) : '–' ?></td>
-                                    <td class="text-end text-primary fw-bold"><?= $item['amount'] !== null ? number_format($item['amount'], 2) : '–' ?></td>
+                                    <td class="text-end text-primary fw-bold"><?= number_format($calculated_amount, 2) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -113,8 +118,8 @@ if ($invoice_id > 0) {
                                 <td class="text-end"><?= number_format($total_amt, 2) ?></td>
                                 <td class="text-end"><?= number_format($total_waybill, 2) ?></td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-end text-primary"><?= number_format($total_quantity, 2) ?></td>
+                                <td class="text-end text-primary"><?= number_format($total_rate, 2) ?></td>
                                 <td class="text-end text-primary"><?= number_format($total_amount, 2) ?></td>
                             </tr>
                         </tfoot>

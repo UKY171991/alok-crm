@@ -25,6 +25,19 @@ function generateInvoiceNo($conn) {
 }
 }
 
+if (isset($_GET['add_test_items']) && isset($_GET['invoice_id'])) {
+    $invoice_id = intval($_GET['invoice_id']);
+    $conn->query("DELETE FROM invoice_items WHERE invoice_id = $invoice_id");
+    $conn->query("INSERT INTO invoice_items (invoice_id, booking_date, consignment_no, destination_city, weight, amt, way_bill_value, description, quantity, rate, amount) VALUES
+        ($invoice_id, '2024-05-25', 'TEST123', 'Delhi', 10, 100, 500, 'Test Description 1', 2, 50, 100),
+        ($invoice_id, '2024-05-26', 'TEST124', 'Mumbai', 5, 50, 250, 'Test Description 2', 1, 50, 50),
+        ($invoice_id, '2024-05-27', 'TEST125', 'Kolkata', 7, 70, 350, 'Test Description 3', 3, 30, 90)
+    ");
+    echo "<div class='alert alert-success'>Test line items added for invoice_id $invoice_id</div>";
+    $conn->close();
+    exit;
+}
+
 if ($id == '') {
     $invoice_no = generateInvoiceNo($conn);
     $check = $conn->query("SELECT id FROM invoices WHERE invoice_no = '$invoice_no'");
@@ -68,7 +81,11 @@ if ($conn->query($sql)) {
             $weight = isset($item['weight']) ? floatval($item['weight']) : 0;
             $amt = isset($item['amt']) ? floatval($item['amt']) : 0;
             $way_bill_value = isset($item['way_bill_value']) ? floatval($item['way_bill_value']) : 0;
-            $insert_sql = "INSERT INTO invoice_items (invoice_id, booking_date, consignment_no, destination_city, weight, amt, way_bill_value) VALUES ($invoice_id, '$booking_date', '$consignment_no', '$destination_city', '$weight', '$amt', '$way_bill_value')";
+            $description = isset($item['description']) ? $conn->real_escape_string($item['description']) : '';
+            $quantity = isset($item['quantity']) ? floatval($item['quantity']) : 0;
+            $rate = isset($item['rate']) ? floatval($item['rate']) : 0;
+            $amount = isset($item['amount']) ? floatval($item['amount']) : 0;
+            $insert_sql = "INSERT INTO invoice_items (invoice_id, booking_date, consignment_no, destination_city, weight, amt, way_bill_value, description, quantity, rate, amount) VALUES ($invoice_id, '$booking_date', '$consignment_no', '$destination_city', '$weight', '$amt', '$way_bill_value', '$description', '$quantity', '$rate', '$amount')";
             if (!$conn->query($insert_sql)) {
                 error_log('Invoice item insert error: ' . $conn->error . ' | SQL: ' . $insert_sql);
                 echo "<div class='alert alert-danger'>Error saving line item: " . $conn->error . "</div>";
