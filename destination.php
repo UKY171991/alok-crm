@@ -13,84 +13,78 @@ include 'inc/sidebar.php';
 ?>
 <main class='content-wrapper'>
     <div class='container-fluid p-3'>
-        <div id="adminlte-alert" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+        <div id="adminlte-alert" class="alert alert-success alert-dismissible fade show d-none shadow-sm rounded-3 animate__animated animate__fadeInDown" role="alert" style="z-index:1055;position:fixed;top:20px;right:20px;min-width:300px;">
             <span id="adminlte-alert-message"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">+</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0 fw-bold"><i class="fas fa-map-marker-alt text-primary me-2"></i>Destinations Management</h2>
+            <button class="btn btn-primary btn-lg rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
+                <i class="fas fa-plus me-1"></i> Add Destination
             </button>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0">Destinations Management</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
-                Add Destination
-            </button>
+        <div class="card shadow rounded-4 mb-4">
+            <div class="card-body pb-2">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" id="searchDestination" class="form-control form-control-lg rounded-pill" placeholder="Search destinations...">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle table-bordered border-light mb-0" id="destinationTable">
+                        <thead class="table-primary">
+                            <tr>
+                                <th style="width:60px;">ID</th>
+                                <th>Name</th>
+                                <th style="width:180px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="destinationTableBody">
+                            <!-- Data will be loaded here via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-
         <!-- Add Destination Modal -->
-        <div class="modal fade" id="addDestinationModal" tabindex="-1" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
+        <div class="modal fade animate__animated animate__fadeInDown" id="addDestinationModal" tabindex="-1" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addDestinationModalLabel">Add New Destination</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">+</span>
-                        </button>
+                <div class="modal-content rounded-4 shadow-lg">
+                    <div class="modal-header bg-primary text-white rounded-top-4">
+                        <h5 class="modal-title" id="addDestinationModalLabel"><i class="fas fa-plus me-2"></i>Add New Destination</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form id="addDestinationForm">
                         <div class="modal-body">
-                            <div class="form-group">
+                            <div class="form-floating mb-3">
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Destination Name" required>
                                 <label for="name">Destination Name</label>
-                                <input type="text" name="name" id="name" class="form-control" required>
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer bg-light rounded-bottom-4">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Destination</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Add Destination</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <!-- Destinations List -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Destinations List</h3>
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="destinationTableBody">
-                        <!-- Data will be loaded here via AJAX -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <!-- Edit Destination Modal -->
-        <div class="modal fade" id="editDestinationModal" tabindex="-1" aria-labelledby="editDestinationModalLabel" aria-hidden="true">
+        <div class="modal fade animate__animated animate__fadeInDown" id="editDestinationModal" tabindex="-1" aria-labelledby="editDestinationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editDestinationModalLabel">Edit Destination</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">+</span>
-                        </button>
+                <div class="modal-content rounded-4 shadow-lg">
+                    <div class="modal-header bg-warning text-dark rounded-top-4">
+                        <h5 class="modal-title" id="editDestinationModalLabel"><i class="fas fa-edit me-2"></i>Edit Destination</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="editDestinationForm">
                             <input type="hidden" id="editId">
-                            <div class="form-group">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="editName" class="form-control" placeholder="Destination Name" required>
                                 <label for="editName">Destination Name</label>
-                                <input type="text" id="editName" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-3">Update Destination</button>
+                            <button type="submit" class="btn btn-warning"><i class="fas fa-save me-1"></i> Update Destination</button>
                         </form>
                     </div>
                 </div>
@@ -102,6 +96,7 @@ include 'inc/sidebar.php';
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
         // Function to load destinations
@@ -210,5 +205,29 @@ include 'inc/sidebar.php';
                 }
             });
         });
+
+        // Search/filter destinations
+        $('#searchDestination').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            $('#destinationTableBody tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
     });
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    #destinationTable thead th { font-size: 1.1rem; }
+    #destinationTable tbody td { font-size: 1.05rem; }
+    .modal-content { border-radius: 1.2rem; }
+    .form-floating > label { left: 1.2rem; }
+    .btn { letter-spacing: 0.03em; }
+    .table-primary th { background: #e9f5ff !important; }
+    .modal-header.bg-primary { background: #2563eb !important; }
+    .modal-header.bg-warning { background: #ffe066 !important; color: #333 !important; }
+    .modal-header i { font-size: 1.2em; }
+    .shadow-lg { box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.12)!important; }
+    .rounded-4 { border-radius: 1.2rem!important; }
+    .rounded-top-4 { border-top-left-radius: 1.2rem!important; border-top-right-radius: 1.2rem!important; }
+    .rounded-bottom-4 { border-bottom-left-radius: 1.2rem!important; border-bottom-right-radius: 1.2rem!important; }
+</style>
