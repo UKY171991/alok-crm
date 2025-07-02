@@ -86,8 +86,23 @@ include 'inc/sidebar.php';
                 success: function (data) {
                     $('#zoneTableBody').html(data);
                 },
-                error: function() {
-                    showAdminLTEAlert('Error loading zones.', 'danger');
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        error: error
+                    });
+                    let errorMsg = 'Error loading zones.';
+                    if (xhr.status === 403) {
+                        errorMsg = 'Access denied. Please check your login status.';
+                    } else if (xhr.status === 500) {
+                        errorMsg = 'Server error. Please check the database connection.';
+                    } else if (xhr.status === 404) {
+                        errorMsg = 'fetch_destinations.php file not found.';
+                    }
+                    showAdminLTEAlert(errorMsg, 'danger');
+                    $('#zoneTableBody').html('<tr><td colspan="4" style="text-align:center;">' + errorMsg + '</td></tr>');
                 }
             });
         }
@@ -116,9 +131,10 @@ include 'inc/sidebar.php';
                     loadZones();
                     showAdminLTEAlert(response, 'success');
                 },
-                error: function() {
+                error: function(xhr, status, error) {
                     $btn.prop('disabled', false).text('Add');
-                    showAdminLTEAlert('Error adding zone.', 'danger');
+                    console.error('Add Zone Error:', xhr.responseText);
+                    showAdminLTEAlert('Error adding zone: ' + (xhr.responseText || 'Unknown error'), 'danger');
                 }
             });
         });
@@ -138,8 +154,9 @@ include 'inc/sidebar.php';
                         loadZones();
                         showAdminLTEAlert(response, 'success');
                     },
-                    error: function() {
-                        showAdminLTEAlert('Error updating zone.', 'danger');
+                    error: function(xhr, status, error) {
+                        console.error('Edit Zone Error:', xhr.responseText);
+                        showAdminLTEAlert('Error updating zone: ' + (xhr.responseText || 'Unknown error'), 'danger');
                     }
                 });
             }
@@ -158,8 +175,9 @@ include 'inc/sidebar.php';
                     loadZones(); // Reload zones to show updated status
                     showAdminLTEAlert(response, 'success');
                 },
-                error: function() {
-                    showAdminLTEAlert('Error updating zone status.', 'danger');
+                error: function(xhr, status, error) {
+                    console.error('Status Toggle Error:', xhr.responseText);
+                    showAdminLTEAlert('Error updating zone status: ' + (xhr.responseText || 'Unknown error'), 'danger');
                 }
             });
         });
@@ -176,8 +194,9 @@ include 'inc/sidebar.php';
                         loadZones();
                         showAdminLTEAlert(response, 'success');
                     },
-                    error: function() {
-                        showAdminLTEAlert('Error deleting zone.', 'danger');
+                    error: function(xhr, status, error) {
+                        console.error('Delete Zone Error:', xhr.responseText);
+                        showAdminLTEAlert('Error deleting zone: ' + (xhr.responseText || 'Unknown error'), 'danger');
                     }
                 });
             }

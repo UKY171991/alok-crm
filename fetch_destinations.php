@@ -8,6 +8,12 @@ if (!isset($_SESSION['user'])) {
 // Database connection
 include 'inc/db.php'; 
 
+// Check if connection exists
+if (!$conn) {
+    echo '<tr><td colspan="4" style="text-align:center;">Database connection failed.</td></tr>';
+    exit;
+}
+
 // Get all destinations
 // First check if status column exists
 $check_column = "SHOW COLUMNS FROM destinations LIKE 'status'";
@@ -19,7 +25,15 @@ if ($has_status_column) {
 } else {
     $sql = "SELECT id, name FROM destinations ORDER BY name ASC";
 }
+
 $result = $conn->query($sql);
+
+// Check for SQL errors
+if (!$result) {
+    echo '<tr><td colspan="4" style="text-align:center;">Error: ' . $conn->error . '</td></tr>';
+    $conn->close();
+    exit;
+}
 
 if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
     // Return JSON for dropdowns
