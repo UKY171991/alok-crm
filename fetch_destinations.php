@@ -8,7 +8,16 @@ if (!isset($_SESSION['user'])) {
 // Database connection
 include 'inc/db.php'; 
 
-$sql = "SELECT id, name FROM destinations ORDER BY name ASC";
+// Pagination setup
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$per_page = isset($_GET['per_page']) ? max(1, intval($_GET['per_page'])) : 10;
+$offset = ($page - 1) * $per_page;
+
+// Get total count
+$count_result = $conn->query("SELECT COUNT(*) as cnt FROM destinations");
+$total = ($count_result && $row = $count_result->fetch_assoc()) ? intval($row['cnt']) : 0;
+
+$sql = "SELECT id, name FROM destinations ORDER BY name ASC LIMIT $per_page OFFSET $offset";
 $result = $conn->query($sql);
 
 if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
@@ -25,8 +34,9 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
     header('Content-Type: application/json');
     echo json_encode($destinations);
 } else {
-    // Return HTML for admin table
-    $serial = 1;
+    // Output pagination info for frontend
+    echo '<tr style="display:none"><td colspan="3" id="pagination-info" data-total="' . $total . '" data-page="' . $page . '" data-per_page="' . $per_page . '"></td></tr>';
+    $serial = $offset + 1;
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             echo '<tr>';

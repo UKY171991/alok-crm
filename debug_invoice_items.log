@@ -1152,3 +1152,147 @@ Array
         )
 
 )
+invoice_id: 44
+Array
+(
+)
+invoice_id: 44
+Array
+(
+)
+invoice_id: 46
+Array
+(
+)
+invoice_id: 46
+Array
+(
+)
+invoice_id: 46
+Array
+(
+)
+invoice_id: 46
+Array
+(
+)
+invoice_id: 48
+Array
+(
+)
+invoice_id: 50
+Array
+(
+)
+invoice_id: 51
+Array
+(
+)
+invoice_id: 59
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2025-05-17
+            [consignment_no] => 500508297503
+            [destination_city] => 
+            [weight] => 0.000
+            [amt] => 0.00
+            [way_bill_value] => 30.00
+            [description] => 
+            [quantity] => 0
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 77
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2025-05-17
+            [consignment_no] => 500508297503
+            [destination_city] => Bihar / Jharkhand
+            [weight] => 345.000
+            [amt] => 45.00
+            [way_bill_value] => 30.00
+            [description] => 
+            [quantity] => 40
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 77
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2025-05-17
+            [consignment_no] => 500508297503
+            [destination_city] => Bihar / Jharkhand
+            [weight] => 345.000
+            [amt] => 45.00
+            [way_bill_value] => 30.00
+            [description] => 
+            [quantity] => 40
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 77
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2025-05-17
+            [consignment_no] => 500508297503
+            [destination_city] => Bihar / Jharkhand
+            [weight] => 345.000
+            [amt] => 45.00
+            [way_bill_value] => 30.00
+            [description] => 
+            [quantity] => 40
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 77
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2025-05-17
+            [consignment_no] => 500508297503
+            [destination_city] => Bihar / Jharkhand
+            [weight] => 345.000
+            [amt] => 45.00
+            [way_bill_value] => 30.00
+            [description] => 
+            [quantity] => 40
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)
+invoice_id: 77
+Array
+(
+    [0] => Array
+        (
+            [booking_date] => 2025-05-17
+            [consignment_no] => 500508297503
+            [destination_city] => Bihar / Jharkhand
+            [weight] => 345.000
+            [amt] => 45.00
+            [way_bill_value] => 30.00
+            [description] => 
+            [quantity] => 40
+            [rate] => 0.00
+            [amount] => 0.00
+        )
+
+)

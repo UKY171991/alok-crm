@@ -46,6 +46,10 @@ include 'inc/sidebar.php';
                 </div>
             </div>
         </div>
+        <!-- Pagination Controls -->
+        <nav aria-label="Destinations pagination" class="d-flex justify-content-center mb-4">
+            <ul class="pagination pagination-lg" id="destinationPagination"></ul>
+        </nav>
         <!-- Add Destination Modal -->
         <div class="modal fade animate__animated animate__fadeInDown" id="addDestinationModal" tabindex="-1" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -99,16 +103,50 @@ include 'inc/sidebar.php';
 <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
-        // Function to load destinations
-        function loadDestinations() {
+        // Function to render pagination controls
+        function renderPagination(total, page, per_page) {
+            var totalPages = Math.ceil(total / per_page);
+            var $pagination = $('#destinationPagination');
+            $pagination.empty();
+            if (totalPages <= 1) return;
+            var prevDisabled = (page <= 1) ? 'disabled' : '';
+            var nextDisabled = (page >= totalPages) ? 'disabled' : '';
+            $pagination.append('<li class="page-item ' + prevDisabled + '"><a class="page-link" href="#" data-page="' + (page - 1) + '">Previous</a></li>');
+            for (var i = 1; i <= totalPages; i++) {
+                var active = (i === page) ? 'active' : '';
+                $pagination.append('<li class="page-item ' + active + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
+            }
+            $pagination.append('<li class="page-item ' + nextDisabled + '"><a class="page-link" href="#" data-page="' + (page + 1) + '">Next</a></li>');
+        }
+        // Modified loadDestinations to accept page param
+        function loadDestinations(page = 1, per_page = 10) {
             $.ajax({
                 url: 'fetch_destinations.php',
                 method: 'GET',
+                data: { page: page, per_page: per_page },
                 success: function (data) {
                     $('#destinationTableBody').html(data);
+                    // Read pagination info from hidden row
+                    var $info = $('#pagination-info');
+                    if ($info.length) {
+                        var total = parseInt($info.data('total'));
+                        var page = parseInt($info.data('page'));
+                        var per_page = parseInt($info.data('per_page'));
+                        renderPagination(total, page, per_page);
+                    } else {
+                        $('#destinationPagination').empty();
+                    }
                 }
             });
         }
+        // Handle pagination click
+        $(document).on('click', '#destinationPagination .page-link', function(e) {
+            e.preventDefault();
+            var page = parseInt($(this).data('page'));
+            if (!isNaN(page) && page > 0) {
+                loadDestinations(page);
+            }
+        });
 
         // Function to show AdminLTE alert
         function showAdminLTEAlert(message, type = 'success') {

@@ -21,6 +21,14 @@ if ($_POST['action'] === 'fetch' && isset($_POST['id'])) {
                 echo '</div>';
                 continue;
             }
+            if ($f === 'destination') {
+                // Destination select field with label
+                echo '<div class="col-md-3 mb-2">';
+                echo '<label for="edit_destination" class="form-label">Destination</label>';
+                echo '<select name="destination" id="edit_destination" class="form-select form-control" required data-selected="'.htmlspecialchars($row['destination']).'"><option value="">Select Destination</option></select>';
+                echo '</div>';
+                continue;
+            }
             $type = (strpos($f, 'date') !== false) ? 'date' : (strpos($f, 'amt') !== false || strpos($f, 'value') !== false || strpos($f, 'weight') !== false || strpos($f, 'wt') !== false || strpos($f, 'cost') !== false || strpos($f, 'days') !== false ? 'number' : 'text');
             $step = ($type === 'number') ? 'step="0.01"' : '';
             $label = ucwords(str_replace('_',' ', $f));

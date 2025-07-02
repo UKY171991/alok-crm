@@ -15,15 +15,18 @@ $destination = json_encode(array_filter($_POST['destination']));
 $parcel_type = json_encode(array_filter($_POST['parcel_type']));
 $weight = json_encode(array_filter($_POST['weight']));
 $price = json_encode(array_filter($_POST['price']));
+$service = json_encode(array_filter($_POST['service']));
+$shipment_type = json_encode(array_filter($_POST['shipment_type']));
 
 if ($id == '') {
-    $sql = "INSERT INTO customers (name, address, phone, email, gst_no, hsn_code, pan_no, cin_no, aadhaar_no, destination, parcel_type, weight, price) 
-            VALUES ('$name', '$address', '$phone', '$email', '$gst', '$hsn', '$pan', '$cin', '$aadhaar', '$destination', '$parcel_type', '$weight', '$price')";
+    $sql = "INSERT INTO customers (name, address, phone, email, gst_no, hsn_code, pan_no, cin_no, aadhaar_no, destination, parcel_type, weight, price, service, shipment_type) 
+            VALUES ('$name', '$address', '$phone', '$email', '$gst', '$hsn', '$pan', '$cin', '$aadhaar', '$destination', '$parcel_type', '$weight', '$price', '$service', '$shipment_type')";
     $msg = "Customer added successfully.";
 } else {
     $sql = "UPDATE customers SET name='$name', address='$address', phone='$phone', email='$email',
             gst_no='$gst', hsn_code='$hsn', pan_no='$pan', cin_no='$cin', aadhaar_no='$aadhaar',
-            destination='$destination', parcel_type='$parcel_type', weight='$weight', price='$price'
+            destination='$destination', parcel_type='$parcel_type', weight='$weight', price='$price',
+            service='$service', shipment_type='$shipment_type'
             WHERE id=$id";
     $msg = "Customer updated successfully.";
 }

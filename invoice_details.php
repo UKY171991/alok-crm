@@ -11,13 +11,23 @@ include 'inc/sidebar.php';
 // Fetch invoice ID from GET or another source
 $invoice_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Fetch invoice line items
+// Fetch invoice line items and customer details
 $line_items = [];
+$customer = null;
 if ($invoice_id > 0) {
     $result = $conn->query("SELECT * FROM invoice_items WHERE invoice_id = $invoice_id ORDER BY booking_date, id");
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $line_items[] = $row;
+        }
+    }
+    // Fetch customer_id from the invoice
+    $inv_result = $conn->query("SELECT customer_id FROM invoices WHERE id = $invoice_id LIMIT 1");
+    $customer_id = ($inv_result && $row = $inv_result->fetch_assoc()) ? intval($row['customer_id']) : 0;
+    if ($customer_id > 0) {
+        $cust_result = $conn->query("SELECT * FROM customers WHERE id = $customer_id LIMIT 1");
+        if ($cust_result && $cust_row = $cust_result->fetch_assoc()) {
+            $customer = $cust_row;
         }
     }
     error_log('Fetched line_items: ' . print_r($line_items, true));
@@ -56,10 +66,17 @@ if ($invoice_id > 0) {
         <div class="card mb-3">
             <div class="card-body">
                 <h5>To,</h5>
-                <p>Aronva Healthcare<br>
-                Address: Ashiyana, Lucknow - 226012<br>
-                Phone: ---<br>
-                GSTN No: 09BQIPS8917H1ZS</p>
+                <?php if ($customer): ?>
+                <p>
+                    <?= htmlspecialchars($customer['name']) ?><br>
+                    Address: <?= htmlspecialchars($customer['address']) ?><br>
+                    Phone: <?= htmlspecialchars($customer['phone']) ?><br>
+                    Email: <?= htmlspecialchars($customer['email']) ?><br>
+                    GSTN No: <?= htmlspecialchars($customer['gst_no']) ?>
+                </p>
+                <?php else: ?>
+                <p><em>Customer details not found.</em></p>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -71,56 +88,50 @@ if ($invoice_id > 0) {
                         <thead class="table-dark">
                             <tr>
                                 <th>Sr.</th>
+                                <th class="text-center">Order ID</th>
                                 <th>Booking Date</th>
                                 <th>Consignment No.</th>
-                                <th>Destination</th>
-                                <th class="text-end">Weight or N</th>
+                                <th>Destination City</th>
+                                <th>Dox / Non Dox</th>
+                                <th>Service</th>
+                                <th class="text-end">No of Pcs</th>
+                                <th class="text-end">Weight or No</th>
                                 <th class="text-end">Amt.</th>
                                 <th class="text-end">Way Bill Value</th>
-                                <th>Description</th>
-                                <th class="text-end">Quantity</th>
-                                <th class="text-end">Rate</th>
-                                <th class="text-end text-primary">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $total_amt = $total_waybill = $total_amount = $total_quantity = $total_rate = 0;
+                            $total_amt = $total_waybill = $total_pcs = $total_weight = 0;
                             if (!empty($line_items)):
                                 foreach ($line_items as $idx => $item):
-                                    $quantity = isset($item['quantity']) ? floatval($item['quantity']) : 0;
-                                    $rate = isset($item['rate']) ? floatval($item['rate']) : 0;
-                                    $calculated_amount = $quantity * $rate;
                                     $total_amt += floatval($item['amt']);
                                     $total_waybill += floatval($item['way_bill_value']);
-                                    $total_amount += $calculated_amount;
-                                    $total_quantity += $quantity;
-                                    $total_rate += $rate;
+                                    $total_pcs += isset($item['quantity']) ? floatval($item['quantity']) : 0;
+                                    $total_weight += isset($item['weight']) ? floatval($item['weight']) : 0;
                             ?>
-                                <tr>
-                                    <td><?= $idx + 1 ?></td>
-                                    <td><?= !empty($item['booking_date']) && $item['booking_date'] != '0000-00-00' ? date('d-m-Y', strtotime($item['booking_date'])) : '–' ?></td>
-                                    <td><?= !empty($item['consignment_no']) ? htmlspecialchars($item['consignment_no']) : '–' ?></td>
-                                    <td><?= !empty($item['destination_city']) ? htmlspecialchars($item['destination_city']) : '–' ?></td>
-                                    <td class="text-end"><?= $item['weight'] !== null ? htmlspecialchars($item['weight']) : '–' ?></td>
-                                    <td class="text-end"><?= $item['amt'] !== null ? number_format($item['amt'], 2) : '–' ?></td>
-                                    <td class="text-end"><?= $item['way_bill_value'] !== null ? number_format($item['way_bill_value'], 2) : '–' ?></td>
-                                    <td><?= !empty($item['description']) ? htmlspecialchars($item['description']) : '–' ?></td>
-                                    <td class="text-end"><?= $item['quantity'] !== null ? htmlspecialchars($item['quantity']) : '–' ?></td>
-                                    <td class="text-end"><?= $item['rate'] !== null ? number_format($item['rate'], 2) : '–' ?></td>
-                                    <td class="text-end text-primary fw-bold"><?= number_format($calculated_amount, 2) ?></td>
-                                </tr>
+                            <tr>
+                                <td><?= $idx + 1 ?></td>
+                                <td class="text-center"><?= isset($item['order_id']) ? htmlspecialchars($item['order_id']) : '' ?></td>
+                                <td><?= !empty($item['booking_date']) && $item['booking_date'] != '0000-00-00' ? date('d-m-Y', strtotime($item['booking_date'])) : '–' ?></td>
+                                <td><?= !empty($item['consignment_no']) ? htmlspecialchars($item['consignment_no']) : '–' ?></td>
+                                <td><?= !empty($item['destination_city']) ? htmlspecialchars($item['destination_city']) : '–' ?></td>
+                                <td><?= !empty($item['dox_non_dox']) ? htmlspecialchars($item['dox_non_dox']) : '–' ?></td>
+                                <td><?= !empty($item['service']) ? htmlspecialchars($item['service']) : '–' ?></td>
+                                <td class="text-end"><?= isset($item['quantity']) ? htmlspecialchars($item['quantity']) : '–' ?></td>
+                                <td class="text-end"><?= isset($item['weight']) ? htmlspecialchars($item['weight']) : '–' ?></td>
+                                <td class="text-end"><?= isset($item['amt']) ? number_format($item['amt'], 2) : '–' ?></td>
+                                <td class="text-end"><?= isset($item['way_bill_value']) ? number_format($item['way_bill_value'], 2) : '–' ?></td>
+                            </tr>
                             <?php endforeach; ?>
                         </tbody>
                         <tfoot>
                             <tr class="table-secondary fw-bold">
-                                <td colspan="5" class="text-end">Totals:</td>
-                                <td class="text-end"><?= number_format($total_amt, 2) ?></td>
-                                <td class="text-end"><?= number_format($total_waybill, 2) ?></td>
-                                <td></td>
-                                <td class="text-end text-primary"><?= number_format($total_quantity, 2) ?></td>
-                                <td class="text-end text-primary"><?= number_format($total_rate, 2) ?></td>
-                                <td class="text-end text-primary"><?= number_format($total_amount, 2) ?></td>
+                                <td colspan="7" class="text-end">Totals:</td>
+                                <td class="text-end text-primary"><?= number_format($total_pcs, 2) ?></td>
+                                <td class="text-end text-primary"><?= number_format($total_weight, 2) ?></td>
+                                <td class="text-end text-primary"><?= number_format($total_amt, 2) ?></td>
+                                <td class="text-end text-primary"><?= number_format($total_waybill, 2) ?></td>
                             </tr>
                         </tfoot>
                         <?php else: ?>

@@ -21,29 +21,36 @@ include 'inc/db.php';
     <section class="content">
         <div class="container-fluid">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white border-0 pb-0">
-                    <h5 class="mb-0 fw-semibold text-secondary">Order List</h5>
+                <div class="card-header bg-white border-0 pb-0 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold text-secondary"><i class="fas fa-list me-2"></i>Order List</h5>
+                    <div class="d-flex gap-2">
+                        <input type="text" id="orderSearch" class="form-control form-control-sm w-auto" placeholder="Search orders..." style="min-width:220px;">
+                        <div id="orderTableSpinner" class="spinner-border text-primary d-none" role="status" style="width:1.5rem;height:1.5rem;"><span class="visually-hidden">Loading...</span></div>
+                    </div>
                 </div>
                 <div class="card-body table-responsive" id="orderTableContainer">
                     <!-- Table will be loaded here by AJAX -->
                 </div>
+                <nav aria-label="Order pagination" class="d-flex justify-content-center mb-3">
+                    <ul class="pagination pagination-sm" id="orderPagination"></ul>
+                </nav>
             </div>
             <!-- Add Order Modal -->
             <div class="modal fade" id="addOrderModal" tabindex="-1" role="dialog" aria-labelledby="addOrderModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addOrderModalLabel">Add Order</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-content rounded-4 shadow-lg">
+                        <div class="modal-header bg-primary text-white rounded-top-4">
+                            <h5 class="modal-title fw-bold" id="addOrderModalLabel"><i class="fas fa-plus me-2"></i>Add Order</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="orderForm">
-                        <div class="modal-body">
-                            <div class="row">
-                                <!-- Customer Select -->
+                        <div class="modal-body bg-light-subtle p-4 rounded-4">
+                            <div class="row g-3">
+                                <div class="col-12 mb-2"><h6 class="fw-bold text-primary"><i class="fas fa-user me-2"></i>Basic Info</h6></div>
                                 <div class="col-md-3 mb-2">
-                                    <label for="customer_id" class="form-label">Customer</label>
-                                    <select name="customer_id" id="customer_id" class="form-select form-control" required>
-                                        <option value="">Loading...</option>
+                                    <label for="customer_id" class="form-label">Customer <span class="text-danger">*</span></label>
+                                    <select name="customer_id" id="customer_id" class="form-select form-control select2-customer" required>
+                                        <option value="">Select Customer</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3 mb-2">
@@ -60,7 +67,9 @@ include 'inc/db.php';
                                 </div>
                                 <div class="col-md-3 mb-2">
                                     <label for="destination" class="form-label">Destination</label>
-                                    <input type="text" name="destination" id="destination" class="form-control" placeholder="Destination">
+                                    <select name="destination" id="destination" class="form-select form-control" required>
+                                        <option value="">Select Destination</option>
+                                    </select>
                                 </div>
                                 <div class="col-md-3 mb-2">
                                     <label for="mode" class="form-label">Mode</label>
@@ -73,6 +82,7 @@ include 'inc/db.php';
                                 <div class="col-md-3 mb-2">
                                     <label for="pincode" class="form-label">Pincode</label>
                                     <input type="text" name="pincode" id="pincode" class="form-control" placeholder="Pincode">
+                                    <div class="form-text">6 digit Indian pincode</div>
                                 </div>
                                 <div class="col-md-3 mb-2">
                                     <label for="content" class="form-label">Content</label>
@@ -199,13 +209,13 @@ include 'inc/db.php';
                                     <input type="number" name="pending_days" id="pending_days" class="form-control" placeholder="Pending Days">
                                 </div>
                             </div>
+                            <div id="orderMessage" class="mt-2"></div>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer bg-light rounded-bottom-4">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Order</button>
+                            <button type="submit" class="btn btn-primary" id="submitOrderBtn">Add Order</button>
                         </div>
                         </form>
-                        <!-- jQuery and Bootstrap JS must be loaded before any script using $ -->
                     </div>
                 </div>
             </div>
@@ -395,24 +405,39 @@ $(document).ready(function() {
     });
 });
 $(document).ready(function() {
-    function loadOrders(page = 1) {
+    function loadOrders(page = 1, search = "") {
+        $('#orderTableSpinner').removeClass('d-none');
         $.ajax({
             url: 'ajax/fetch_orders.php',
             type: 'GET',
-            data: {page: page},
+            data: {page: page, search: search},
             success: function(html) {
                 $('#orderTableContainer').html(html);
+                $('#orderTableSpinner').addClass('d-none');
             },
             error: function() {
                 $('#orderTableContainer').html('<div class="alert alert-danger">Failed to load orders.</div>');
+                $('#orderTableSpinner').addClass('d-none');
             }
         });
     }
+    // Debounced search
+    let searchTimeout;
+    $('#orderSearch').on('input', function() {
+        clearTimeout(searchTimeout);
+        const searchVal = $(this).val();
+        searchTimeout = setTimeout(function() {
+            loadOrders(1, searchVal);
+        }, 300);
+    });
+    // Initial load
     loadOrders();
+    // Pagination with search
     $(document).on('click', '.order-pagination .page-link', function(e) {
         e.preventDefault();
         var page = $(this).data('page');
-        if(page) loadOrders(page);
+        var searchVal = $('#orderSearch').val();
+        if(page) loadOrders(page, searchVal);
     });
 
     $('#orderForm').on('submit', function(e) {
@@ -566,6 +591,30 @@ $(document).ready(function() {
                 }
             });
         }
+    });
+});
+$(document).ready(function() {
+    function loadDestinationsDropdown(selectedVal = "") {
+        $.getJSON('fetch_destinations.php?mode=json', function(data) {
+            var options = '<option value="">Select Destination</option>';
+            $.each(data, function(i, dest) {
+                options += '<option value="' + dest.name + '"' + (selectedVal === dest.name ? ' selected' : '') + '>' + dest.name + '</option>';
+            });
+            // For Add Order modal
+            $('#destination').html(options);
+            // For Edit Order modal (if present)
+            $('#editOrderModal select[name="destination"]').html(options);
+        });
+    }
+    // When Add Order modal is shown, load destinations
+    $('#addOrderModal').on('show.bs.modal', function() {
+        loadDestinationsDropdown();
+    });
+    // When Edit Order modal is shown, load destinations and set selected value
+    $(document).on('shown.bs.modal', '#editOrderModal', function() {
+        var $select = $(this).find('select[name="destination"]');
+        var selectedVal = $select.data('selected') || $select.val() || '';
+        loadDestinationsDropdown(selectedVal);
     });
 });
 </script>
