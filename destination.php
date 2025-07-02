@@ -301,10 +301,25 @@ include 'inc/sidebar.php';
         border-radius: 3px;
         cursor: pointer;
         font-size: 12px;
+        margin-right: 5px;
     }
     
     .edit-zone-btn:hover {
         background: #FF8C00;
+    }
+    
+    .delete-zone-btn {
+        background: #DC143C;
+        color: white;
+        border: 1px solid #000;
+        padding: 2px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .delete-zone-btn:hover {
+        background: #B22222;
     }
     
     .zone-search-section {

@@ -39,7 +39,10 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
             echo '<td>' . htmlspecialchars($row['name']) . '</td>';
             echo '<td>' . $zone_type . '</td>';
             echo '<td class="active-indicator"><span class="active-checkmark">✓</span></td>';
-            echo '<td><button class="edit-zone-btn" data-id="' . htmlspecialchars($row['id']) . '" data-name="' . htmlspecialchars($row['name']) . '">Edit</button></td>';
+            echo '<td>';
+            echo '<button class="edit-zone-btn" data-id="' . htmlspecialchars($row['id']) . '" data-name="' . htmlspecialchars($row['name']) . '">Edit</button> ';
+            echo '<button class="delete-zone-btn" data-id="' . htmlspecialchars($row['id']) . '">Delete</button>';
+            echo '</td>';
             echo '</tr>';
         }
     } else {
