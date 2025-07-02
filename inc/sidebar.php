@@ -48,6 +48,13 @@
                         <p>Order</p>
                     </a>
                 </li>
+                <!-- Customer Rate Master -->
+                <li class="nav-item">
+                    <a href="customer_rate_master.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'customer_rate_master.php') echo ' active'; ?>">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>Customer Rate Master</p>
+                    </a>
+                </li>
                 <!-- Invoices -->
                 <li class="nav-item">
                     <a href="invoices.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'invoices.php') echo ' active'; ?>">
