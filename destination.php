@@ -17,83 +17,45 @@ include 'inc/sidebar.php';
             <span id="adminlte-alert-message"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0 fw-bold"><i class="fas fa-map-marker-alt text-primary me-2"></i>Destinations Management</h2>
-            <button class="btn btn-primary btn-lg rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#addDestinationModal">
-                <i class="fas fa-plus me-1"></i> Add Destination
-            </button>
-        </div>
-        <div class="card shadow rounded-4 mb-4">
-            <div class="card-body pb-2">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <input type="text" id="searchDestination" class="form-control form-control-lg rounded-pill" placeholder="Search destinations...">
-                    </div>
+        <!-- Zone Master Interface -->
+        <div class="zone-master-container">
+            <div class="zone-master-header">
+                <h2 class="zone-master-title">ZONE MASTER</h2>
+            </div>
+            
+            <div class="zone-input-section">
+                <div class="input-group">
+                    <label for="zoneName">Zone</label>
+                    <input type="text" id="zoneName" class="zone-input" placeholder="">
+                    <button type="button" id="addZoneBtn" class="add-btn">Add</button>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle table-bordered border-light mb-0" id="destinationTable">
-                        <thead class="table-primary">
-                            <tr>
-                                <th style="width:60px;">ID</th>
-                                <th>Name</th>
-                                <th style="width:180px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="destinationTableBody">
-                            <!-- Data will be loaded here via AJAX -->
-                        </tbody>
-                    </table>
+            </div>
+
+            <div class="zone-table-container">
+                <table class="zone-table" id="zoneTable">
+                    <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Type</th>
+                            <th>Active</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="zoneTableBody">
+                        <!-- Zone data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="zone-search-section">
+                <div class="search-group">
+                    <label for="findZone">Find Zone</label>
+                    <input type="text" id="findZone" class="zone-search-input" placeholder="">
+                    <button type="button" id="findZoneBtn" class="find-btn">Find</button>
                 </div>
             </div>
         </div>
-        <!-- Pagination Controls -->
-        <nav aria-label="Destinations pagination" class="d-flex justify-content-center mb-4">
-            <ul class="pagination pagination-lg" id="destinationPagination"></ul>
-        </nav>
-        <!-- Add Destination Modal -->
-        <div class="modal fade animate__animated animate__fadeInDown" id="addDestinationModal" tabindex="-1" aria-labelledby="addDestinationModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content rounded-4 shadow-lg">
-                    <div class="modal-header bg-primary text-white rounded-top-4">
-                        <h5 class="modal-title" id="addDestinationModalLabel"><i class="fas fa-plus me-2"></i>Add New Destination</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="addDestinationForm">
-                        <div class="modal-body">
-                            <div class="form-floating mb-3">
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Destination Name" required>
-                                <label for="name">Destination Name</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer bg-light rounded-bottom-4">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Add Destination</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Edit Destination Modal -->
-        <div class="modal fade animate__animated animate__fadeInDown" id="editDestinationModal" tabindex="-1" aria-labelledby="editDestinationModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content rounded-4 shadow-lg">
-                    <div class="modal-header bg-warning text-dark rounded-top-4">
-                        <h5 class="modal-title" id="editDestinationModalLabel"><i class="fas fa-edit me-2"></i>Edit Destination</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editDestinationForm">
-                            <input type="hidden" id="editId">
-                            <div class="form-floating mb-3">
-                                <input type="text" id="editName" class="form-control" placeholder="Destination Name" required>
-                                <label for="editName">Destination Name</label>
-                            </div>
-                            <button type="submit" class="btn btn-warning"><i class="fas fa-save me-1"></i> Update Destination</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 </main>
 <?php include 'inc/footer.php'; ?>
@@ -103,51 +65,6 @@ include 'inc/sidebar.php';
 <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
-        // Function to render pagination controls
-        function renderPagination(total, page, per_page) {
-            var totalPages = Math.ceil(total / per_page);
-            var $pagination = $('#destinationPagination');
-            $pagination.empty();
-            if (totalPages <= 1) return;
-            var prevDisabled = (page <= 1) ? 'disabled' : '';
-            var nextDisabled = (page >= totalPages) ? 'disabled' : '';
-            $pagination.append('<li class="page-item ' + prevDisabled + '"><a class="page-link" href="#" data-page="' + (page - 1) + '">Previous</a></li>');
-            for (var i = 1; i <= totalPages; i++) {
-                var active = (i === page) ? 'active' : '';
-                $pagination.append('<li class="page-item ' + active + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
-            }
-            $pagination.append('<li class="page-item ' + nextDisabled + '"><a class="page-link" href="#" data-page="' + (page + 1) + '">Next</a></li>');
-        }
-        // Modified loadDestinations to accept page param
-        function loadDestinations(page = 1, per_page = 10) {
-            $.ajax({
-                url: 'fetch_destinations.php',
-                method: 'GET',
-                data: { page: page, per_page: per_page },
-                success: function (data) {
-                    $('#destinationTableBody').html(data);
-                    // Read pagination info from hidden row
-                    var $info = $('#pagination-info');
-                    if ($info.length) {
-                        var total = parseInt($info.data('total'));
-                        var page = parseInt($info.data('page'));
-                        var per_page = parseInt($info.data('per_page'));
-                        renderPagination(total, page, per_page);
-                    } else {
-                        $('#destinationPagination').empty();
-                    }
-                }
-            });
-        }
-        // Handle pagination click
-        $(document).on('click', '#destinationPagination .page-link', function(e) {
-            e.preventDefault();
-            var page = parseInt($(this).data('page'));
-            if (!isNaN(page) && page > 0) {
-                loadDestinations(page);
-            }
-        });
-
         // Function to show AdminLTE alert
         function showAdminLTEAlert(message, type = 'success') {
             const alertDiv = $('#adminlte-alert');
@@ -161,111 +78,280 @@ include 'inc/sidebar.php';
             }, 3000);
         }
 
-        // Load destinations on page load
-        loadDestinations();
+        // Load zones on page load
+        function loadZones() {
+            $.ajax({
+                url: 'fetch_destinations.php',
+                method: 'GET',
+                success: function (data) {
+                    $('#zoneTableBody').html(data);
+                },
+                error: function() {
+                    showAdminLTEAlert('Error loading zones.', 'danger');
+                }
+            });
+        }
 
-        // Handle form submission for adding a destination
-        $('#addDestinationForm').on('submit', function (e) {
-            e.preventDefault();
-            const name = $('#name').val();
-            const $btn = $(this).find('button[type="submit"]');
-            $btn.prop('disabled', true).text('Processing...');
+        // Load zones initially
+        loadZones();
+
+        // Handle Add Zone button click
+        $('#addZoneBtn').on('click', function () {
+            const zoneName = $('#zoneName').val().trim();
+            if (!zoneName) {
+                showAdminLTEAlert('Please enter a zone name.', 'warning');
+                return;
+            }
+
+            const $btn = $(this);
+            $btn.prop('disabled', true).text('Adding...');
+            
             $.ajax({
                 url: 'add_destination.php',
                 method: 'POST',
-                data: { name: name },
+                data: { name: zoneName },
                 success: function (response) {
-                    $('#name').val('');
-                    $('#addDestinationModal').modal('hide');
-                    $btn.prop('disabled', false).text('Add Destination');
-                    loadDestinations();
+                    $('#zoneName').val('');
+                    $btn.prop('disabled', false).text('Add');
+                    loadZones();
                     showAdminLTEAlert(response, 'success');
                 },
                 error: function() {
-                    $btn.prop('disabled', false).text('Add Destination');
-                    showAdminLTEAlert('AJAX error.', 'danger');
+                    $btn.prop('disabled', false).text('Add');
+                    showAdminLTEAlert('Error adding zone.', 'danger');
                 }
             });
         });
 
-        // Handle delete action
-        $(document).on('click', '.delete-btn', function () {
+        // Handle edit action
+        $(document).on('click', '.edit-zone-btn', function () {
             const id = $(this).data('id');
-            if (confirm('Are you sure you want to delete this destination?')) {
+            const name = $(this).data('name');
+            const newName = prompt('Edit Zone Name:', name);
+            
+            if (newName !== null && newName.trim() !== '' && newName !== name) {
                 $.ajax({
-                    url: 'delete_destination.php',
+                    url: 'edit_destination.php',
                     method: 'POST',
-                    data: { id: id },
+                    data: { id: id, name: newName.trim() },
                     success: function (response) {
-                        loadDestinations(); // Reload the destinations
-                        showAdminLTEAlert(response, 'success'); // Show success message
+                        loadZones();
+                        showAdminLTEAlert(response, 'success');
                     },
                     error: function() {
-                        showAdminLTEAlert('AJAX error.', 'danger');
+                        showAdminLTEAlert('Error updating zone.', 'danger');
                     }
                 });
             }
         });
 
-        // Handle edit button click
-        $(document).on('click', '.edit-btn', function () {
+        // Handle delete action
+        $(document).on('click', '.delete-zone-btn', function () {
             const id = $(this).data('id');
-            const name = $(this).data('name');
-
-            console.log("Editing Destination ID:", id, "Name:", name); // Debugging
-
-            $('#editId').val(id);
-            $('#editName').val(name);
-
-            $('#editDestinationModal').modal('show');
+            if (confirm('Are you sure you want to delete this zone?')) {
+                $.ajax({
+                    url: 'delete_destination.php',
+                    method: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        loadZones();
+                        showAdminLTEAlert(response, 'success');
+                    },
+                    error: function() {
+                        showAdminLTEAlert('Error deleting zone.', 'danger');
+                    }
+                });
+            }
         });
 
-        // Handle form submission for editing a destination
-        $('#editDestinationForm').on('submit', function (e) {
-            e.preventDefault();
-            const id = $('#editId').val();
-            const name = $('#editName').val();
-
-            console.log("Editing Destination:", { id, name }); // Debugging
-
-            $.ajax({
-                url: 'edit_destination.php',
-                method: 'POST',
-                data: { id: id, name: name },
-                success: function (response) {
-                    console.log("Response:", response); // Debugging
-                    $('#editDestinationModal').modal('hide'); // Hide the modal
-                    loadDestinations(); // Reload the destinations
-                    showAdminLTEAlert(response, 'success'); // Show success message
-                },
-                error: function () {
-                    showAdminLTEAlert('AJAX error.', 'danger');
+        // Handle Find Zone button click
+        $('#findZoneBtn').on('click', function() {
+            const searchValue = $('#findZone').val().toLowerCase();
+            if (searchValue.trim() === '') {
+                loadZones(); // Show all zones if search is empty
+                return;
+            }
+            
+            $('#zoneTableBody tr').each(function() {
+                const rowText = $(this).text().toLowerCase();
+                if (rowText.indexOf(searchValue) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
                 }
             });
         });
 
-        // Search/filter destinations
-        $('#searchDestination').on('keyup', function() {
-            var value = $(this).val().toLowerCase();
-            $('#destinationTableBody tr').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
+        // Allow Enter key to trigger find
+        $('#findZone').on('keypress', function(e) {
+            if (e.which === 13) { // Enter key
+                $('#findZoneBtn').click();
+            }
+        });
+
+        // Allow Enter key to trigger add
+        $('#zoneName').on('keypress', function(e) {
+            if (e.which === 13) { // Enter key
+                $('#addZoneBtn').click();
+            }
         });
     });
 </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <style>
-    #destinationTable thead th { font-size: 1.1rem; }
-    #destinationTable tbody td { font-size: 1.05rem; }
-    .modal-content { border-radius: 1.2rem; }
-    .form-floating > label { left: 1.2rem; }
-    .btn { letter-spacing: 0.03em; }
-    .table-primary th { background: #e9f5ff !important; }
-    .modal-header.bg-primary { background: #2563eb !important; }
-    .modal-header.bg-warning { background: #ffe066 !important; color: #333 !important; }
-    .modal-header i { font-size: 1.2em; }
-    .shadow-lg { box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.12)!important; }
-    .rounded-4 { border-radius: 1.2rem!important; }
-    .rounded-top-4 { border-top-left-radius: 1.2rem!important; border-top-right-radius: 1.2rem!important; }
-    .rounded-bottom-4 { border-bottom-left-radius: 1.2rem!important; border-bottom-right-radius: 1.2rem!important; }
+    /* Zone Master Styling */
+    .zone-master-container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #87CEEB;
+        border: 2px solid #4169E1;
+        border-radius: 8px;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+    
+    .zone-master-header {
+        background: #B22222;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        border-bottom: 2px solid #4169E1;
+    }
+    
+    .zone-master-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    
+    .zone-input-section {
+        padding: 15px;
+        background: #87CEEB;
+    }
+    
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .input-group label {
+        font-weight: bold;
+        color: #000;
+        min-width: 50px;
+    }
+    
+    .zone-input {
+        flex: 1;
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+    
+    .add-btn {
+        background: #4169E1;
+        color: white;
+        border: 1px solid #000;
+        padding: 4px 12px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    
+    .add-btn:hover {
+        background: #1E90FF;
+    }
+    
+    .zone-table-container {
+        background: white;
+        margin: 0 15px;
+    }
+    
+    .zone-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    
+    .zone-table th {
+        background: #E6E6FA;
+        border: 1px solid #000;
+        padding: 6px 8px;
+        text-align: left;
+        font-weight: bold;
+    }
+    
+    .zone-table td {
+        border: 1px solid #000;
+        padding: 4px 8px;
+        background: white;
+    }
+    
+    .zone-table tr:nth-child(even) td {
+        background: #F0F8FF;
+    }
+    
+    .edit-zone-btn {
+        background: #FFA500;
+        color: white;
+        border: 1px solid #000;
+        padding: 2px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .edit-zone-btn:hover {
+        background: #FF8C00;
+    }
+    
+    .zone-search-section {
+        padding: 15px;
+        background: #87CEEB;
+    }
+    
+    .search-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .search-group label {
+        font-weight: bold;
+        color: #000;
+        min-width: 80px;
+    }
+    
+    .zone-search-input {
+        flex: 1;
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+    
+    .find-btn {
+        background: #4169E1;
+        color: white;
+        border: 1px solid #000;
+        padding: 4px 12px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    
+    .find-btn:hover {
+        background: #1E90FF;
+    }
+    
+    .active-indicator {
+        text-align: center;
+    }
+    
+    .active-checkmark {
+        color: #008000;
+        font-weight: bold;
+    }
 </style>
