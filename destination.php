@@ -145,6 +145,25 @@ include 'inc/sidebar.php';
             }
         });
 
+        // Handle status toggle
+        $(document).on('click', '.status-toggle', function () {
+            const id = $(this).data('id');
+            const currentStatus = $(this).data('status');
+            
+            $.ajax({
+                url: 'update_zone_status.php',
+                method: 'POST',
+                data: { id: id, status: currentStatus },
+                success: function (response) {
+                    loadZones(); // Reload zones to show updated status
+                    showAdminLTEAlert(response, 'success');
+                },
+                error: function() {
+                    showAdminLTEAlert('Error updating zone status.', 'danger');
+                }
+            });
+        });
+
         // Handle delete action
         $(document).on('click', '.delete-zone-btn', function () {
             const id = $(this).data('id');
@@ -368,5 +387,30 @@ include 'inc/sidebar.php';
     .active-checkmark {
         color: #008000;
         font-weight: bold;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+    
+    .active-checkmark:hover {
+        background-color: #E8F5E8;
+    }
+    
+    .inactive-cross {
+        color: #DC143C;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 3px;
+        transition: background-color 0.2s;
+    }
+    
+    .inactive-cross:hover {
+        background-color: #FFE8E8;
+    }
+    
+    .status-toggle {
+        user-select: none;
     }
 </style>

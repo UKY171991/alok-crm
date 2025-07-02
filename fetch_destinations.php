@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 include 'inc/db.php'; 
 
 // Get all destinations
-$sql = "SELECT id, name FROM destinations ORDER BY name ASC";
+$sql = "SELECT id, name, status FROM destinations ORDER BY name ASC";
 $result = $conn->query($sql);
 
 if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
@@ -35,10 +35,15 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
                 $zone_type = strtoupper($row['name']);
             }
             
+            // Determine status display
+            $status = intval($row['status']);
+            $statusDisplay = $status ? '✓' : '✗';
+            $statusClass = $status ? 'active-checkmark' : 'inactive-cross';
+            
             echo '<tr>';
             echo '<td>' . htmlspecialchars($row['name']) . '</td>';
             echo '<td>' . $zone_type . '</td>';
-            echo '<td class="active-indicator"><span class="active-checkmark">✓</span></td>';
+            echo '<td class="active-indicator"><span class="status-toggle ' . $statusClass . '" data-id="' . htmlspecialchars($row['id']) . '" data-status="' . $status . '">' . $statusDisplay . '</span></td>';
             echo '<td>';
             echo '<button class="edit-zone-btn" data-id="' . htmlspecialchars($row['id']) . '" data-name="' . htmlspecialchars($row['name']) . '">Edit</button> ';
             echo '<button class="delete-zone-btn" data-id="' . htmlspecialchars($row['id']) . '">Delete</button>';
