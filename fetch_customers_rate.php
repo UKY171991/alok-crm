@@ -15,7 +15,7 @@ if ($type) {
         
         switch ($type) {
             case 'customers':
-                $stmt = $pdo->prepare("SELECT customer_id, customer_name FROM customers WHERE status = 'active' ORDER BY customer_name");
+                $stmt = $pdo->prepare("SELECT id as customer_id, name as customer_name FROM customers ORDER BY name");
                 $stmt->execute();
                 $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($customers as $customer) {
@@ -24,7 +24,7 @@ if ($type) {
                 break;
                 
             case 'zones':
-                $stmt = $pdo->prepare("SELECT id, zone_name FROM destinations WHERE status = 'active' ORDER BY zone_name");
+                $stmt = $pdo->prepare("SELECT id, zone_name FROM destinations ORDER BY zone_name");
                 $stmt->execute();
                 $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($zones as $zone) {
@@ -70,13 +70,13 @@ if ($type) {
         $response = array();
         
         // Fetch customers for dropdown
-        $stmt = $pdo->prepare("SELECT customer_id, customer_name FROM customers WHERE status = 'active' ORDER BY customer_name");
+        $stmt = $pdo->prepare("SELECT id as customer_id, name as customer_name FROM customers ORDER BY name");
         $stmt->execute();
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $response['customers'] = $customers;
         
         // Fetch zones for dropdown
-        $stmt = $pdo->prepare("SELECT id, zone_name FROM destinations WHERE status = 'active' ORDER BY zone_name");
+        $stmt = $pdo->prepare("SELECT id, zone_name FROM destinations ORDER BY zone_name");
         $stmt->execute();
         $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $response['zones'] = $zones;

@@ -11,9 +11,9 @@ try {
     
     // Get filter parameters (supporting both old and new parameter names)
     $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
-    $zone_id = isset($_GET['zone_id']) ? $_GET['zone_id'] : (isset($_GET['zone_wise']) ? $_GET['zone_wise'] : '');
-    $mode_id = isset($_GET['mode_id']) ? $_GET['mode_id'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
-    $consignment_type_id = isset($_GET['consignment_type_id']) ? $_GET['consignment_type_id'] : (isset($_GET['consignment_type']) ? $_GET['consignment_type'] : '');
+    $zone_wise = isset($_GET['zone_id']) ? $_GET['zone_id'] : (isset($_GET['zone_wise']) ? $_GET['zone_wise'] : '');
+    $mode = isset($_GET['mode_id']) ? $_GET['mode_id'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
+    $consignment_type = isset($_GET['consignment_type_id']) ? $_GET['consignment_type_id'] : (isset($_GET['consignment_type']) ? $_GET['consignment_type'] : '');
     
     // Build the WHERE clause
     $where_conditions = array();
@@ -24,19 +24,31 @@ try {
         $params[':customer_id'] = $customer_id;
     }
     
-    if (!empty($zone_id)) {
-        $where_conditions[] = "cr.zone_id = :zone_id";
-        $params[':zone_id'] = $zone_id;
+    if (!empty($zone_wise)) {
+        // Handle zone filtering - could be zone name or zone id
+        if (is_numeric($zone_wise)) {
+            // If it's numeric, try to find the zone name from destinations table
+            $zone_stmt = $pdo->prepare("SELECT zone_name FROM destinations WHERE id = :zone_id");
+            $zone_stmt->execute([':zone_id' => $zone_wise]);
+            $zone_result = $zone_stmt->fetch(PDO::FETCH_ASSOC);
+            if ($zone_result) {
+                $where_conditions[] = "cr.zone_wise = :zone_wise";
+                $params[':zone_wise'] = $zone_result['zone_name'];
+            }
+        } else {
+            $where_conditions[] = "cr.zone_wise = :zone_wise";
+            $params[':zone_wise'] = $zone_wise;
+        }
     }
     
-    if (!empty($mode_id)) {
-        $where_conditions[] = "cr.mode_id = :mode_id";
-        $params[':mode_id'] = $mode_id;
+    if (!empty($mode)) {
+        $where_conditions[] = "cr.mode = :mode";
+        $params[':mode'] = $mode;
     }
     
-    if (!empty($consignment_type_id)) {
-        $where_conditions[] = "cr.consignment_type_id = :consignment_type_id";
-        $params[':consignment_type_id'] = $consignment_type_id;
+    if (!empty($consignment_type)) {
+        $where_conditions[] = "cr.consignment_type = :consignment_type";
+        $params[':consignment_type'] = $consignment_type;
     }
     
     $where_clause = '';
@@ -46,29 +58,27 @@ try {
     
     // Main query to fetch customer rates
     $sql = "SELECT 
-                cr.rate_id,
+                cr.id as rate_id,
                 cr.customer_id,
-                c.customer_name,
-                cr.zone_id,
+                c.name as customer_name,
+                cr.zone_wise as zone_id,
                 d.zone_name,
-                cr.mode_id,
-                m.mode_name,
-                cr.consignment_type_id,
-                ct.type_name,
-                cr.weight_from,
-                cr.weight_to,
-                cr.rate_per_kg,
-                cr.minimum_rate,
-                cr.status,
+                cr.mode,
+                cr.mode as mode_name,
+                cr.consignment_type,
+                cr.consignment_type as type_name,
+                cr.from_weight as weight_from,
+                cr.to_weight as weight_to,
+                cr.rate as rate_per_kg,
+                cr.additional_rate as minimum_rate,
+                'active' as status,
                 cr.created_at,
                 cr.updated_at
             FROM customer_rates cr
-            LEFT JOIN customers c ON cr.customer_id = c.customer_id
-            LEFT JOIN destinations d ON cr.zone_id = d.id
-            LEFT JOIN cr_modes m ON cr.mode_id = m.mode_id
-            LEFT JOIN cr_consignment_types ct ON cr.consignment_type_id = ct.consignment_type_id
+            LEFT JOIN customers c ON cr.customer_id = c.id
+            LEFT JOIN destinations d ON cr.zone_wise = d.zone_name
             $where_clause
-            ORDER BY c.customer_name, d.zone_name, m.mode_name, ct.type_name, cr.weight_from";
+            ORDER BY c.name, cr.zone_wise, cr.mode, cr.consignment_type, cr.from_weight";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

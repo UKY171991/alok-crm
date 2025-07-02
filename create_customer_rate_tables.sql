@@ -23,25 +23,35 @@ CREATE TABLE IF NOT EXISTS `customer_rates` (
   KEY `zone_wise` (`zone_wise`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Create customers table if not exists (for dropdown)
+-- Note: customers table should already exist in the system
+-- The existing customers table has this structure:
+/*
 CREATE TABLE IF NOT EXISTS `customers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `company_name` varchar(255) NOT NULL,
-  `contact_person` varchar(100) DEFAULT NULL,
-  `phone` varchar(20) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `phone` varchar(20) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `gst_no` varchar(15) DEFAULT NULL,
+  `hsn_code` varchar(10) DEFAULT NULL,
+  `pan_no` varchar(10) DEFAULT NULL,
+  `cin_no` varchar(21) DEFAULT NULL,
+  `aadhaar_no` varchar(12) DEFAULT NULL,
+  `destination` json DEFAULT NULL,
+  `parcel_type` json DEFAULT NULL,
+  `weight` json DEFAULT NULL,
+  `price` json DEFAULT NULL,
+  `service` json DEFAULT NULL,
+  `shipment_type` json DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+*/
 
--- Insert sample customers if table is empty
-INSERT IGNORE INTO `customers` (`id`, `company_name`, `contact_person`, `phone`, `email`) VALUES
-(1, 'A. N. KAPOOR (JANITORS) PVT. LTD.', 'Mr. Kapoor', '9876543210', 'kapoor@email.com'),
-(2, 'ABC LOGISTICS PVT. LTD.', 'Mr. Sharma', '9876543211', 'abc@email.com'),
-(3, 'XYZ TRADERS', 'Mr. Patel', '9876543212', 'xyz@email.com');
+-- Insert sample customers if table is empty (using actual structure)
+INSERT IGNORE INTO `customers` (`name`, `address`, `phone`, `email`, `gst_no`) VALUES
+('A. N. KAPOOR (JANITORS) PVT. LTD.', 'Mumbai, Maharashtra', '9876543210', 'kapoor@email.com', '27ABCDE1234F1Z5'),
+('ABC LOGISTICS PVT. LTD.', 'Delhi, India', '9876543211', 'abc@email.com', '07ABCDE1234F1Z5'),
+('XYZ TRADERS', 'Bangalore, Karnataka', '9876543212', 'xyz@email.com', '29ABCDE1234F1Z5');
 
 -- Create modes table for dropdown options
 CREATE TABLE IF NOT EXISTS `shipping_modes` (

@@ -11,11 +11,11 @@ try {
     
     // Check if tables exist
     $tables_to_check = [
-        'customers' => 'Customer table',
-        'destinations' => 'Destinations/Zones table',
-        'cr_modes' => 'Customer Rate Modes table',
-        'cr_consignment_types' => 'Customer Rate Consignment Types table',
-        'customer_rates' => 'Customer Rates table'
+        'customers' => 'Customer table (existing)',
+        'destinations' => 'Destinations/Zones table (existing)',
+        'cr_modes' => 'Customer Rate Modes table (new)',
+        'cr_consignment_types' => 'Customer Rate Consignment Types table (new)',
+        'customer_rates' => 'Customer Rates table (new)'
     ];
     
     foreach ($tables_to_check as $table => $description) {
@@ -41,12 +41,12 @@ try {
     
     // Test customers
     try {
-        $stmt = $pdo->prepare("SELECT customer_id, customer_name FROM customers WHERE status = 'active' LIMIT 5");
+        $stmt = $pdo->prepare("SELECT id as customer_id, name as customer_name FROM customers LIMIT 5");
         $stmt->execute();
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo "✅ Customers fetch: " . count($customers) . " active customers found\n";
+        echo "✅ Customers fetch: " . count($customers) . " customers found\n";
         foreach ($customers as $customer) {
-            echo "   - " . $customer['customer_name'] . "\n";
+            echo "   - " . $customer['customer_name'] . " (ID: " . $customer['customer_id'] . ")\n";
         }
     } catch (Exception $e) {
         echo "❌ Customers fetch error: " . $e->getMessage() . "\n";
@@ -55,12 +55,12 @@ try {
     
     // Test destinations
     try {
-        $stmt = $pdo->prepare("SELECT id, zone_name FROM destinations WHERE status = 'active' LIMIT 5");
+        $stmt = $pdo->prepare("SELECT id, zone_name FROM destinations LIMIT 5");
         $stmt->execute();
         $zones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo "✅ Zones fetch: " . count($zones) . " active zones found\n";
+        echo "✅ Zones fetch: " . count($zones) . " zones found\n";
         foreach ($zones as $zone) {
-            echo "   - " . $zone['zone_name'] . "\n";
+            echo "   - " . $zone['zone_name'] . " (ID: " . $zone['id'] . ")\n";
         }
     } catch (Exception $e) {
         echo "❌ Zones fetch error: " . $e->getMessage() . "\n";
