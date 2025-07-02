@@ -9,7 +9,16 @@ if (!isset($_SESSION['user'])) {
 include 'inc/db.php'; 
 
 // Get all destinations
-$sql = "SELECT id, name, status FROM destinations ORDER BY name ASC";
+// First check if status column exists
+$check_column = "SHOW COLUMNS FROM destinations LIKE 'status'";
+$column_result = $conn->query($check_column);
+$has_status_column = ($column_result && $column_result->num_rows > 0);
+
+if ($has_status_column) {
+    $sql = "SELECT id, name, status FROM destinations ORDER BY name ASC";
+} else {
+    $sql = "SELECT id, name FROM destinations ORDER BY name ASC";
+}
 $result = $conn->query($sql);
 
 if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
@@ -36,9 +45,16 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
             }
             
             // Determine status display
-            $status = intval($row['status']);
-            $statusDisplay = $status ? '✓' : '✗';
-            $statusClass = $status ? 'active-checkmark' : 'inactive-cross';
+            if ($has_status_column && isset($row['status'])) {
+                $status = intval($row['status']);
+                $statusDisplay = $status ? '✓' : '✗';
+                $statusClass = $status ? 'active-checkmark' : 'inactive-cross';
+            } else {
+                // Default to active if no status column
+                $status = 1;
+                $statusDisplay = '✓';
+                $statusClass = 'active-checkmark';
+            }
             
             echo '<tr>';
             echo '<td>' . htmlspecialchars($row['name']) . '</td>';
