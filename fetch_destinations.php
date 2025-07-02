@@ -15,12 +15,18 @@ if (!$conn) {
 }
 
 // Get all destinations
-// First check if status column exists
-$check_column = "SHOW COLUMNS FROM destinations LIKE 'status'";
-$column_result = $conn->query($check_column);
-$has_status_column = ($column_result && $column_result->num_rows > 0);
+// First check if status and type columns exist
+$check_status = "SHOW COLUMNS FROM destinations LIKE 'status'";
+$status_result = $conn->query($check_status);
+$has_status_column = ($status_result && $status_result->num_rows > 0);
 
-if ($has_status_column) {
+$check_type = "SHOW COLUMNS FROM destinations LIKE 'type'";
+$type_result = $conn->query($check_type);
+$has_type_column = ($type_result && $type_result->num_rows > 0);
+
+if ($has_status_column && $has_type_column) {
+    $sql = "SELECT id, name, status, type FROM destinations ORDER BY name ASC";
+} else if ($has_status_column) {
     $sql = "SELECT id, name, status FROM destinations ORDER BY name ASC";
 } else {
     $sql = "SELECT id, name FROM destinations ORDER BY name ASC";
@@ -52,10 +58,15 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
     // Output for Zone Master interface
     if ($result && $result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            // Determine zone type based on name or set default
-            $zone_type = 'ZONE'; // Default type
-            if (in_array(strtoupper($row['name']), ['CENTRAL', 'EAST', 'NORTH', 'SOUTH', 'WEST'])) {
-                $zone_type = strtoupper($row['name']);
+            // Determine zone type
+            if ($has_type_column && isset($row['type'])) {
+                $zone_type = $row['type'];
+            } else {
+                // Fallback: determine zone type based on name
+                $zone_type = 'ZONE'; // Default type
+                if (in_array(strtoupper($row['name']), ['CENTRAL', 'EAST', 'NORTH', 'SOUTH', 'WEST'])) {
+                    $zone_type = strtoupper($row['name']);
+                }
             }
             
             // Determine status display
@@ -72,10 +83,10 @@ if (isset($_GET['mode']) && $_GET['mode'] === 'json') {
             
             echo '<tr>';
             echo '<td>' . htmlspecialchars($row['name']) . '</td>';
-            echo '<td>' . $zone_type . '</td>';
+            echo '<td>' . htmlspecialchars($zone_type) . '</td>';
             echo '<td class="active-indicator"><span class="status-toggle ' . $statusClass . '" data-id="' . htmlspecialchars($row['id']) . '" data-status="' . $status . '">' . $statusDisplay . '</span></td>';
             echo '<td>';
-            echo '<button class="edit-zone-btn" data-id="' . htmlspecialchars($row['id']) . '" data-name="' . htmlspecialchars($row['name']) . '">Edit</button> ';
+            echo '<button class="edit-zone-btn" data-id="' . htmlspecialchars($row['id']) . '" data-name="' . htmlspecialchars($row['name']) . '" data-type="' . htmlspecialchars($zone_type) . '">Edit</button> ';
             echo '<button class="delete-zone-btn" data-id="' . htmlspecialchars($row['id']) . '">Delete</button>';
             echo '</td>';
             echo '</tr>';

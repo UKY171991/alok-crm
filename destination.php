@@ -27,6 +27,15 @@ include 'inc/sidebar.php';
                 <div class="input-group">
                     <label for="zoneName">Zone</label>
                     <input type="text" id="zoneName" class="zone-input" placeholder="">
+                    <label for="zoneType">Type</label>
+                    <select id="zoneType" class="zone-select">
+                        <option value="ZONE">ZONE</option>
+                        <option value="CENTRAL">CENTRAL</option>
+                        <option value="EAST">EAST</option>
+                        <option value="NORTH">NORTH</option>
+                        <option value="SOUTH">SOUTH</option>
+                        <option value="WEST">WEST</option>
+                    </select>
                     <button type="button" id="addZoneBtn" class="add-btn">Add</button>
                 </div>
             </div>
@@ -113,6 +122,8 @@ include 'inc/sidebar.php';
         // Handle Add Zone button click
         $('#addZoneBtn').on('click', function () {
             const zoneName = $('#zoneName').val().trim();
+            const zoneType = $('#zoneType').val();
+            
             if (!zoneName) {
                 showAdminLTEAlert('Please enter a zone name.', 'warning');
                 return;
@@ -124,9 +135,10 @@ include 'inc/sidebar.php';
             $.ajax({
                 url: 'add_destination.php',
                 method: 'POST',
-                data: { name: zoneName },
+                data: { name: zoneName, type: zoneType },
                 success: function (response) {
                     $('#zoneName').val('');
+                    $('#zoneType').val('ZONE'); // Reset to default
                     $btn.prop('disabled', false).text('Add');
                     loadZones();
                     showAdminLTEAlert(response, 'success');
@@ -143,13 +155,27 @@ include 'inc/sidebar.php';
         $(document).on('click', '.edit-zone-btn', function () {
             const id = $(this).data('id');
             const name = $(this).data('name');
-            const newName = prompt('Edit Zone Name:', name);
+            const type = $(this).data('type');
             
-            if (newName !== null && newName.trim() !== '' && newName !== name) {
+            // Create a more sophisticated edit dialog
+            const newName = prompt('Edit Zone Name:', name);
+            if (newName === null || newName.trim() === '') return;
+            
+            const newType = prompt('Edit Zone Type (ZONE, CENTRAL, EAST, NORTH, SOUTH, WEST):', type);
+            if (newType === null || newType.trim() === '') return;
+            
+            // Validate type
+            const validTypes = ['ZONE', 'CENTRAL', 'EAST', 'NORTH', 'SOUTH', 'WEST'];
+            if (!validTypes.includes(newType.toUpperCase())) {
+                showAdminLTEAlert('Invalid type. Valid types: ' + validTypes.join(', '), 'warning');
+                return;
+            }
+            
+            if (newName.trim() !== name || newType.toUpperCase() !== type) {
                 $.ajax({
                     url: 'edit_destination.php',
                     method: 'POST',
-                    data: { id: id, name: newName.trim() },
+                    data: { id: id, name: newName.trim(), type: newType.toUpperCase() },
                     success: function (response) {
                         loadZones();
                         showAdminLTEAlert(response, 'success');
@@ -286,6 +312,15 @@ include 'inc/sidebar.php';
         border: 1px solid #ccc;
         border-radius: 3px;
         font-size: 14px;
+    }
+    
+    .zone-select {
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+        background: white;
+        min-width: 80px;
     }
     
     .add-btn {
