@@ -1,0 +1,27 @@
+[09-Jul-2025 14:07:00 Asia/Kolkata] PHP Warning:  Undefined array key "HTTP_HOST" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:07:00 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_NAME" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:07:00 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_ADDR" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:07:04 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:21
+Stack trace:
+#0 C:\git\alok-crm\inc\db.php(21): mysqli->__construct('localhost', 'fnkjyinw_alok_c...', Object(SensitiveParameterValue), 'fnkjyinw_alok_c...')
+#1 C:\git\alok-crm\test_db_tables.php(3): require_once('C:\\git\\alok-crm...')
+#2 {main}
+  thrown in C:\git\alok-crm\inc\db.php on line 21
+[09-Jul-2025 14:09:36 Asia/Kolkata] PHP Warning:  Undefined array key "HTTP_HOST" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:09:36 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_NAME" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:09:36 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_ADDR" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:09:40 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:21
+Stack trace:
+#0 C:\git\alok-crm\inc\db.php(21): mysqli->__construct('localhost', 'fnkjyinw_alok_c...', Object(SensitiveParameterValue), 'fnkjyinw_alok_c...')
+#1 C:\git\alok-crm\add_sample_data.php(3): require_once('C:\\git\\alok-crm...')
+#2 {main}
+  thrown in C:\git\alok-crm\inc\db.php on line 21
+[09-Jul-2025 14:12:35 Asia/Kolkata] PHP Warning:  Undefined array key "HTTP_HOST" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:12:35 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_NAME" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:12:35 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_ADDR" in C:\git\alok-crm\inc\db.php on line 3
+[09-Jul-2025 14:12:39 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:21
+Stack trace:
+#0 C:\git\alok-crm\inc\db.php(21): mysqli->__construct('localhost', 'fnkjyinw_alok_c...', Object(SensitiveParameterValue), 'fnkjyinw_alok_c...')
+#1 C:\git\alok-crm\test_init.php(6): require_once('C:\\git\\alok-crm...')
+#2 {main}
+  thrown in C:\git\alok-crm\inc\db.php on line 21

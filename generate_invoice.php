@@ -704,7 +704,7 @@ function setupEventListeners() {
 
 function loadCustomers() {
     $.ajax({
-        url: 'fetch_customers.php',
+        url: 'fetch_customers_debug.php',
         type: 'GET',
         dataType: 'json',
         success: function(response) {
@@ -748,7 +748,7 @@ function loadInvoices(page = 1) {
     $('#paginationContainer').hide();
     
     $.ajax({
-        url: 'fetch_invoices_advanced.php',
+        url: 'fetch_invoices_advanced_debug.php',
         type: 'GET',
         data: filters,
         dataType: 'json',

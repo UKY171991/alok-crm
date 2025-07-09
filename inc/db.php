@@ -1,6 +1,11 @@
 <?php
 // Detect if we're on localhost
-$is_localhost = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_ADDR'] == '127.0.0.1');
+$is_localhost = true; // Default to localhost
+if (isset($_SERVER['HTTP_HOST'])) {
+    $is_localhost = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_ADDR'] == '127.0.0.1');
+} elseif (isset($_SERVER['SERVER_NAME'])) {
+    $is_localhost = ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_ADDR'] == '127.0.0.1');
+}
 
 // Set database credentials based on environment
 if ($is_localhost) {
