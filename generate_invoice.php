@@ -19,6 +19,24 @@ require_once 'inc/sidebar.php';
     min-height: 100vh;
 }
 
+.demo-banner {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
 .legacy-container {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 15px;
@@ -489,6 +507,13 @@ require_once 'inc/sidebar.php';
 </style>
 
 <main class="content-wrapper">
+    <!-- Demo Mode Notification Banner -->
+    <div id="demoNotification" class="demo-banner" style="display: none;">
+        <i class="fas fa-info-circle"></i>
+        <span>Demo Mode: Using sample data. Please start your database server for live data.</span>
+        <button onclick="hideDemoNotification()" style="background: none; border: none; color: inherit; font-size: 18px; cursor: pointer; margin-left: auto;">&times;</button>
+    </div>
+    
     <div class="legacy-container">
         <div class="legacy-header">
             <span>GENERATE INVOICE</span>
@@ -702,6 +727,14 @@ function setupEventListeners() {
     });
 }
 
+function showDemoNotification() {
+    $('#demoNotification').slideDown(300);
+}
+
+function hideDemoNotification() {
+    $('#demoNotification').slideUp(300);
+}
+
 function loadCustomers() {
     $.ajax({
         url: 'api_fallback.php?endpoint=customers',
@@ -723,7 +756,7 @@ function loadCustomers() {
                 
                 // Show message if using mock data
                 if (response.source === 'mock') {
-                    showToast('Using demo data - Please start your database server for live data', 'info');
+                    showDemoNotification();
                 }
             } else {
                 showToast('Error loading customers: ' + response.message, 'error');
@@ -779,7 +812,7 @@ function loadInvoices(page = 1) {
                 
                 // Show message if using mock data
                 if (response.source === 'mock') {
-                    showToast('Using demo data - Please start your database server for live data', 'info');
+                    showDemoNotification();
                 }
             } else {
                 showToast('Error loading invoices: ' + response.message, 'error');
