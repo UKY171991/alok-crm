@@ -25,3 +25,9 @@ Stack trace:
 #1 C:\git\alok-crm\test_init.php(6): require_once('C:\\git\\alok-crm...')
 #2 {main}
   thrown in C:\git\alok-crm\inc\db.php on line 21
+[09-Jul-2025 14:13:22 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:26
+Stack trace:
+#0 C:\git\alok-crm\inc\db.php(26): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'alok_crm')
+#1 C:\git\alok-crm\test_init.php(6): require_once('C:\\git\\alok-crm...')
+#2 {main}
+  thrown in C:\git\alok-crm\inc\db.php on line 26
