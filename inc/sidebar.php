@@ -63,6 +63,14 @@
                     </a>
                 </li>
                 
+                <!-- Generate Invoice -->
+                <li class="nav-item">
+                    <a href="generate_invoice.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'generate_invoice.php') echo ' active'; ?>">
+                        <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                        <p>Generate Invoice</p>
+                    </a>
+                </li>
+                
                 <!-- Reports -->
                 <li class="nav-item">
                     <a href="reports.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'reports.php') echo ' active'; ?>">

@@ -8,13 +8,20 @@ try {
         throw new Exception('Invalid request method');
     }
     
+    $id = $_POST['invoice_id'] ?? $_POST['id'] ?? '';
+    
+    if (empty($id)) {
+        throw new Exception('Invoice ID is required');
+    }
+    
+    $id = intval($id);
+    
     // Validate required fields
     $customerId = $_POST['customer_id'] ?? '';
     $invoiceDate = $_POST['invoice_date'] ?? '';
-    $invoiceNo = $_POST['invoice_no'] ?? '';
     
-    if (empty($customerId) || empty($invoiceDate) || empty($invoiceNo)) {
-        throw new Exception('Customer, invoice date, and invoice number are required');
+    if (empty($customerId) || empty($invoiceDate)) {
+        throw new Exception('Customer and invoice date are required');
     }
     
     // Sanitize inputs
@@ -35,12 +42,12 @@ try {
         throw new Exception('Invalid customer selected');
     }
     
-    // Check if invoice number already exists
-    $invoiceCheck = $conn->prepare("SELECT id FROM invoices WHERE invoice_no = ?");
-    $invoiceCheck->bind_param('s', $invoiceNo);
+    // Validate invoice exists
+    $invoiceCheck = $conn->prepare("SELECT id FROM invoices WHERE id = ?");
+    $invoiceCheck->bind_param('i', $id);
     $invoiceCheck->execute();
-    if ($invoiceCheck->get_result()->num_rows > 0) {
-        throw new Exception('Invoice number already exists');
+    if ($invoiceCheck->get_result()->num_rows === 0) {
+        throw new Exception('Invoice not found');
     }
     
     // Calculate grand total if not provided
@@ -48,26 +55,33 @@ try {
         $grandTotal = $totalAmount + $gstAmount;
     }
     
-    // Insert invoice
-    $sql = "INSERT INTO invoices (invoice_no, customer_id, destination, invoice_date, from_date, to_date, total_amount, gst_amount, grand_total, status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // Update invoice
+    $sql = "UPDATE invoices SET 
+            customer_id = ?, 
+            destination = ?, 
+            invoice_date = ?, 
+            from_date = ?, 
+            to_date = ?, 
+            total_amount = ?, 
+            gst_amount = ?, 
+            grand_total = ?, 
+            status = ?,
+            updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('sissssddds', $invoiceNo, $customerId, $destination, $invoiceDate, $fromDate, $toDate, $totalAmount, $gstAmount, $grandTotal, $status);
+    $stmt->bind_param('isssssddsi', $customerId, $destination, $invoiceDate, $fromDate, $toDate, $totalAmount, $gstAmount, $grandTotal, $status, $id);
     
     if ($stmt->execute()) {
-        $invoiceId = $conn->insert_id;
-        
         echo json_encode([
             'success' => true,
-            'message' => 'Invoice created successfully',
+            'message' => 'Invoice updated successfully',
             'data' => [
-                'id' => $invoiceId,
-                'invoice_no' => $invoiceNo
+                'id' => $id
             ]
         ]);
     } else {
-        throw new Exception('Failed to create invoice: ' . $conn->error);
+        throw new Exception('Failed to update invoice: ' . $conn->error);
     }
     
 } catch (Exception $e) {
