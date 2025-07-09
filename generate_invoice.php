@@ -704,9 +704,10 @@ function setupEventListeners() {
 
 function loadCustomers() {
     $.ajax({
-        url: 'fetch_customers_debug.php',
+        url: 'api_fallback.php?endpoint=customers',
         type: 'GET',
         dataType: 'json',
+        timeout: 10000, // 10 second timeout
         success: function(response) {
             if (response.success) {
                 let options = '<option value="">Select Customer</option>';
@@ -719,12 +720,26 @@ function loadCustomers() {
                 
                 $('#customer_id').html(options);
                 $('#customer_filter').html(filterOptions);
+                
+                // Show message if using mock data
+                if (response.source === 'mock') {
+                    showToast('Using demo data - Please start your database server for live data', 'info');
+                }
             } else {
                 showToast('Error loading customers: ' + response.message, 'error');
             }
         },
-        error: function() {
-            showToast('Error loading customers', 'error');
+        error: function(xhr, status, error) {
+            console.error('Customer loading error:', status, error, xhr.responseText);
+            let errorMsg = 'Error loading customers';
+            if (status === 'timeout') {
+                errorMsg = 'Request timeout - please check your connection';
+            } else if (xhr.status === 500) {
+                errorMsg = 'Server error - please check database connection';
+            } else if (xhr.status === 404) {
+                errorMsg = 'Customer endpoint not found';
+            }
+            showToast(errorMsg, 'error');
         }
     });
 }
@@ -748,7 +763,8 @@ function loadInvoices(page = 1) {
     $('#paginationContainer').hide();
     
     $.ajax({
-        url: 'fetch_invoices_advanced_debug.php',
+        url: 'api_fallback.php?endpoint=invoices',
+        timeout: 10000, // 10 second timeout
         type: 'GET',
         data: filters,
         dataType: 'json',
@@ -760,13 +776,27 @@ function loadInvoices(page = 1) {
                 updatePagination(response.pagination);
                 $('#invoicesTable').show();
                 $('#paginationContainer').show();
+                
+                // Show message if using mock data
+                if (response.source === 'mock') {
+                    showToast('Using demo data - Please start your database server for live data', 'info');
+                }
             } else {
                 showToast('Error loading invoices: ' + response.message, 'error');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             $('#loading').hide();
-            showToast('Error loading invoices', 'error');
+            console.error('Invoice loading error:', status, error, xhr.responseText);
+            let errorMsg = 'Error loading invoices';
+            if (status === 'timeout') {
+                errorMsg = 'Request timeout - please check your connection';
+            } else if (xhr.status === 500) {
+                errorMsg = 'Server error - please check database connection';
+            } else if (xhr.status === 404) {
+                errorMsg = 'Invoice endpoint not found';
+            }
+            showToast(errorMsg, 'error');
         }
     });
 }
