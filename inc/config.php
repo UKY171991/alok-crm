@@ -4,10 +4,12 @@ define('APP_NAME', 'Courier CRM');
 define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/alok-crm');
 
-// Session settings
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_secure', 1);
+// Session settings (only in web context)
+if (isset($_SERVER['HTTP_HOST'])) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_secure', 1);
+}
 
 // Timezone
 date_default_timezone_set('Asia/Kolkata');
