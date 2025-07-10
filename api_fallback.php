@@ -83,25 +83,30 @@ try {
         }
         
         $sql = "SELECT id, name, email, phone, address FROM customers $whereClause ORDER BY name ASC";
-        $stmt = $conn->prepare($sql);
         
-        if (!empty($params)) {
-            $stmt->bind_param(str_repeat('s', count($params)), ...$params);
+        if ($stmt = $conn->prepare($sql)) {
+            if (!empty($params)) {
+                $stmt->bind_param(str_repeat('s', count($params)), ...$params);
+            }
+            
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            $customers = [];
+            while ($row = $result->fetch_assoc()) {
+                $customers[] = $row;
+            }
+            
+            $stmt->close();
+            
+            echo json_encode([
+                'success' => true,
+                'data' => $customers,
+                'source' => 'database'
+            ]);
+        } else {
+            throw new Exception("Failed to prepare customers query: " . $conn->error);
         }
-        
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $customers = [];
-        while ($row = $result->fetch_assoc()) {
-            $customers[] = $row;
-        }
-        
-        echo json_encode([
-            'success' => true,
-            'data' => $customers,
-            'source' => 'database'
-        ]);
         
     } else if ($endpoint === 'invoices') {
         // Invoice logic here
@@ -115,33 +120,46 @@ try {
                 ORDER BY i.invoice_date DESC, i.created_at DESC 
                 LIMIT ? OFFSET ?";
         
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ii', $perPage, $offset);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $invoices = [];
-        while ($row = $result->fetch_assoc()) {
-            $invoices[] = $row;
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param('ii', $perPage, $offset);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            $invoices = [];
+            while ($row = $result->fetch_assoc()) {
+                $invoices[] = $row;
+            }
+            
+            // Get total count
+            if ($countResult = $conn->query("SELECT COUNT(*) as total FROM invoices")) {
+                $totalRecords = $countResult->fetch_assoc()['total'];
+                $totalPages = ceil($totalRecords / $perPage);
+                
+                echo json_encode([
+                    'success' => true,
+                    'data' => $invoices,
+                    'pagination' => [
+                        'current_page' => $page,
+                        'total_pages' => $totalPages,
+                        'total_records' => $totalRecords,
+                        'per_page' => $perPage,
+                        'has_next' => $page < $totalPages,
+                        'has_prev' => $page > 1
+                    ],
+                    'source' => 'database'
+                ]);
+            } else {
+                throw new Exception("Failed to get invoice count: " . $conn->error);
+            }
+            
+            $stmt->close();
+        } else {
+            throw new Exception("Failed to prepare invoices query: " . $conn->error);
         }
-        
-        // Get total count
-        $countResult = $conn->query("SELECT COUNT(*) as total FROM invoices");
-        $totalRecords = $countResult->fetch_assoc()['total'];
-        $totalPages = ceil($totalRecords / $perPage);
-        
+    } else {
         echo json_encode([
-            'success' => true,
-            'data' => $invoices,
-            'pagination' => [
-                'current_page' => $page,
-                'total_pages' => $totalPages,
-                'total_records' => $totalRecords,
-                'per_page' => $perPage,
-                'has_next' => $page < $totalPages,
-                'has_prev' => $page > 1
-            ],
-            'source' => 'database'
+            'success' => false,
+            'message' => 'Unknown endpoint: ' . $endpoint
         ]);
     }
     

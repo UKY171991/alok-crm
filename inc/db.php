@@ -1,10 +1,24 @@
 <?php
 // Detect if we're on localhost
 $is_localhost = true; // Default to localhost
+
+// Check if we're in a web context and detect environment
 if (isset($_SERVER['HTTP_HOST'])) {
-    $is_localhost = ($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_ADDR'] == '127.0.0.1');
+    $host = $_SERVER['HTTP_HOST'];
+    $server_name = $_SERVER['SERVER_NAME'] ?? '';
+    $server_addr = $_SERVER['SERVER_ADDR'] ?? '';
+    
+    $is_localhost = ($host == 'localhost' || 
+                    $host == '127.0.0.1' || 
+                    $server_name == 'localhost' || 
+                    $server_addr == '127.0.0.1' ||
+                    strpos($host, 'localhost') !== false);
 } elseif (isset($_SERVER['SERVER_NAME'])) {
-    $is_localhost = ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_ADDR'] == '127.0.0.1');
+    $server_name = $_SERVER['SERVER_NAME'];
+    $server_addr = $_SERVER['SERVER_ADDR'] ?? '';
+    
+    $is_localhost = ($server_name == 'localhost' || 
+                    $server_addr == '127.0.0.1');
 }
 
 // Set database credentials based on environment
@@ -22,16 +36,30 @@ if ($is_localhost) {
     $db_name = 'fnkjyinw_alok_crm';
 }
 
-// Create connection
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Create connection with error handling
+try {
+    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+    
+    // Check connection
+    if ($conn->connect_error) {
+        throw new Exception("Connection failed: " . $conn->connect_error);
+    }
+    
+    // Set charset to utf8mb4
+    $conn->set_charset("utf8mb4");
+    
+} catch (Exception $e) {
+    // Log the error but don't die, let api_fallback handle it gracefully
+    error_log("Database connection error: " . $e->getMessage());
+    
+    // If we're in api_fallback.php, we'll let it handle the fallback
+    if (basename($_SERVER['SCRIPT_NAME']) === 'api_fallback.php') {
+        throw $e; // Re-throw to be caught by api_fallback
+    } else {
+        // For other scripts, show a user-friendly error
+        die("Database service is currently unavailable. Please try again later.");
+    }
 }
-
-// Set charset to utf8mb4
-$conn->set_charset("utf8mb4");
 
 // Set timezone
 date_default_timezone_set('Asia/Kolkata');

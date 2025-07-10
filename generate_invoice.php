@@ -764,6 +764,10 @@ function loadCustomers() {
         },
         error: function(xhr, status, error) {
             console.error('Customer loading error:', status, error, xhr.responseText);
+            console.log('Request URL:', 'api_fallback.php?endpoint=customers');
+            console.log('Response Status:', xhr.status);
+            console.log('Response Text:', xhr.responseText);
+            
             let errorMsg = 'Error loading customers';
             if (status === 'timeout') {
                 errorMsg = 'Request timeout - please check your connection';
@@ -771,8 +775,18 @@ function loadCustomers() {
                 errorMsg = 'Server error - please check database connection';
             } else if (xhr.status === 404) {
                 errorMsg = 'Customer endpoint not found';
+            } else if (xhr.status === 0) {
+                errorMsg = 'Network error - check if server is running';
+            } else {
+                errorMsg += ` (Status: ${xhr.status})`;
             }
             showToast(errorMsg, 'error');
+            
+            // Show additional debug info if in development
+            if (window.location.hostname === 'localhost') {
+                console.log('Debug: If you see network errors, make sure your web server is running');
+                console.log('Debug: Check database_diagnostics.php for database connection issues');
+            }
         }
     });
 }
@@ -821,6 +835,10 @@ function loadInvoices(page = 1) {
         error: function(xhr, status, error) {
             $('#loading').hide();
             console.error('Invoice loading error:', status, error, xhr.responseText);
+            console.log('Request URL:', 'api_fallback.php?endpoint=invoices');
+            console.log('Response Status:', xhr.status);
+            console.log('Response Text:', xhr.responseText);
+            
             let errorMsg = 'Error loading invoices';
             if (status === 'timeout') {
                 errorMsg = 'Request timeout - please check your connection';
@@ -828,8 +846,18 @@ function loadInvoices(page = 1) {
                 errorMsg = 'Server error - please check database connection';
             } else if (xhr.status === 404) {
                 errorMsg = 'Invoice endpoint not found';
+            } else if (xhr.status === 0) {
+                errorMsg = 'Network error - check if server is running';
+            } else {
+                errorMsg += ` (Status: ${xhr.status})`;
             }
             showToast(errorMsg, 'error');
+            
+            // Show additional debug info if in development
+            if (window.location.hostname === 'localhost') {
+                console.log('Debug: If you see network errors, make sure your web server is running');
+                console.log('Debug: Check database_diagnostics.php for database connection issues');
+            }
         }
     });
 }
