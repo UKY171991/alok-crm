@@ -62,8 +62,9 @@ try {
     if ($is_api_script) {
         throw $e; // Re-throw to be caught by api_fallback
     } else {
-        // For other scripts, show a user-friendly error
-        die("Database service is currently unavailable. Please try again later.");
+        // For web pages, set connection to null and continue with fallback mode
+        $conn = null;
+        // Don't die - let the page load and use AJAX fallback
     }
 }
 

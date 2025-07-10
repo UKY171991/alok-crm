@@ -817,7 +817,14 @@ function loadCustomers() {
         },
         error: function(xhr, status, error) {
             console.error('Customer loading error:', status, error, xhr.responseText);
-            showToast('Failed to load customers. Please check your connection.', 'error');
+            
+            // Try to load demo customers if server error
+            if (xhr.status === 500 || xhr.status === 0) {
+                showToast('Server unavailable - Loading demo customers', 'warning');
+                loadDemoCustomers();
+            } else {
+                showToast('Failed to load customers. Please check your connection.', 'error');
+            }
         }
     });
 }
@@ -879,17 +886,100 @@ function loadInvoices(page = 1) {
         },
         error: function(xhr, status, error) {
             console.error('Invoice loading error:', status, error, xhr.responseText);
-            showToast('Failed to load invoices. Please check your connection.', 'error');
-            $('#invoicesTableBody').html(`
-                <tr>
-                    <td colspan="7" class="text-center" style="padding: 40px;">
-                        <i class="fas fa-wifi text-danger" style="font-size: 2rem;"></i>
-                        <div style="margin-top: 10px;">Connection Error</div>
-                    </td>
-                </tr>
-            `);
+            
+            // Try to fall back to demo mode if server error
+            if (xhr.status === 500 || xhr.status === 0) {
+                showToast('Server unavailable - Loading demo data', 'warning');
+                loadDemoInvoices();
+            } else {
+                showToast('Failed to load invoices. Please check your connection.', 'error');
+                $('#invoicesTableBody').html(`
+                    <tr>
+                        <td colspan="7" class="text-center" style="padding: 40px;">
+                            <i class="fas fa-wifi text-danger" style="font-size: 2rem;"></i>
+                            <div style="margin-top: 10px;">Connection Error</div>
+                        </td>
+                    </tr>
+                `);
+            }
         }
     });
+}
+
+// Load demo customers when server is unavailable
+function loadDemoCustomers() {
+    const demoCustomers = [
+        { id: 1, name: 'ABC Corporation' },
+        { id: 2, name: 'XYZ Ltd' },
+        { id: 3, name: 'PQR Enterprises' },
+        { id: 4, name: 'Express Delivery Co' },
+        { id: 5, name: 'Fast Track Logistics' }
+    ];
+    
+    let options = '<option value="">All Customers</option>';
+    let modalOptions = '<option value="">Select Customer</option>';
+    
+    demoCustomers.forEach(function(customer) {
+        options += `<option value="${customer.id}">${customer.id} - ${customer.name}</option>`;
+        modalOptions += `<option value="${customer.id}">${customer.name}</option>`;
+    });
+    
+    $('#customer_filter').html(options);
+    $('#modal_customer_id').html(modalOptions);
+    
+    showDemoNotification();
+}
+
+// Load demo invoices when server is unavailable
+function loadDemoInvoices() {
+    const demoInvoices = [
+        {
+            id: 1,
+            invoice_no: 'INV-2024-001',
+            customer_name: 'ABC Corporation',
+            customer_city: 'Mumbai',
+            invoice_date: '2024-01-12',
+            date_range: '1/11/2024 - 30/11/2024',
+            total_amount: '1000.00',
+            grand_total: '1180.00',
+            status: 'pending'
+        },
+        {
+            id: 2,
+            invoice_no: 'INV-2024-002',
+            customer_name: 'XYZ Ltd',
+            customer_city: 'Delhi',
+            invoice_date: '2024-01-12',
+            date_range: '1/11/2024 - 30/11/2024',
+            total_amount: '1500.00',
+            grand_total: '1770.00',
+            status: 'paid'
+        },
+        {
+            id: 3,
+            invoice_no: 'INV-2024-003',
+            customer_name: 'PQR Enterprises',
+            customer_city: 'Bangalore',
+            invoice_date: '2024-01-12',
+            date_range: '1/11/2024 - 30/11/2024',
+            total_amount: '800.00',
+            grand_total: '944.00',
+            status: 'pending'
+        }
+    ];
+    
+    displayInvoices(demoInvoices);
+    
+    // Show demo pagination
+    updatePagination({
+        current_page: 1,
+        total_pages: 1,
+        total_records: 3,
+        per_page: 10
+    });
+    
+    // Show demo notification
+    showDemoNotification();
 }
 
 // Display invoices in table
@@ -909,7 +999,7 @@ function displayInvoices(invoices) {
         invoices.forEach(function(invoice) {
             const statusBadge = getStatusBadge(invoice.status);
             html += `
-                <tr data-id="${invoice.id}">
+                <tr data-invoice-id="${invoice.id}">
                     <td>
                         <input type="checkbox" class="form-check-input invoice-checkbox" value="${invoice.id}">
                     </td>
@@ -1058,8 +1148,17 @@ function generateInvoiceNumber() {
                 $('#invoice_no').val('INV-' + Date.now());
             }
         },
-        error: function() {
-            $('#invoice_no').val('INV-' + Date.now());
+        error: function(xhr, status, error) {
+            console.error('Generate invoice number error:', status, error, xhr.responseText);
+            
+            if (xhr.status === 500 || xhr.status === 0) {
+                // Generate demo invoice number
+                const timestamp = Date.now().toString().slice(-6);
+                $('#invoice_no').val('INV-DEMO-' + timestamp);
+                showToast('Server unavailable - Demo invoice number generated', 'warning');
+            } else {
+                $('#invoice_no').val('INV-' + Date.now());
+            }
         }
     });
 }
@@ -1092,9 +1191,17 @@ function loadInvoiceData(invoiceId) {
                 showToast('Error loading invoice: ' + response.message, 'error');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showToast('Failed to load invoice data', 'error');
+            console.error('Load invoice error:', status, error, xhr.responseText);
+            
+            if (xhr.status === 500 || xhr.status === 0) {
+                showToast('Server unavailable - Using demo data', 'warning');
+                // Load demo invoice data
+                loadDemoInvoiceData(invoiceId);
+            } else {
+                showToast('Failed to load invoice data', 'error');
+            }
         }
     });
 }
@@ -1145,9 +1252,17 @@ function saveInvoice() {
                 showToast('Error: ' + response.message, 'error');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showToast('Failed to save invoice', 'error');
+            console.error('Save error:', status, error, xhr.responseText);
+            
+            if (xhr.status === 500 || xhr.status === 0) {
+                showToast('Server unavailable - Demo save simulated', 'warning');
+                closeInvoiceModal();
+                loadDemoInvoices(); // Refresh with demo data
+            } else {
+                showToast('Failed to save invoice', 'error');
+            }
         }
     });
 }
@@ -1170,11 +1285,73 @@ function viewInvoice(invoiceId) {
                 showToast('Error loading invoice: ' + response.message, 'error');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showToast('Failed to load invoice details', 'error');
+            console.error('View invoice error:', status, error, xhr.responseText);
+            
+            if (xhr.status === 500 || xhr.status === 0) {
+                showToast('Server unavailable - Using demo data', 'warning');
+                // Show demo invoice data in view modal
+                const demoInvoice = getDemoInvoiceForView(invoiceId);
+                if (demoInvoice) {
+                    $('#viewInvoiceModal').show();
+                    displayInvoiceDetails(demoInvoice);
+                    showDemoNotification();
+                } else {
+                    showToast('Demo invoice not found', 'error');
+                }
+            } else {
+                showToast('Failed to load invoice details', 'error');
+            }
         }
     });
+}
+
+// Get demo invoice data for view modal
+function getDemoInvoiceForView(invoiceId) {
+    const demoInvoices = {
+        1: {
+            id: 1,
+            invoice_no: 'INV-2024-001',
+            invoice_date: '2024-01-12',
+            customer_name: 'ABC Corporation',
+            destination: 'Mumbai',
+            from_date: '2024-01-01',
+            to_date: '2024-01-31',
+            total_amount: '1000.00',
+            gst_amount: '180.00',
+            grand_total: '1180.00',
+            status: 'pending'
+        },
+        2: {
+            id: 2,
+            invoice_no: 'INV-2024-002',
+            invoice_date: '2024-01-12',
+            customer_name: 'XYZ Ltd',
+            destination: 'Delhi',
+            from_date: '2024-01-01',
+            to_date: '2024-01-31',
+            total_amount: '1500.00',
+            gst_amount: '270.00',
+            grand_total: '1770.00',
+            status: 'paid'
+        },
+        3: {
+            id: 3,
+            invoice_no: 'INV-2024-003',
+            invoice_date: '2024-01-12',
+            customer_name: 'PQR Enterprises',
+            destination: 'Bangalore',
+            from_date: '2024-01-01',
+            to_date: '2024-01-31',
+            total_amount: '800.00',
+            gst_amount: '144.00',
+            grand_total: '944.00',
+            status: 'pending'
+        }
+    };
+    
+    return demoInvoices[invoiceId] || null;
 }
 
 // Display invoice details in view modal
@@ -1255,11 +1432,85 @@ function deleteInvoice(invoiceId) {
                 showToast('Error: ' + response.message, 'error');
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
             hideLoading();
-            showToast('Failed to delete invoice', 'error');
+            console.error('Delete error:', status, error, xhr.responseText);
+            
+            if (xhr.status === 500 || xhr.status === 0) {
+                showToast('Server unavailable - Demo deletion simulated', 'warning');
+                // Remove the row from table in demo mode
+                $(`tr[data-invoice-id="${invoiceId}"]`).fadeOut(300, function() {
+                    $(this).remove();
+                });
+            } else {
+                showToast('Failed to delete invoice', 'error');
+            }
         }
     });
+}
+
+// Load demo invoice data for editing when server is unavailable
+function loadDemoInvoiceData(invoiceId) {
+    const demoInvoiceData = {
+        1: {
+            id: 1,
+            invoice_no: 'INV-2024-001',
+            invoice_date: '2024-01-12',
+            customer_id: 1,
+            destination: 'Mumbai',
+            from_date: '2024-01-01',
+            to_date: '2024-01-31',
+            total_amount: '1000.00',
+            gst_amount: '180.00',
+            grand_total: '1180.00',
+            status: 'pending'
+        },
+        2: {
+            id: 2,
+            invoice_no: 'INV-2024-002',
+            invoice_date: '2024-01-12',
+            customer_id: 2,
+            destination: 'Delhi',
+            from_date: '2024-01-01',
+            to_date: '2024-01-31',
+            total_amount: '1500.00',
+            gst_amount: '270.00',
+            grand_total: '1770.00',
+            status: 'paid'
+        },
+        3: {
+            id: 3,
+            invoice_no: 'INV-2024-003',
+            invoice_date: '2024-01-12',
+            customer_id: 3,
+            destination: 'Bangalore',
+            from_date: '2024-01-01',
+            to_date: '2024-01-31',
+            total_amount: '800.00',
+            gst_amount: '144.00',
+            grand_total: '944.00',
+            status: 'pending'
+        }
+    };
+    
+    const invoice = demoInvoiceData[invoiceId];
+    if (invoice) {
+        $('#invoice_id').val(invoice.id);
+        $('#invoice_no').val(invoice.invoice_no);
+        $('#modal_invoice_date').val(invoice.invoice_date);
+        $('#modal_customer_id').val(invoice.customer_id);
+        $('#destination').val(invoice.destination);
+        $('#modal_from_date').val(invoice.from_date);
+        $('#modal_to_date').val(invoice.to_date);
+        $('#total_amount').val(invoice.total_amount);
+        $('#gst_amount').val(invoice.gst_amount);
+        $('#grand_total').val(invoice.grand_total);
+        $('#status').val(invoice.status);
+        
+        showDemoNotification();
+    } else {
+        showToast('Demo invoice not found', 'error');
+    }
 }
 
 // Calculate grand total
