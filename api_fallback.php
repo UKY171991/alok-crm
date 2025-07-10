@@ -165,13 +165,15 @@ try {
     
 } catch (Exception $e) {
     // Database not available, use mock data
+    error_log("API Fallback using mock data: " . $e->getMessage());
     $endpoint = $_GET['endpoint'] ?? '';
     
     if ($endpoint === 'customers') {
         echo json_encode([
             'success' => true,
             'data' => $mockCustomers,
-            'source' => 'mock'
+            'source' => 'mock',
+            'message' => 'Using demo data - database not available'
         ]);
     } else if ($endpoint === 'invoices') {
         $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;

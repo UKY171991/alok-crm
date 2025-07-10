@@ -52,8 +52,14 @@ try {
     // Log the error but don't die, let api_fallback handle it gracefully
     error_log("Database connection error: " . $e->getMessage());
     
-    // If we're in api_fallback.php, we'll let it handle the fallback
-    if (basename($_SERVER['SCRIPT_NAME']) === 'api_fallback.php') {
+    // Check if we're in api_fallback.php or similar API scripts
+    $script_name = basename($_SERVER['SCRIPT_NAME'] ?? '');
+    $is_api_script = ($script_name === 'api_fallback.php' || 
+                     strpos($script_name, 'api_') === 0 || 
+                     strpos($script_name, 'ajax') !== false ||
+                     strpos($script_name, 'test_') === 0);
+    
+    if ($is_api_script) {
         throw $e; // Re-throw to be caught by api_fallback
     } else {
         // For other scripts, show a user-friendly error
