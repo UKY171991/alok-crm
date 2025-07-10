@@ -1331,6 +1331,78 @@ require_once 'inc/sidebar.php';
     margin-right: 6px;
 }
 
+/* Enhanced Customer Info Card */
+.customer-info-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.customer-info-card:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.customer-info-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.customer-info-header i {
+    font-size: 1rem;
+}
+
+.customer-info-body {
+    padding: 12px;
+}
+
+.customer-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.customer-info-row:last-child {
+    margin-bottom: 0;
+}
+
+.customer-info-label {
+    font-weight: 600;
+    color: #374151;
+    min-width: 70px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+}
+
+.customer-info-label i {
+    color: #3b82f6;
+    font-size: 0.7rem;
+    width: 12px;
+}
+
+.customer-info-value {
+    color: #1f2937;
+    font-weight: 500;
+    text-align: right;
+    flex: 1;
+    font-size: 0.75rem;
+    word-break: break-word;
+}
+
 .input-group .btn-outline-secondary {
     border-color: #e5e7eb;
     color: #6b7280;
@@ -1452,10 +1524,12 @@ require_once 'inc/sidebar.php';
                     <select id="customer_name" class="form-select">
                         <option value="">Select Customer</option>
                     </select>
-                    <button class="btn btn-outline-secondary" type="button" onclick="refreshCustomers()" title="Refresh Customer List">
+                    <button class="btn btn-outline-secondary" type="button" id="customer_refresh_btn" onclick="refreshCustomers()" title="Refresh Customer List">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
+                <!-- Customer Details Display -->
+                <div id="customer_details" style="display: none; margin-top: 10px;"></div>
             </div>
             <div class="col-md-1">
                 <label for="doc_type">Doc Type</label>
@@ -1741,8 +1815,14 @@ require_once 'inc/sidebar.php';
 <!-- Include Toastify CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <!-- Include Toastify JS -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<!-- Include Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
 let currentPage = 1;
@@ -1847,7 +1927,14 @@ function refreshData() {
 
 // New function to refresh just customers
 function refreshCustomers() {
+    console.log('🔄 Refreshing customer list...');
     showToast('Refreshing customer list...', 'info');
+    
+    // Clear existing data
+    window.customerData = {};
+    $('#customer_details').hide();
+    
+    // Reload customers
     loadCustomers();
 }
 
@@ -1885,25 +1972,65 @@ function searchCustomers(searchTerm) {
 
 // Load customer details when selected
 function loadCustomerDetails(customerId) {
+    console.log(`📋 Loading details for customer ID: ${customerId}`);
+    
+    // First check if we have the data in memory
+    if (window.customerData && window.customerData[customerId]) {
+        console.log('✅ Found customer data in memory');
+        displayCustomerDetails(customerId);
+        return;
+    }
+    
+    // If not in memory, try to fetch from API
     $.ajax({
         url: 'fetch_customers_json.php',
         type: 'GET',
         data: {
             search: '',
             per_page: 1,
-            customer_id: customerId // If the API supports filtering by ID
+            customer_id: customerId
         },
         dataType: 'json',
         success: function(response) {
             if (response.success && response.data && response.data.length > 0) {
                 const customer = response.data[0];
-                displayCustomerInfo(customer);
+                // Store in memory for future use
+                if (!window.customerData) window.customerData = {};
+                window.customerData[customerId] = customer;
+                displayCustomerDetails(customerId);
+                console.log('✅ Loaded customer details from API');
+            } else {
+                console.log('⚠️ No customer data found from API');
+                displayCustomerDetailsFromSelect(customerId);
             }
         },
         error: function() {
-            console.log('Failed to load customer details');
+            console.log('❌ Failed to load customer details from API');
+            displayCustomerDetailsFromSelect(customerId);
         }
     });
+}
+
+// Fallback to get customer details from select element
+function displayCustomerDetailsFromSelect(customerId) {
+    const selectedOption = $(`#customer_name option[value="${customerId}"]`);
+    if (selectedOption.length > 0) {
+        const customer = {
+            id: customerId,
+            name: selectedOption.text(),
+            phone: selectedOption.data('phone') || '',
+            email: selectedOption.data('email') || '',
+            gst_no: selectedOption.data('gst') || '',
+            address: selectedOption.data('address') || ''
+        };
+        
+        // Store in memory
+        if (!window.customerData) window.customerData = {};
+        window.customerData[customerId] = customer;
+        
+        displayCustomerDetails(customerId);
+        console.log('✅ Loaded customer details from select element');
+    }
 }
 
 // Display customer information
@@ -1928,7 +2055,9 @@ function displayCustomerInfo(customer) {
 
 // Clear customer details
 function clearCustomerDetails() {
-    $('#customer_info').fadeOut(200);
+    $('#customer_details').fadeOut(200);
+    $('#customer_info').fadeOut(200); // Legacy support
+    console.log('🧹 Cleared customer details');
 }
 
 function toggleView(view) {
@@ -2036,78 +2165,135 @@ function generateConsignmentNumber() {
 
 // Load customers
 function loadCustomers() {
-    // First try the JSON API for better error handling
+    console.log('🔄 Loading customers from database...');
+    $('#customer_refresh_btn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+    
+    // Clear any existing customer data display
+    $('#customer_details').hide();
+    
+    // First try the JSON API for better error handling and more customer data
     $.ajax({
         url: 'fetch_customers_json.php',
         type: 'GET',
         data: {
-            per_page: 100, // Get enough customers for the dropdown
-            search: '' // No search filter for dropdown
+            per_page: 200, // Get more customers for the dropdown
+            search: '', // No search filter for dropdown
+            include_details: 1 // Request full customer details
         },
         dataType: 'json',
-        timeout: 5000,
+        timeout: 10000,
         success: function(response) {
-            if (response.success && response.data) {
+            console.log('📊 Customer API Response:', response);
+            if (response.success && response.data && response.data.length > 0) {
                 let options = '<option value="">Select Customer</option>';
+                
+                // Store customer data globally for quick access
+                window.customerData = {};
+                
                 response.data.forEach(function(customer) {
-                    options += `<option value="${customer.id}">${customer.name}</option>`;
+                    options += `<option value="${customer.id}" 
+                                data-phone="${customer.phone || ''}" 
+                                data-email="${customer.email || ''}"
+                                data-gst="${customer.gst_no || ''}"
+                                data-address="${customer.address || ''}"
+                               >${customer.name}</option>`;
+                    
+                    // Store customer details for quick lookup
+                    window.customerData[customer.id] = customer;
                 });
+                
                 $('#customer_name, #edit_customer_name').html(options);
-                console.log(`Loaded ${response.data.length} customers from database`);
+                console.log(`✅ Loaded ${response.data.length} customers from database`);
+                showToast(`Loaded ${response.data.length} customers from database`, 'success');
+                
+                // Enable live search on customer dropdown
+                enableCustomerSearch();
+                
             } else {
-                console.log('JSON API failed, trying select endpoint');
+                console.log('⚠️ JSON API returned no data, trying select endpoint');
                 loadCustomersFromSelectAPI();
             }
+            $('#customer_refresh_btn').prop('disabled', false).html('<i class="fas fa-refresh"></i>');
         },
         error: function(xhr, status, error) {
-            console.log('JSON API error:', status, error);
-            console.log('Trying select endpoint as fallback');
+            console.log('❌ JSON API error:', status, error, xhr.responseText);
+            console.log('🔄 Trying select endpoint as fallback');
             loadCustomersFromSelectAPI();
+            $('#customer_refresh_btn').prop('disabled', false).html('<i class="fas fa-refresh"></i>');
         }
     });
 }
 
 // Fallback function to load customers from select endpoint
 function loadCustomersFromSelectAPI() {
+    console.log('🔄 Loading customers from select API...');
     $.ajax({
         url: 'ajax/fetch_customers_select.php',
         type: 'GET',
-        timeout: 5000,
+        timeout: 10000,
         success: function(response) {
-            if (response && response.includes('Select Customer')) {
+            console.log('📊 Select API Response length:', response.length);
+            if (response && response.includes('Select Customer') && response.length > 50) {
                 $('#customer_name, #edit_customer_name').html(response);
-                console.log('Loaded customers from select API endpoint');
+                console.log('✅ Loaded customers from select API endpoint');
+                showToast('Customers loaded from database', 'success');
+                
+                // Try to extract customer count from response
+                const optionCount = (response.match(/<option/g) || []).length - 1; // -1 for "Select Customer"
+                if (optionCount > 0) {
+                    console.log(`📊 Found ${optionCount} customers in select API`);
+                }
             } else {
-                console.log('Select API failed, using demo customers');
-                loadDemoCustomers();
+                console.log('❌ Select API failed or returned empty data, using real demo customers');
+                loadRealDemoCustomers();
             }
         },
         error: function(xhr, status, error) {
-            console.log('Select API error:', status, error);
-            console.log('Using demo customers as final fallback');
-            loadDemoCustomers();
+            console.log('❌ Select API error:', status, error, xhr.responseText);
+            console.log('🔄 Using real demo customers as final fallback');
+            loadRealDemoCustomers();
         }
     });
 }
 
-// Load demo customers if all APIs fail
-function loadDemoCustomers() {
-    const demoCustomers = [
-        { id: 1, name: 'ABC Corporation' },
-        { id: 2, name: 'XYZ Ltd' }, 
-        { id: 3, name: 'PQR Enterprises' },
-        { id: 4, name: 'STARLIT MEDICAL CENTER PVT LTD' },
-        { id: 5, name: 'DEMO CUSTOMER 1' },
-        { id: 6, name: 'DEMO CUSTOMER 2' }
+// Load real demo customers based on actual database structure if all APIs fail
+function loadRealDemoCustomers() {
+    console.log('📋 Loading real demo customers based on database structure...');
+    
+    // Use real customer data from the database as seen in the SQL file
+    const realDemoCustomers = [
+        { id: 10, name: 'Eden Hale', phone: '+1 (253) 107-4417', email: 'mylycavy@mailinator.com', gst_no: 'Officiis odio nostru' },
+        { id: 11, name: 'Kitra Lancaster', phone: '-4555353535', email: 'qyti@mailinator.com', gst_no: '43SFFDF4334T1Z4' },
+        { id: 12, name: 'Dexter Chambers', phone: '1336354635', email: 'rexun@mailinator.com', gst_no: '56EDDDD5454T1Z5' },
+        { id: 13, name: 'Serena Benson', phone: '1451884464', email: 'tuxyfocejy@mailinator.com', gst_no: '34RWSSS2222S1Z4' },
+        { id: 1, name: 'ABC Corporation', phone: '9876543210', email: 'info@abc.com', gst_no: '27AABCU9603R1ZX' },
+        { id: 2, name: 'XYZ Ltd', phone: '9876543211', email: 'contact@xyz.com', gst_no: '09AACFX3024F1ZH' },
+        { id: 3, name: 'PQR Enterprises', phone: '9876543212', email: 'sales@pqr.com', gst_no: '24AAGCP0618F1ZJ' },
+        { id: 4, name: 'STARLIT MEDICAL CENTER PVT LTD', phone: '9876543213', email: 'admin@starlit.com', gst_no: '07AAFCS0842Q1ZN' }
     ];
     
     let options = '<option value="">Select Customer</option>';
-    demoCustomers.forEach(function(customer) {
-        options += `<option value="${customer.id}">${customer.name}</option>`;
+    
+    // Store customer data globally for quick access
+    window.customerData = {};
+    
+    realDemoCustomers.forEach(function(customer) {
+        options += `<option value="${customer.id}" 
+                    data-phone="${customer.phone}" 
+                    data-email="${customer.email}"
+                    data-gst="${customer.gst_no}"
+                   >${customer.name}</option>`;
+        
+        // Store customer details for quick lookup
+        window.customerData[customer.id] = customer;
     });
+    
     $('#customer_name, #edit_customer_name').html(options);
-    console.log('Loaded demo customers as fallback');
-    showToast('Using demo customers - database unavailable', 'warning');
+    console.log(`✅ Loaded ${realDemoCustomers.length} real demo customers`);
+    showToast(`Demo mode: Loaded ${realDemoCustomers.length} sample customers`, 'warning');
+    
+    // Enable live search on customer dropdown
+    enableCustomerSearch();
 }
 
 // Calculate chargeable amount
@@ -2710,6 +2896,93 @@ function showToast(message, type = 'info') {
             fontWeight: "500"
         }
     }).showToast();
+}
+
+// Enable live search on customer dropdown
+function enableCustomerSearch() {
+    $('#customer_name, #edit_customer_name').select2({
+        placeholder: 'Select or search customer...',
+        allowClear: true,
+        width: '100%',
+        templateResult: function(customer) {
+            if (!customer.id) return customer.text;
+            
+            const $customer = $(customer.element);
+            const phone = $customer.data('phone') || '';
+            const email = $customer.data('email') || '';
+            
+            return $(`
+                <div>
+                    <div style="font-weight: bold;">${customer.text}</div>
+                    ${phone ? `<div style="font-size: 0.9em; color: #666;"><i class="fas fa-phone"></i> ${phone}</div>` : ''}
+                    ${email ? `<div style="font-size: 0.9em; color: #666;"><i class="fas fa-envelope"></i> ${email}</div>` : ''}
+                </div>
+            `);
+        }
+    });
+}
+
+// Display customer details when selected
+function displayCustomerDetails(customerId, targetContainer = '#customer_details') {
+    if (!customerId || !window.customerData || !window.customerData[customerId]) {
+        $(targetContainer).hide();
+        return;
+    }
+    
+    const customer = window.customerData[customerId];
+    const detailsHtml = `
+        <div class="customer-info-card">
+            <div class="customer-info-header">
+                <i class="fas fa-user-circle"></i>
+                <span>Customer Details</span>
+            </div>
+            <div class="customer-info-body">
+                <div class="customer-info-row">
+                    <span class="customer-info-label"><i class="fas fa-user"></i> Name:</span>
+                    <span class="customer-info-value">${customer.name}</span>
+                </div>
+                ${customer.phone ? `
+                <div class="customer-info-row">
+                    <span class="customer-info-label"><i class="fas fa-phone"></i> Phone:</span>
+                    <span class="customer-info-value">${customer.phone}</span>
+                </div>
+                ` : ''}
+                ${customer.email ? `
+                <div class="customer-info-row">
+                    <span class="customer-info-label"><i class="fas fa-envelope"></i> Email:</span>
+                    <span class="customer-info-value">${customer.email}</span>
+                </div>
+                ` : ''}
+                ${customer.gst_no ? `
+                <div class="customer-info-row">
+                    <span class="customer-info-label"><i class="fas fa-file-invoice"></i> GST:</span>
+                    <span class="customer-info-value">${customer.gst_no}</span>
+                </div>
+                ` : ''}
+                ${customer.address ? `
+                <div class="customer-info-row">
+                    <span class="customer-info-label"><i class="fas fa-map-marker-alt"></i> Address:</span>
+                    <span class="customer-info-value">${customer.address}</span>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    $(targetContainer).html(detailsHtml).show();
+}
+
+// Refresh customer list
+function refreshCustomers() {
+    console.log('🔄 Refreshing customer list...');
+    showToast('Refreshing customer list...', 'info');
+    
+    // Clear existing data
+    window.customerData = {};
+    $('#customer_details').hide();
+    
+    // Reload customers
+    loadCustomers();
 }
 </script>
 
