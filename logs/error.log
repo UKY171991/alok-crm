@@ -42,3 +42,5 @@ Stack trace:
 #0 C:\git\alok-crm\test_api_endpoints.php(17): include()
 #1 {main}
   thrown in C:\git\alok-crm\api_fallback.php on line 123
+[10-Jul-2025 10:58:56 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
+[10-Jul-2025 10:58:56 Asia/Kolkata] fetch_invoices_advanced.php using mock data: No connection could be made because the target machine actively refused it

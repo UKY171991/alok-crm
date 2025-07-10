@@ -736,8 +736,11 @@ function hideDemoNotification() {
 }
 
 function loadCustomers() {
+    // Add cache busting parameter
+    const timestamp = new Date().getTime();
+    
     $.ajax({
-        url: 'api_fallback.php?endpoint=customers',
+        url: 'api_fallback.php?endpoint=customers&_t=' + timestamp,
         type: 'GET',
         dataType: 'json',
         timeout: 10000, // 10 second timeout
@@ -764,7 +767,7 @@ function loadCustomers() {
         },
         error: function(xhr, status, error) {
             console.error('Customer loading error:', status, error, xhr.responseText);
-            console.log('Request URL:', 'api_fallback.php?endpoint=customers');
+            console.log('Request URL:', 'api_fallback.php?endpoint=customers&_t=' + timestamp);
             console.log('Response Status:', xhr.status);
             console.log('Response Text:', xhr.responseText);
             
@@ -800,7 +803,8 @@ function loadInvoices(page = 1) {
         search: $('#customer_search').val(),
         invoice_date: $('#invoice_date').val(),
         from_date: $('#from_date').val(),
-        to_date: $('#to_date').val()
+        to_date: $('#to_date').val(),
+        _t: new Date().getTime() // Cache busting
     };
     
     currentFilters = filters;
