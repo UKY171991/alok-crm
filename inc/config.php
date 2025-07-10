@@ -497,4 +497,27 @@ function verify_csrf_token($token) {
 function create_customer_rate_tables() {
     return initialize_database();
 }
+
+// Booking/Consignment System Configuration
+define('CONSIGNMENT_PREFIX', 'U'); // Consignment number prefix
+define('BOOKING_PAGINATION_LIMIT', 15); // Records per page for booking table
+define('DEFAULT_SERVICE_TYPE', 'AIR'); // Default service type
+define('DEFAULT_DOC_TYPE', 'DOX'); // Default document type
+define('ENABLE_BULK_OPERATIONS', true); // Enable bulk select/delete
+define('SHOW_SUMMARY_STATS', true); // Show summary statistics
+
+// Service Types
+define('SERVICE_TYPES', ['AIR', 'SURFACE', 'EXPRESS']);
+
+// Document Types  
+define('DOCUMENT_TYPES', ['DOX', 'SPX', 'NDX']);
+
+// Billing Status Options
+define('BILLING_STATUS_OPTIONS', ['All', 'Billed', 'Non-Billed', 'Pending']);
+
+// Weight and Amount Settings
+define('MIN_WEIGHT', 0.001);
+define('MAX_WEIGHT', 999.999);
+define('WEIGHT_DECIMAL_PLACES', 3);
+define('AMOUNT_DECIMAL_PLACES', 2);
 ?>

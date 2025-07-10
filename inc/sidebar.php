@@ -41,6 +41,13 @@
                         <p>Customers</p>
                     </a>
                 </li>
+                <!-- Direct Party Booking -->
+                <li class="nav-item">
+                    <a href="direct_party_booking.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'direct_party_booking.php') echo ' active'; ?>">
+                        <i class="nav-icon fas fa-truck"></i>
+                        <p>Direct Party Booking</p>
+                    </a>
+                </li>
                 <!-- Order -->
                 <li class="nav-item">
                     <a href="order.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'order.php') echo ' active'; ?>">
