@@ -66,7 +66,11 @@ try {
     require_once 'inc/config.php';
     require_once 'inc/db.php';
     
-    // If we get here, database is available
+    // If we get here, database is available and $conn should be defined
+    if (!isset($conn) || $conn->connect_error) {
+        throw new Exception("Database connection not available");
+    }
+    
     $endpoint = $_GET['endpoint'] ?? '';
     
     if ($endpoint === 'customers') {

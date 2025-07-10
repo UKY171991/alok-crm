@@ -44,3 +44,9 @@ Stack trace:
   thrown in C:\git\alok-crm\api_fallback.php on line 123
 [10-Jul-2025 10:58:56 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
 [10-Jul-2025 10:58:56 Asia/Kolkata] fetch_invoices_advanced.php using mock data: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:19:33 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:19:33 Asia/Kolkata] fetch_invoices_advanced.php using mock data: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:19:58 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:19:58 Asia/Kolkata] API Fallback using mock data: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:19:58 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\git\alok-crm\test_api_fallback_only.php:2) in C:\git\alok-crm\api_fallback.php on line 2
+[10-Jul-2025 11:19:58 Asia/Kolkata] API Fallback using mock data: Database connection not available
