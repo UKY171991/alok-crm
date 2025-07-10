@@ -4,6 +4,37 @@ define('APP_NAME', 'Courier CRM');
 define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/alok-crm');
 
+// Enhanced UI Configuration
+define('PAGINATION_LIMIT', 10); // Records per page
+define('MAX_SEARCH_RESULTS', 100); // Maximum search results
+define('AJAX_TIMEOUT', 10000); // AJAX timeout in milliseconds
+define('TOAST_DURATION', 4000); // Toast notification duration in milliseconds
+
+// UI Theme settings
+define('PRIMARY_COLOR', '#3b82f6');
+define('SUCCESS_COLOR', '#10b981');
+define('ERROR_COLOR', '#ef4444');
+define('WARNING_COLOR', '#f59e0b');
+
+// Table display settings
+define('TABLE_HOVER_ANIMATION', true);
+define('SHOW_LOADING_SPINNER', true);
+define('AUTO_REFRESH_INTERVAL', 30000); // Auto refresh interval in milliseconds (0 = disabled)
+
+// Modal settings
+define('MODAL_ANIMATION_SPEED', 300); // Modal animation speed in milliseconds
+define('MODAL_BACKDROP_CLOSE', true); // Allow closing modal by clicking backdrop
+
+// Form validation
+define('INVOICE_NUMBER_PREFIX', 'INV-');
+define('MIN_INVOICE_AMOUNT', 0.01);
+define('MAX_INVOICE_AMOUNT', 999999.99);
+define('GST_RATE_DEFAULT', 18); // Default GST rate in percentage
+
+// File upload settings (for future enhancements)
+define('MAX_FILE_SIZE', 5242880); // 5MB
+define('ALLOWED_FILE_TYPES', ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx']);
+
 // Session settings (only in web context)
 if (isset($_SERVER['HTTP_HOST'])) {
     ini_set('session.cookie_httponly', 1);

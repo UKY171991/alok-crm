@@ -1,52 +1,18 @@
-[09-Jul-2025 14:07:00 Asia/Kolkata] PHP Warning:  Undefined array key "HTTP_HOST" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:07:00 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_NAME" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:07:00 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_ADDR" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:07:04 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:21
+[10-Jul-2025 11:31:59 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:31:59 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:41
 Stack trace:
-#0 C:\git\alok-crm\inc\db.php(21): mysqli->__construct('localhost', 'fnkjyinw_alok_c...', Object(SensitiveParameterValue), 'fnkjyinw_alok_c...')
-#1 C:\git\alok-crm\test_db_tables.php(3): require_once('C:\\git\\alok-crm...')
-#2 {main}
-  thrown in C:\git\alok-crm\inc\db.php on line 21
-[09-Jul-2025 14:09:36 Asia/Kolkata] PHP Warning:  Undefined array key "HTTP_HOST" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:09:36 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_NAME" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:09:36 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_ADDR" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:09:40 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:21
+#0 C:\git\alok-crm\inc\db.php(41): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'alok_crm')
+#1 C:\git\alok-crm\ajax\delete_invoice.php(14): require_once('C:\\git\\alok-crm...')
+#2 C:\git\alok-crm\test_delete.php(10): include('C:\\git\\alok-crm...')
+#3 {main}
+  thrown in C:\git\alok-crm\inc\db.php on line 41
+[10-Jul-2025 11:32:13 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
+[10-Jul-2025 11:32:13 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:41
 Stack trace:
-#0 C:\git\alok-crm\inc\db.php(21): mysqli->__construct('localhost', 'fnkjyinw_alok_c...', Object(SensitiveParameterValue), 'fnkjyinw_alok_c...')
-#1 C:\git\alok-crm\add_sample_data.php(3): require_once('C:\\git\\alok-crm...')
-#2 {main}
-  thrown in C:\git\alok-crm\inc\db.php on line 21
-[09-Jul-2025 14:12:35 Asia/Kolkata] PHP Warning:  Undefined array key "HTTP_HOST" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:12:35 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_NAME" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:12:35 Asia/Kolkata] PHP Warning:  Undefined array key "SERVER_ADDR" in C:\git\alok-crm\inc\db.php on line 3
-[09-Jul-2025 14:12:39 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:21
-Stack trace:
-#0 C:\git\alok-crm\inc\db.php(21): mysqli->__construct('localhost', 'fnkjyinw_alok_c...', Object(SensitiveParameterValue), 'fnkjyinw_alok_c...')
-#1 C:\git\alok-crm\test_init.php(6): require_once('C:\\git\\alok-crm...')
-#2 {main}
-  thrown in C:\git\alok-crm\inc\db.php on line 21
-[09-Jul-2025 14:13:22 Asia/Kolkata] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\git\alok-crm\inc\db.php:26
-Stack trace:
-#0 C:\git\alok-crm\inc\db.php(26): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'alok_crm')
-#1 C:\git\alok-crm\test_init.php(6): require_once('C:\\git\\alok-crm...')
-#2 {main}
-  thrown in C:\git\alok-crm\inc\db.php on line 26
-[10-Jul-2025 10:43:27 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
-[10-Jul-2025 10:45:12 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
-[10-Jul-2025 10:45:36 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
-[10-Jul-2025 10:45:36 Asia/Kolkata] API Fallback using mock data: No connection could be made because the target machine actively refused it
-[10-Jul-2025 10:45:36 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\git\alok-crm\test_api_endpoints.php:3) in C:\git\alok-crm\api_fallback.php on line 2
-[10-Jul-2025 10:45:36 Asia/Kolkata] PHP Warning:  Undefined variable $conn in C:\git\alok-crm\api_fallback.php on line 123
-[10-Jul-2025 10:45:36 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\git\alok-crm\api_fallback.php:123
-Stack trace:
-#0 C:\git\alok-crm\test_api_endpoints.php(17): include()
-#1 {main}
-  thrown in C:\git\alok-crm\api_fallback.php on line 123
-[10-Jul-2025 10:58:56 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
-[10-Jul-2025 10:58:56 Asia/Kolkata] fetch_invoices_advanced.php using mock data: No connection could be made because the target machine actively refused it
-[10-Jul-2025 11:19:33 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
-[10-Jul-2025 11:19:33 Asia/Kolkata] fetch_invoices_advanced.php using mock data: No connection could be made because the target machine actively refused it
-[10-Jul-2025 11:19:58 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
-[10-Jul-2025 11:19:58 Asia/Kolkata] API Fallback using mock data: No connection could be made because the target machine actively refused it
-[10-Jul-2025 11:19:58 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\git\alok-crm\test_api_fallback_only.php:2) in C:\git\alok-crm\api_fallback.php on line 2
-[10-Jul-2025 11:19:58 Asia/Kolkata] API Fallback using mock data: Database connection not available
+#0 C:\git\alok-crm\inc\db.php(41): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'alok_crm')
+#1 C:\git\alok-crm\ajax\delete_invoice.php(14): require_once('C:\\git\\alok-crm...')
+#2 C:\git\alok-crm\test_delete.php(10): include('C:\\git\\alok-crm...')
+#3 {main}
+  thrown in C:\git\alok-crm\inc\db.php on line 41
+[10-Jul-2025 11:36:24 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\git\alok-crm\system_verification.php:7) in C:\git\alok-crm\api_fallback.php on line 2
+[10-Jul-2025 11:36:28 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
