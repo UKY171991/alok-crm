@@ -16,3 +16,7 @@ Stack trace:
   thrown in C:\git\alok-crm\inc\db.php on line 41
 [10-Jul-2025 11:36:24 Asia/Kolkata] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\git\alok-crm\system_verification.php:7) in C:\git\alok-crm\api_fallback.php on line 2
 [10-Jul-2025 11:36:28 Asia/Kolkata] Database connection error: No connection could be made because the target machine actively refused it
+[11-Jul-2025 09:40:09 Asia/Kolkata] Database connection error: Unknown database 'alok_crm'
+[11-Jul-2025 09:40:09 Asia/Kolkata] PHP Warning:  Undefined variable $dbname in C:\git\alok-crm\inc\config.php on line 65
+[11-Jul-2025 09:40:09 Asia/Kolkata] PHP Warning:  Undefined variable $username in C:\git\alok-crm\inc\config.php on line 65
+[11-Jul-2025 09:40:09 Asia/Kolkata] PHP Warning:  Undefined variable $password in C:\git\alok-crm\inc\config.php on line 65

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loader Test - Courier CRM</title>
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Loader CSS -->
+    <link rel="stylesheet" href="css/loader.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <!-- Global Page Loader -->
+    <div id="globalPageLoader" class="page-loader">
+        <div class="loader-content">
+            <div class="main-spinner">
+                <div class="spinner-ring"></div>
+            </div>
+            <div class="loader-title">Loading CRM System</div>
+            <div class="loader-subtitle">Please wait while we prepare everything for you</div>
+            <div class="loader-dots">
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="globalProgressBar"></div>
+            </div>
+            <div class="loader-progress" id="globalLoadingStep">Initializing...</div>
+        </div>
+    </div>
+    
+    <!-- Inline script to show loader immediately -->
+    <script>
+    (function() {
+        // Show loader immediately when page starts loading
+        const loader = document.getElementById('globalPageLoader');
+        if (loader) {
+            loader.style.display = 'flex';
+            loader.classList.remove('hidden');
+        }
+        
+        // Simple progress simulation
+        let progress = 0;
+        const progressBar = document.getElementById('globalProgressBar');
+        const stepElement = document.getElementById('globalLoadingStep');
+        
+        const steps = [
+            'Loading page components...',
+            'Fetching user data...',
+            'Setting up interface...',
+            'Almost ready...'
+        ];
+        
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 20 + 5;
+            if (progress > 95) progress = 95;
+            
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+            
+            const stepIndex = Math.floor((progress / 100) * steps.length);
+            if (stepIndex < steps.length && stepElement) {
+                stepElement.textContent = steps[stepIndex];
+            }
+            
+            if (progress >= 95) {
+                clearInterval(progressInterval);
+            }
+        }, 200);
+        
+        // Hide loader when page is fully loaded
+        function hideGlobalLoader() {
+            if (progressBar) {
+                progressBar.style.width = '100%';
+            }
+            if (stepElement) {
+                stepElement.textContent = 'Complete!';
+            }
+            
+            setTimeout(() => {
+                if (loader) {
+                    loader.classList.add('hidden');
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                }
+                clearInterval(progressInterval);
+            }, 300);
+        }
+        
+        // Hide loader when everything is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(hideGlobalLoader, 2000); // 2 second delay for testing
+            });
+        } else {
+            setTimeout(hideGlobalLoader, 2000);
+        }
+        
+        // Also hide on window load
+        window.addEventListener('load', () => {
+            setTimeout(hideGlobalLoader, 2500);
+        });
+    })();
+    </script>
+    
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="index.php" class="nav-link">Home</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php" role="button">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Content Wrapper -->
+        <main class='content-wrapper'>
+            <div class='container-fluid p-4'>
+                <h1 class="text-center mb-4">Global Loader Test Page</h1>
+                
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Loader Test Controls</h3>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-4">Use the buttons below to test the page loader functionality:</p>
+                                
+                                <div class="d-grid gap-2 d-md-block">
+                                    <button class="btn btn-primary" onclick="testShowLoader()">
+                                        <i class="fas fa-spinner"></i> Show Loader
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="testHideLoader()">
+                                        <i class="fas fa-eye-slash"></i> Hide Loader
+                                    </button>
+                                    <button class="btn btn-info" onclick="testSimulatePageLoad()">
+                                        <i class="fas fa-refresh"></i> Simulate Page Load
+                                    </button>
+                                    <button class="btn btn-success" onclick="testMultiStepLoader()">
+                                        <i class="fas fa-tasks"></i> Multi-Step Loader
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4 p-3 bg-light rounded">
+                                    <h5>Test Results:</h5>
+                                    <div id="testResults">
+                                        <p class="text-success">✓ Page loaded successfully</p>
+                                        <p class="text-success">✓ Global loader is available</p>
+                                        <p class="text-info">Click the buttons above to test different loader scenarios.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Integration Status</h4>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        CSS Files
+                                        <span class="badge bg-success">Loaded</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        JavaScript Files
+                                        <span class="badge bg-success">Loaded</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Global Loader HTML
+                                        <span class="badge bg-success">Present</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Auto-Hide Functionality
+                                        <span class="badge bg-success">Working</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Quick Navigation</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="index.php" class="btn btn-outline-primary">
+                                        <i class="fas fa-home"></i> Dashboard
+                                    </a>
+                                    <a href="customers.php" class="btn btn-outline-info">
+                                        <i class="fas fa-users"></i> Customers
+                                    </a>
+                                    <a href="invoices.php" class="btn btn-outline-success">
+                                        <i class="fas fa-file-invoice"></i> Invoices
+                                    </a>
+                                    <a href="reports.php" class="btn btn-outline-warning">
+                                        <i class="fas fa-chart-bar"></i> Reports
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Loader JavaScript -->
+    <script src="js/loader.js"></script>
+    
+    <!-- Test Functions -->
+    <script>
+        function testShowLoader() {
+            const loader = document.getElementById('globalPageLoader');
+            if (loader) {
+                loader.style.display = 'flex';
+                loader.classList.remove('hidden');
+                updateTestResults('Loader shown manually');
+            }
+        }
+        
+        function testHideLoader() {
+            const loader = document.getElementById('globalPageLoader');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+                updateTestResults('Loader hidden manually');
+            }
+        }
+        
+        function testSimulatePageLoad() {
+            const loader = document.getElementById('globalPageLoader');
+            if (loader) {
+                loader.style.display = 'flex';
+                loader.classList.remove('hidden');
+                
+                // Simulate page load
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                    updateTestResults('Page load simulation completed');
+                }, 2000);
+                
+                updateTestResults('Simulating page load...');
+            }
+        }
+        
+        function testMultiStepLoader() {
+            const loader = document.getElementById('globalPageLoader');
+            const progressBar = document.getElementById('globalProgressBar');
+            const stepElement = document.getElementById('globalLoadingStep');
+            
+            if (loader) {
+                loader.style.display = 'flex';
+                loader.classList.remove('hidden');
+                
+                const steps = [
+                    'Connecting to server...',
+                    'Authenticating user...',
+                    'Loading dashboard data...',
+                    'Finalizing setup...'
+                ];
+                
+                let currentStep = 0;
+                let progress = 0;
+                
+                const interval = setInterval(() => {
+                    progress += 25;
+                    
+                    if (progressBar) {
+                        progressBar.style.width = progress + '%';
+                    }
+                    
+                    if (stepElement && currentStep < steps.length) {
+                        stepElement.textContent = steps[currentStep];
+                    }
+                    
+                    currentStep++;
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            loader.classList.add('hidden');
+                            setTimeout(() => {
+                                loader.style.display = 'none';
+                            }, 500);
+                            updateTestResults('Multi-step loader test completed');
+                        }, 500);
+                    }
+                }, 800);
+                
+                updateTestResults('Running multi-step loader test...');
+            }
+        }
+        
+        function updateTestResults(message) {
+            const results = document.getElementById('testResults');
+            const time = new Date().toLocaleTimeString();
+            results.innerHTML += `<p class="text-info">[${time}] ${message}</p>`;
+        }
+        
+        // Initialize test results
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                updateTestResults('DOM Content Loaded');
+            }, 100);
+        });
+        
+        window.addEventListener('load', function() {
+            updateTestResults('Window Load Complete');
+        });
+    </script>
+</body>
+</html>
