@@ -226,6 +226,33 @@ $revenue_by_month = array_reverse($revenue_by_month);
                 </div>
             </div>
         </div>
+        
+        <!-- Loader Test Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-cog"></i> Loader System Test
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Test the different loader types:</p>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-primary" onclick="testPageLoader()">
+                                <i class="fas fa-spinner"></i> Test Page Loader
+                            </button>
+                            <button class="btn btn-success" onclick="testActionLoader()">
+                                <i class="fas fa-tasks"></i> Test Action Loader
+                            </button>
+                            <button class="btn btn-warning" onclick="testDashboardLoader()">
+                                <i class="fas fa-tachometer-alt"></i> Test Dashboard Loader
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -236,12 +263,131 @@ include 'inc/footer.php';
 
 <!-- ChartJS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Loader Debug Script (temporary) -->
+<script src="js/loader-debug.js"></script>
 <script>
-    // Initialize dashboard loader
+    // Enhanced dashboard loader with comprehensive loading steps
     document.addEventListener('DOMContentLoaded', function() {
+        initDashboardLoader();
+    });
+
+    function initDashboardLoader() {
+        // Show initial page loader
         if (typeof showLoader !== 'undefined') {
-            showLoader('Loading Dashboard', 'Preparing charts and statistics...');
-            setTimeout(() => hideLoader(), 1500);
+            showLoader('Loading Dashboard', 'Initializing CRM Dashboard...');
+            
+            // Simulate multi-step loading process
+            setTimeout(() => {
+                if (typeof showActionLoader !== 'undefined') {
+                    showActionLoader('Loading Statistics...', 'Fetching customer and invoice data');
+                }
+                
+                setTimeout(() => {
+                    if (typeof showActionLoader !== 'undefined') {
+                        showActionLoader('Preparing Charts...', 'Setting up revenue analytics');
+                    }
+                    
+                    setTimeout(() => {
+                        if (typeof showActionLoader !== 'undefined') {
+                            showActionLoader('Finalizing Dashboard...', 'Almost ready');
+                        }
+                        
+                        setTimeout(() => {
+                            if (typeof hideActionLoader !== 'undefined') {
+                                hideActionLoader();
+                            }
+                            if (typeof hideLoader !== 'undefined') {
+                                hideLoader();
+                            }
+                            
+                            // Show success message if available
+                            if (typeof showToast !== 'undefined') {
+                                showToast('Dashboard loaded successfully!', 'success');
+                            }
+                        }, 800);
+                    }, 600);
+                }, 700);
+            }, 1000);
+        } else {
+            // Fallback for when loader system is not available
+            console.log('Loading dashboard...');
+        }
+    }
+
+    // Test functions for loader system
+    function testPageLoader() {
+        if (typeof showLoader !== 'undefined') {
+            showLoader('Testing Page Loader', 'This is a test of the page loader system...');
+            setTimeout(() => {
+                if (typeof hideLoader !== 'undefined') {
+                    hideLoader();
+                }
+            }, 3000);
+        } else {
+            alert('Loader system not available. Please check if loader.js is loaded.');
+        }
+    }
+
+    function testActionLoader() {
+        if (typeof showActionLoader !== 'undefined') {
+            showActionLoader('Testing Action Loader...', 'This demonstrates the action loader');
+            setTimeout(() => {
+                if (typeof hideActionLoader !== 'undefined') {
+                    hideActionLoader();
+                }
+            }, 2500);
+        } else {
+            alert('Action loader not available. Please check if loader.js is loaded.');
+        }
+    }
+
+    function testDashboardLoader() {
+        initDashboardLoader();
+    }
+
+    // Fallback loader function
+    function showFallbackLoader(title = 'Loading...', subtitle = 'Please wait') {
+        // Remove existing fallback loader
+        const existing = document.getElementById('fallbackLoader');
+        if (existing) existing.remove();
+        
+        // Create fallback loader
+        const loader = document.createElement('div');
+        loader.id = 'fallbackLoader';
+        loader.className = 'fallback-loader';
+        loader.innerHTML = `
+            <div class="fallback-loader-content">
+                <div class="fallback-spinner"></div>
+                <div class="fallback-text">${title}</div>
+                <div class="fallback-subtext">${subtitle}</div>
+            </div>
+        `;
+        
+        document.body.appendChild(loader);
+        return loader;
+    }
+
+    function hideFallbackLoader() {
+        const loader = document.getElementById('fallbackLoader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 300);
+        }
+    }
+
+    // Enhanced initialization with fallback support
+    document.addEventListener('DOMContentLoaded', function() {
+        // Try main loader system first
+        if (typeof showLoader !== 'undefined') {
+            initDashboardLoader();
+        } else {
+            // Use fallback loader
+            console.log('Main loader system not available, using fallback');
+            const fallback = showFallbackLoader('Loading Dashboard', 'Preparing your workspace...');
+            
+            setTimeout(() => {
+                hideFallbackLoader();
+            }, 2000);
         }
     });
 
