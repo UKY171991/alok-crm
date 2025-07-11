@@ -1815,14 +1815,8 @@ require_once 'inc/sidebar.php';
 <!-- Include Toastify CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-<!-- Include Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
 <!-- Include Toastify JS -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-<!-- Include Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
 let currentPage = 1;
@@ -1833,6 +1827,9 @@ let currentView = 'table';
 let entriesPerPage = 15;
 
 $(document).ready(function() {
+    // Initialize page loader
+    initDirectPartyBookingLoader();
+    
     // Initialize the page
     generateConsignmentNumber();
     loadCustomers();

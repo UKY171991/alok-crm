@@ -74,6 +74,12 @@ include 'inc/sidebar.php';
 <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
+        // Initialize destination management loader
+        if (typeof showLoader !== 'undefined') {
+            showLoader('Loading Destination Management', 'Setting up zones and destinations...');
+            setTimeout(() => hideLoader(), 1000);
+        }
+        
         // Function to show AdminLTE alert
         function showAdminLTEAlert(message, type = 'success') {
             const alertDiv = $('#adminlte-alert');

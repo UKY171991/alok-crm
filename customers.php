@@ -229,6 +229,23 @@ include 'inc/sidebar.php';
 
 <?php include 'inc/footer.php'; ?>
 
+<script>
+// Initialize customer management loader
+document.addEventListener('DOMContentLoaded', function() {
+    initCustomerManagementLoader();
+});
+
+function initCustomerManagementLoader() {
+    if (typeof window.CRMLoader !== 'undefined') {
+        showLoader('Loading Customer Management', 'Fetching customer database...');
+        
+        setTimeout(() => {
+            hideLoader();
+        }, 1200);
+    }
+}
+</script>
+
 <style>
     table th, table td {
         white-space: nowrap;

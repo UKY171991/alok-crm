@@ -90,6 +90,9 @@ include 'inc/sidebar.php';
 <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 <script>
 $(function () {
+    // Initialize reports loader
+    initReportsLoader();
+    
     // Handle search form submission
     $('#invoiceReportForm').on('submit', function (e) {
         e.preventDefault();

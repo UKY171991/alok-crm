@@ -85,6 +85,14 @@
                         <p>Reports</p>
                     </a>
                 </li>
+                
+                <!-- Loader Demo -->
+                <li class="nav-item">
+                    <a href="loader_demo.php" class="nav-link<?php if(basename($_SERVER['PHP_SELF']) == 'loader_demo.php') echo ' active'; ?>">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p>Loader Demo</p>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

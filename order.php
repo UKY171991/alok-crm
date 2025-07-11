@@ -376,6 +376,12 @@ include 'inc/db.php';
 <script>
 // Populate customer select in Add Order Modal
 $(document).ready(function() {
+    // Initialize page loader
+    if (typeof showLoader !== 'undefined') {
+        showLoader('Loading Order Management', 'Setting up order interface...');
+        setTimeout(() => hideLoader(), 1000);
+    }
+    
     $('#addOrderModal').on('show.bs.modal', function() {
         var $select = $(this).find('select[name="customer_id"]');
         $select.html('<option value="">Loading...</option>');

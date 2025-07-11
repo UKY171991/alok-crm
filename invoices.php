@@ -244,6 +244,12 @@ $(document).on('change', '#customer_id', function() {
 });
 
 $(document).ready(function() {
+    // Initialize page loader
+    if (typeof showLoader !== 'undefined') {
+        showLoader('Loading Invoice Management', 'Preparing invoice tools...');
+        setTimeout(() => hideLoader(), 1200);
+    }
+    
     loadCustomersForInvoice();
 });
 

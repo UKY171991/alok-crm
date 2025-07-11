@@ -744,6 +744,9 @@ let isLoading = false;
 
 // Initialize page
 $(document).ready(function() {
+    // Initialize page loader
+    initInvoiceGenerationLoader();
+    
     loadCustomers();
     loadInvoices();
     

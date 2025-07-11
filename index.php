@@ -237,6 +237,14 @@ include 'inc/footer.php';
 <!-- ChartJS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Initialize dashboard loader
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof showLoader !== 'undefined') {
+            showLoader('Loading Dashboard', 'Preparing charts and statistics...');
+            setTimeout(() => hideLoader(), 1500);
+        }
+    });
+
     // Revenue chart with real data from PHP
     const revenueLabels = <?php echo json_encode($months); ?>;
     const revenueData = <?php echo json_encode($revenue_by_month); ?>;
